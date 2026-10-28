@@ -1,0 +1,122 @@
+[build-system]
+# Build backend choice (recorded in docs/DECISIONS.md):
+# setuptools + pyproject.toml, standard and dependency-free. No hatchling or
+# poetry needed; src/ layout + one console script keep it simple and reliable
+# across the full Python 3.10-3.12 range and on Colab.
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auphoria"
+version = "0.1.0"
+description = "AUPHORIA - beginner-friendly data analysis for university students who cannot code. Runs offline on your own computer or in Google Colab."
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+# License intentionally NOT set here: the maintainer chooses the licence in a
+# later step (see docs/LICENCE_DECISION.md). No LICENSE file is created until
+# then, so do not add `license =` or a `License ::` classifier prematurely.
+authors = [{ name = "AUPHORIA contributors" }]
+keywords = ["statistics", "education", "analysis", "scientific", "cli", "beginner"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+dependencies = [
+    "numpy>=1.26,<3",
+    "pandas>=2.0,<3",
+    "scipy>=1.10,<2",
+    "matplotlib>=3.7,<4",
+    "PyYAML>=6,<7",
+    "typer>=0.9,<1",
+    "pydantic>=2,<3",
+    "jinja2>=3,<4",
+]
+
+[project.optional-dependencies]
+excel = ["openpyxl>=3.1"]
+docx = ["python-docx>=1.0"]
+docs = [
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.5,<10",
+    "mkdocs-include-markdown-plugin>=6,<8",
+]
+dev = [
+    "pytest>=7.4",
+    "openpyxl>=3.1",
+    "python-docx>=1.0",
+    "ruff>=0.5",
+    "nbclient>=0.10",
+    "nbformat>=5.9",
+    "ipykernel>=6.29",
+    "ipywidgets>=8.1",
+    "statsmodels>=0.13,<1",
+    "scikit-learn>=1.2,<2",
+    # Heavy, per-pack dependencies used by the discipline-pack tests.
+    "PyDESeq2>=0.4,<1",
+    "gseapy>=1.0,<2",
+    # Docs build (MkDocs Material site).
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.5,<10",
+    "mkdocs-include-markdown-plugin>=6,<8",
+]
+# Discipline packs (optional installs; heavy dependencies live HERE so the
+# core install stays light). A user installs the pack(s) they need:
+#   pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+# Syntax matches the `pack` field in catalog/analyses.yaml and packs.yaml.
+agri-animal = ["statsmodels>=0.13,<1", "scikit-learn>=1.2,<2"]
+life-science = [
+    "statsmodels>=0.13,<1",
+    "scikit-learn>=1.2,<2",
+    "PyDESeq2>=0.4,<1",
+    "gseapy>=1.0,<2",
+]
+health = ["statsmodels>=0.13,<1", "scikit-learn>=1.2,<2"]
+social = ["statsmodels>=0.13,<1", "scikit-learn>=1.2,<2"]
+econ-eng = ["statsmodels>=0.13,<1", "scikit-learn>=1.2,<2"]
+
+[project.scripts]
+auphoria = "auphoria.cli.main:main"
+
+[project.urls]
+Homepage = "REPO_URL_PLACEHOLDER"
+Repository = "REPO_URL_PLACEHOLDER"
+Documentation = "REPO_URL_PLACEHOLDER"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"auphoria.sample_data" = ["data/*.csv"]
+"auphoria.report" = ["templates/*.j2"]
+"auphoria.advisor" = ["*.yaml"]
+"auphoria.packs" = ["*.yaml"]
+"auphoria.cli" = ["templates/**/*.tpl"]
+# Every analysis must ship its manifest.yaml (the registry requires it). The
+# editable install reads the source tree so it HIDES a missing entry here;
+# verify with `pip wheel` and a fresh-venv `auphoria demo`.
+"auphoria.analyses" = ["*/manifest.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src/auphoria/analyses", "src/auphoria/advisor"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests", "scripts"]
+# The Colab notebook is a build artifact whose embedded cells follow Colab
+# conventions; ruff targets Python source only.
+extend-exclude = ["notebooks/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+ignore = ["E501", "B008"]  # E501 line length advisory; B008: typer.Option() in defaults is the idiomatic Typer API

@@ -1,0 +1,280 @@
+# AUPHORIA adviser rules — the human-readable core of the advisor.
+#
+# Every rule maps (research question + data shape + column roles) to either a
+# recommendation ("run this") or a ruled-out analysis with a plain reason
+# ("sample too small for this test", "needs a group with exactly two
+# categories"). The engine (advisor/advisor_engine.py) evaluates these rules
+# against a DataProfile; it never hard-codes analysis-matching logic — the
+# logic lives HERE, in YAML, so a statistician can read and edit it.
+#
+# Condition keys (all optional; a rule matches when every present condition
+# passes):
+#   min_numeric       at least N numeric columns
+#   min_categorical   at least N categorical columns
+#   min_rows          at least N non-missing rows of data
+#   groups            "2" (exactly two categories in the group column),
+#                     "3plus" (three or more)
+#   paired            true: two numeric columns on the same units required
+#   min_2_numeric     at least two numeric columns (for before/after pairs)
+#   id_column         true: a unique per-subject id column is present
+#
+# `question` may be null -> the rule applies to every question (common sense
+# suggestions like "start with summary").
+
+version: 1
+
+questions:
+  - id: describe
+    label: "What do the data look like? (no hypothesis)"
+  - id: compare
+    label: "Compare groups or conditions"
+  - id: relate
+    label: "See whether variables move together (relationship)"
+  - id: predict
+    label: "Predict an outcome from other variables"
+  - id: over_time
+    label: "Change over time / time-to-event (survival)"
+  - id: reliability
+    label: "Does a scale / questionnaire measure consistently?"
+  - id: reduce
+    label: "Reduce many variables into a few"
+
+rules:
+  # ---------------------------------------------------------------- describe
+  - analysis: summary
+    question: describe
+    priority: 10
+    reason: "Start here: averages and spread for every numeric column, counts for categories, and how many values are missing."
+
+  - analysis: describe
+    question: describe
+    priority: 20
+    reason: "Get a full data-quality review (column types, missing values, outliers, duplicates) before any test."
+
+  # ------------------------------------------------------------------ compare
+  - analysis: ttest
+    question: compare
+    priority: 10
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      groups: "2"
+      min_rows: 6
+    reason: "You have a numeric outcome and two groups — this compares their averages (Welch t-test by default)."
+    not_fit: "Needs one numeric outcome column and a group column with exactly two categories."
+    small_sample: "Sample too small for a t-test (needs at least 6 non-missing rows)."
+
+  - analysis: mann-whitney
+    question: compare
+    priority: 20
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      groups: "2"
+      min_rows: 6
+    reason: "Same two-group design, but the non-parametric choice: safe when the outcome is skewed, ordinal, or has outliers."
+    not_fit: "Needs one numeric/ordinal outcome and a group column with exactly two categories."
+    small_sample: "Sample too small for a Mann-Whitney test (needs at least 6 non-missing rows)."
+
+  - analysis: ttest-paired
+    question: compare
+    priority: 30
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      id_column: true
+      min_rows: 6
+    reason: "The same units carry an id/time role and were measured twice (e.g. before vs after) — this compares the paired difference."
+    not_fit: "Needs measurements on the SAME subjects at two times: a numeric outcome, an id (or time) column, and a two-category time/group column."
+    small_sample: "Sample too small for a paired t-test (needs at least 6 complete pairs)."
+
+  - analysis: anova-oneway
+    question: compare
+    priority: 40
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      groups: "3plus"
+      min_rows: 12
+    reason: "Three or more groups and a numeric outcome — one-way ANOVA with Tukey post-hoc finds which groups differ."
+    not_fit: "Needs a numeric outcome and a group column with THREE or more categories (for 2 groups use a t-test)."
+    small_sample: "Sample too small for ANOVA (needs at least 12 non-missing rows spread over 3+ groups)."
+
+  - analysis: chi-square
+    question: compare
+    priority: 50
+    needs:
+      min_categorical: 2
+      min_rows: 10
+    reason: "Two categorical columns (counts in categories) — tests whether the pattern of counts depends on the group."
+    not_fit: "Needs TWO categorical columns (e.g. treatment × yes/no)."
+    small_sample: "Sample too small for chi-square (needs at least 10 non-missing rows; check expected cell counts in the output)."
+
+  - analysis: ancova
+    question: compare
+    priority: 60
+    needs:
+      min_numeric: 2
+      min_categorical: 1
+      groups: "2"
+      min_rows: 12
+    reason: "A numeric outcome, a group, and a numeric covariate — ANCOVA compares the groups' means while adjusting for the covariate."
+    not_fit: "Needs a numeric outcome, a group column, and at least one numeric covariate."
+    small_sample: "Sample too small for ANCOVA (needs at least 12 non-missing rows)."
+
+  - analysis: mixed-effects
+    question: compare
+    priority: 70
+    needs:
+      min_numeric: 2
+      min_categorical: 1
+      min_rows: 30
+    reason: "Numeric outcome with a grouping/id column (subjects, schools, plots) — a linear mixed-effects model accounts for the clustering."
+    not_fit: "Needs a numeric outcome, a categorical group, and a grouping/id column for the random effect."
+    small_sample: "Sample too small for a mixed-effects model (needs at least 30 rows across several clusters)."
+
+  # ------------------------------------------------------------------ relate
+  - analysis: correlation
+    question: relate
+    priority: 10
+    needs:
+      min_numeric: 2
+      min_rows: 6
+    reason: "Two numeric columns — Pearson correlation with a scatterplot and effect size."
+    not_fit: "Needs at least two numeric columns on the same rows."
+    small_sample: "Too few rows for a trustworthy correlation (needs at least 6 complete pairs)."
+
+  - analysis: spearman-correlation
+    question: relate
+    priority: 20
+    needs:
+      min_numeric: 2
+      min_rows: 6
+    reason: "Two numeric/ordinal columns and a non-linear or non-normal relationship — rank (Spearman) correlation."
+    not_fit: "Needs at least two numeric or ordinal columns on the same rows."
+    small_sample: "Too few rows for a trustworthy rank correlation (needs at least 6 complete pairs)."
+
+  - analysis: chi-square
+    question: relate
+    priority: 30
+    needs:
+      min_categorical: 2
+      min_rows: 10
+    reason: "Two categorical variables — tests whether they are associated (counts pattern depends on group)."
+    not_fit: "Needs TWO categorical columns (e.g. smoking yes/no × outcome yes/no)."
+    small_sample: "Sample too small for chi-square (needs at least 10 non-missing rows; check expected counts)."
+
+  - analysis: summary
+    question: relate
+    priority: 90
+    reason: "Always worth a look first: means, spreads and counts for the columns you want to relate."
+
+  # ---------------------------------------------------------------- predict
+  - analysis: ml-regression-eval
+    question: predict
+    priority: 10
+    needs:
+      min_numeric: 3
+      min_rows: 30
+    reason: "Several numeric columns — a machine-learning baseline (linear/CV) predicts the numeric target and reports honest train/test error."
+    not_fit: "Needs a numeric target plus at least two numeric feature columns (3+ numeric columns total)."
+    small_sample: "Too few rows for a trustworthy ML evaluation (needs at least 30; more is better)."
+
+  - analysis: ml-classification-eval
+    question: predict
+    priority: 20
+    needs:
+      min_numeric: 3
+      min_categorical: 1
+      min_rows: 30
+    reason: "Numeric features plus a categorical label — a cross-validated classification baseline with accuracy/precision/recall/F1 and ROC-AUC."
+    not_fit: "Needs numeric feature columns plus a categorical label column (3+ numeric columns total)."
+    small_sample: "Too few rows for a trustworthy classification evaluation (needs at least 30)."
+
+  - analysis: diagnostic-test
+    question: predict
+    priority: 30
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      min_rows: 20
+    reason: "A numeric test score and a binary reference standard — sensitivity, specificity, PPV/NPV and an ROC curve with AUC."
+    not_fit: "Needs a numeric test score column and a binary (yes/no) reference-standard column."
+    small_sample: "Too few rows for a stable diagnostic evaluation (needs at least 20)."
+
+  # -------------------------------------------------------------- over_time
+  - analysis: kaplan-meier
+    question: over_time
+    priority: 10
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      groups: "2"
+      min_rows: 20
+    reason: "A time-to-event column, an event indicator, and groups — Kaplan-Meier survival curves with a log-rank test."
+    not_fit: "Needs a time-to-event column, an event (0/1) column, and a group column."
+    small_sample: "Too few rows for a reliable survival curve (needs at least 20, with events in each group)."
+
+  - analysis: cox-regression
+    question: over_time
+    priority: 20
+    needs:
+      min_numeric: 2
+      min_categorical: 1
+      min_rows: 30
+    reason: "Time-to-event with covariates — Cox proportional-hazards regression gives hazard ratios with 95% confidence intervals."
+    not_fit: "Needs a time-to-event column, an event (0/1) column, and at least one covariate."
+    small_sample: "Too few rows for a stable Cox model (needs at least 30 and enough events)."
+
+  # ------------------------------------------------------------ reliability
+  - analysis: factor-analysis
+    question: reliability
+    priority: 10
+    needs:
+      min_numeric: 3
+      min_rows: 30
+    reason: "Several correlated numeric items — exploratory factor analysis finds the latent dimensions behind them."
+    not_fit: "Needs at least three correlated numeric item columns."
+    small_sample: "Too few rows for a trustworthy factor analysis (rule of thumb ~5-10 per item, 100+ preferred)."
+
+  # ----------------------------------------------------------------- reduce
+  - analysis: pca
+    question: reduce
+    priority: 10
+    needs:
+      min_numeric: 3
+      min_rows: 10
+    reason: "Many numeric columns — principal component analysis compresses them into a few combined scores and shows variance explained."
+    not_fit: "Needs at least three numeric columns (standardised first)."
+    small_sample: "Too few rows for stable components (needs at least 10)."
+
+  - analysis: factor-analysis
+    question: reduce
+    priority: 20
+    needs:
+      min_numeric: 3
+      min_rows: 30
+    reason: "Many correlated numeric items — exploratory factor analysis finds latent dimensions (use PCA for pure data reduction)."
+    not_fit: "Needs at least three correlated numeric item columns."
+    small_sample: "Too few rows for a trustworthy factor analysis (100+ preferred)."
+
+  - analysis: clustering-kmeans
+    question: reduce
+    priority: 30
+    needs:
+      min_numeric: 3
+      min_rows: 10
+    reason: "Numeric columns (scaled) — k-means groups the observations into clusters and shows silhouette/elbow guidance."
+    not_fit: "Needs at least three numeric columns (scaled to equal units)."
+    small_sample: "Too few rows for meaningful clusters (needs at least 10 per expected cluster)."
+
+  # ------------------------------------------------------- catch-all rules
+  - analysis: summary
+    question: null
+    priority: 200
+    reason: "Run the summary first whatever the question: know your averages, spread, and missing values before testing."
+
+  - analysis: describe
+    question: null
+    priority: 210
+    reason: "A full data-quality check first: types, missing values, outliers, duplicates."

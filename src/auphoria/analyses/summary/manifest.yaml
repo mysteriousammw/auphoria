@@ -1,0 +1,44 @@
+id: summary
+name: Descriptive Summary
+maturity: experimental
+levels: [beginner]
+disciplines:
+  - agriculture
+  - animal-science
+  - life-sciences
+  - health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - engineering
+  - environmental-science
+  - computer-science
+description: >
+  Summarises your data without any hypothesis test. For each numeric column it
+  reports counts, missing values, mean, median, standard deviation, quartiles
+  and range; for each categorical column it reports counts and percentages.
+  Use this first to check that your data looks sensible.
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: false
+    description: >
+      Optional. Restrict the numeric summary to this one column. If omitted,
+      all numeric columns are summarised.
+parameters: []
+outputs:
+  - summary statistics table
+  - categorical counts table
+  - histogram figure for numeric columns
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The data is already tidy, where each column is one variable and each row is one observation.
+limitations:
+  - Descriptive summaries describe only the sample; they do not generalise to a population by themselves.
+  - Statistics are computed on available (non-missing) values; missing counts are reported separately and never imputed.
+reference: >-
+    Hand-computed descriptive stats on small numeric columns
+test_data:
+  - "Synthetic data in tests/test_summary.py with hand-computed mean, median, standard deviation and quartiles for a small numeric column."

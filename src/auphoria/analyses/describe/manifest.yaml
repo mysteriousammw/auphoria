@@ -1,0 +1,44 @@
+id: describe
+name: Describe My Data
+maturity: experimental
+levels: [beginner]
+disciplines:
+  - agriculture
+  - animal-science
+  - life-sciences
+  - health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - engineering
+  - environmental-science
+  - computer-science
+  - bioinformatics
+description: >
+  The data card: a supervisor-style read of your whole data file before any
+  test. It reports how many rows/columns, what each column is (number,
+  category, date, id, text...), how much is missing, duplicate or constant
+  columns, and flags suspected outliers and suspicious values (e.g. negative
+  ages) for you to review. It never changes or removes anything.
+inputs: []
+parameters: []
+outputs:
+  - data card table (column, type, values, unique, missing, suggested role)
+  - dataset overview table (rows, columns, duplicate rows)
+  - flags list (duplicate rows, constant columns, outliers, suspicious values)
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - "The data is already tidy - each column is one variable and each row is one observation."
+limitations:
+  - Type labels and role suggestions are best-effort guesses; the interactive
+    flow asks you to confirm or correct them.
+  - Outliers and suspicious values are flagged for your review, never removed;
+    a "flag" is not proof something is wrong.
+reference: >-
+    Hand-built mixed-type frame with deliberately inserted problems
+test_data:
+  - "Synthetic data in tests/test_describe.py covering numeric, categorical,
+     binary, date, id and free-text columns plus deliberately inserted missing
+     values, a duplicate row, a constant column, an outlier and a negative age."

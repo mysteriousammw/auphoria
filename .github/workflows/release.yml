@@ -1,0 +1,105 @@
+name: Release
+
+# Builds and publishes a GitHub Release when a version tag (v0.1.0, ...) is
+# pushed or a release is triggered. Runs only after the repository is
+# published and a tag is pushed (see docs/PUBLISH_CHECKLIST.md step 10).
+#
+# The workflow:
+#   * builds the sdist + wheel (no uploads to PyPI unless enabled),
+#   * runs the tests + lint + validation + docs build on the tag,
+#   * drafts a GitHub Release with the git tag, notes from CHANGELOG.md, and
+#     the built artifacts attached.
+#
+# Publishing to PyPI is left OFF by default: AUPHORIA is meant to be installed
+# from git (pipx install git+.../@<tag>). If you later want PyPI, add the
+# trusted-publishing steps.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify-tag:
+    name: Verify tag (tests + lint + validation + docs)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: CLI smoke
+        run: |
+          auphoria --version
+          auphoria doctor
+      - name: Tests
+        run: pytest -q
+      - name: Lint
+        run: ruff check src/ tests/ scripts/
+      - name: Validation dashboard + analysis docs are current
+        run: |
+          python scripts/gen_validation_dashboard.py --check
+          python scripts/gen_analysis_docs.py --check
+      - name: Docs build without warnings
+        run: ./scripts/build_docs.sh
+
+  build:
+    name: Build sdist + wheel
+    needs: verify-tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install build backend
+        run: pip install build
+      - name: Build
+        run: python -m build --outdir dist
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  release:
+    name: Draft GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download built artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Extract tag
+        id: tag
+        run: echo "tag=${GITHUB_REF##*/}" >> "$GITHUB_OUTPUT"
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        run: |
+          python - <<'EOF'
+          import re
+          from pathlib import Path
+          text = Path("CHANGELOG.md").read_text(encoding="utf-8")
+          # Take the section after the first '## [version]' heading until the next one.
+          m = re.search(r"## \[([^\]]+)\].*?(?=\n## |\Z)", text, re.S)
+          body = m.group(0).strip() if m else "See CHANGELOG.md."
+          Path("notes.md").write_text(body, encoding="utf-8")
+          EOF
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: AUPHORIA ${{ steps.tag.outputs.tag }}
+          body_path: notes.md
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+          draft: true

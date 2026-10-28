@@ -1,0 +1,74 @@
+id: anova-oneway
+name: One-Way ANOVA
+maturity: experimental
+levels: [beginner, intermediate]
+disciplines:
+  - agriculture
+  - animal-science
+  - life-sciences
+  - health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - engineering
+  - environmental-science
+  - computer-science
+description: >
+  Tests whether three or more independent groups differ in their average
+  numeric outcome (for example, plant height across three fertiliser doses)
+  with a one-way analysis of variance, at a single significance level, and
+  follows a significant result with a Tukey post-hoc comparison so you can
+  see which groups actually differ.
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric outcome you want to compare (e.g. height_cm).
+    constraints: must be a numeric column
+  - name: group
+    kind: categorical-column
+    required: true
+    description: The grouping column with three or more categories (e.g. treatment).
+    constraints: must have three or more categories
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+outputs:
+  - group statistics table (n, mean, standard deviation per group)
+  - ANOVA table (sum of squares, degrees of freedom, mean square, F, p)
+  - effect size table (eta-squared)
+  - Tukey post-hoc table (pairwise mean differences, q, p)
+  - box-and-whisker figure comparing all groups
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The outcome is measured on a continuous (numeric) scale.
+  - The groups are independent (one observation does not belong to both).
+  - The outcome is roughly normally distributed within each group (checked
+    with Shapiro-Wilk; ANOVA is fairly robust for larger samples).
+  - The groups have equal variances (checked with Levene's test); if they
+    clearly do not, prefer Kruskal-Wallis.
+  - Each group has at least two non-missing observations.
+limitations:
+  - A significant F only says that at least one group differs from the others;
+    it does not say which groups differ or by how much — use the Tukey post-hoc
+    table for that.
+  - A significant result does not prove the group caused the difference;
+    ANOVA is not causation.
+  - Missing values in the two chosen columns are excluded (and reported), not
+    imputed.
+  - Very non-normal or very unequal-variance data should use Kruskal-Wallis
+    instead; repeated measurements on the same subjects need a different
+    design (repeated-measures ANOVA or Friedman).
+reference: >-
+    Three groups, means 4/10/16; cross-checked vs scipy.stats.f_oneway + studentized_range
+test_data:
+  - "Deterministic synthetic data in tests/test_anova_oneway.py, with
+     hand-calculated SS, F, p and eta-squared compared against SciPy's
+     reference implementation (f_oneway, levene, shapiro,
+     studentized_range)."

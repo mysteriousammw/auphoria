@@ -1,0 +1,47 @@
+# CITATION.cff is a TEMPLATE. Fill in real values when the repository is
+# published (see docs/PUBLISH_CHECKLIST.md step 9). Leave the repository
+# address as REPO_URL_PLACEHOLDER - scripts/set_repo_url.py fills it in.
+#
+# Authors are people only (no AI tools are authors). Abdul Momin Muhammad
+# Wisal is the project creator and lead. The other four people are kept in a
+# commented block until each of their [CONFIRM ROLE] markers is replaced with
+# the approved role/descriptor - do not uncomment them before then.
+#
+# version, doi and repository-code are left as placeholders until the first
+# release is tagged and (optionally) a DOI is minted.
+cff-version: 1.2.0
+message: "If you use AUPHORIA in your research or coursework, please cite it as follows."
+title: "AUPHORIA"
+abstract: "AUPHORIA is an open-source, beginner-friendly data analysis tool for university students who cannot code. It runs offline on a student's own computer or in Google Colab, offers a menu of analyses that fit their data, and produces reproducible reports."
+authors:
+  - family-names: "Wisal"
+    given-names: "Abdul Momin Muhammad"
+    email: "ammw@aup.edu.pk"
+# ---- Uncomment ONE entry at a time only after replacing each [CONFIRM ROLE]
+# ---- with the approved role/descriptor (see CONTRIBUTORS.md).
+#  - family-names: "Haq"
+#    given-names: "Ihtesham Ul"
+#    # [CONFIRM ROLE] Dr. Ihtesham Ul Haq - originator of the idea; reviewed and supervised.
+#  - family-names: "Khan"
+#    given-names: "Sher Hayat"
+#    # [CONFIRM ROLE] Dr. Sher Hayat Khan - reviewed and supervised.
+#  - family-names: "Moheb"
+#    given-names: "Ahmad Farid"
+#    # [CONFIRM ROLE] Ahmad Farid Moheb - MPhil research student; helped refine the idea and tested it; research focus: [CONFIRM].
+#  - family-names: "Anayat"
+#    given-names: "Mudassir"
+#    # [CONFIRM ROLE] Mudassir Anayat - MPhil research student (epidemiology of Theileria annulata infection in dairy cattle); helped refine the idea and tested it; suggested testing focus (pending approval): prevalence and risk-factor analyses [CONFIRM].
+keywords:
+  - statistics
+  - data analysis
+  - education
+  - research methods
+  - reproducible research
+date-released: "2026-10-29"
+version: "0.1.0"
+# Licence is not yet chosen (see docs/LICENCE_DECISION.md). Set this once the
+# maintainer picks one (e.g. "MIT", "BSD-3-Clause", "Apache-2.0").
+license: "To-be-decided"
+url: "REPO_URL_PLACEHOLDER"
+repository-code: "REPO_URL_PLACEHOLDER"
+type: software

@@ -1,0 +1,70 @@
+id: chi-square
+name: Chi-Square Test of Independence
+maturity: experimental
+levels: [beginner, intermediate]
+disciplines:
+  - agriculture
+  - animal-science
+  - life-sciences
+  - health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - engineering
+  - environmental-science
+  - computer-science
+description: >
+  Tests whether two categorical variables are associated — whether the
+  pattern of counts in one variable differs across the categories of the
+  other (for example, treatment x outcome category).
+inputs:
+  - name: var1
+    kind: categorical-column
+    required: true
+    description: First categorical variable (e.g. treatment group).
+    constraints: must be a categorical column
+  - name: var2
+    kind: categorical-column
+    required: true
+    description: Second categorical variable (e.g. outcome category).
+    constraints: must be a categorical column
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+outputs:
+  - contingency table with counts and a row-total column
+  - row percentage table (percentages within each row, with totals)
+  - chi-square test result table (chi-square, df, p-value, Cramer's V)
+  - stacked bar figure of proportions within each var1 category
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The categories of each variable are mutually exclusive — every
+    observation belongs to exactly one category of each variable.
+  - The expected cell count is at least 5 in every cell of the table; when
+    any expected count is 5 or fewer the result is flagged as approximate and
+    Fisher's exact test is recommended (for 2x2 tables).
+  - Observations are independent of each other (the same subject is not
+    measured twice across the rows of the table).
+limitations:
+  - A significant p-value means the pattern of counts differs between the
+    groups, NOT that one variable caused the other; association is not
+    causation.
+  - Chi-square does not say which category drives the association, or how
+    large the effect is in absolute terms — Cramer's V only expresses
+    strength relative to the strongest possible association.
+  - Missing values in the two chosen columns are counted, excluded, and
+    reported; they are never imputed.
+reference: >-
+    2x2 table [[30,10],[10,30]]; cross-checked vs scipy.stats.chi2_contingency
+test_data:
+  - "Deterministic synthetic data in tests/test_chi_square.py: a 2x2 table
+     with counts [[30,10],[10,30]] (n = 80, all expected counts = 20), with
+     chi-square and p compared against SciPy's reference implementation and
+     Cramer's V hand-checked as sqrt(chi2 / 80), plus a small-expected-count
+     case, a missing-data case, and a refusal case."

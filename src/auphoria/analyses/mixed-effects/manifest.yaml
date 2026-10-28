@@ -1,0 +1,75 @@
+id: mixed-effects
+name: Linear Mixed-Effects Model
+maturity: experimental
+levels: [advanced]
+disciplines:
+  - agriculture
+  - animal-science
+  - life-sciences
+  - health
+  - psychology
+  - education
+  - environmental-science
+description: >
+  Models a numeric outcome with fixed effects (a categorical predictor) plus a
+  random intercept per grouping unit (subject, school, plot, site), so it can
+  account for clustered, nested or repeated data where observations within the
+  same group are not independent. Reports the fixed-effect coefficients with
+  confidence intervals and p-values, the random-effect variances and the
+  intraclass correlation (ICC) — the fraction of total outcome variation that
+  sits between groups. Built on statsmodels MixedLM.
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric outcome you want to model (e.g. score).
+    constraints: must be a numeric column
+  - name: group
+    kind: categorical-column
+    required: true
+    description: The fixed-effect categorical predictor with two or more categories (e.g. treatment).
+    constraints: must have two or more categories
+  - name: cluster
+    kind: categorical-column
+    required: true
+    description: "The random grouping id column whose units the outcome is clustered under (e.g. classroom, plot, site, subject id)."
+    constraints: must have two or more distinct units, each with two or more observations
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level for the fixed-effect p-values and the confidence intervals.
+outputs:
+  - fixed-effect coefficients table (estimate, standard error, 95% CI, z, p per level)
+  - random-effect variance table (intercept variance, residual variance)
+  - intraclass correlation (ICC = intercept variance / total variance)
+  - box-and-whisker figure by group (and by cluster)
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The outcome is measured on a continuous (numeric) scale.
+  - "Residuals are approximately normally distributed after fitting."
+  - "Random intercepts are approximately normally distributed across the grouping units."
+  - "The random structure is appropriate for the design (a random intercept per cluster captures the clustering; nested/repeated factors may need a richer structure, which this analysis does not fit)."
+  - "Within-cluster responses are exchangeable given the fixed effects and the random intercept (i.e. no unmodeled order/level-1 autocorrelation)."
+  - "There is no severe imbalance: every cluster must have at least two observations."
+  - "Minimum sample size: a linear mixed model needs a reasonable number of clusters and observations per cluster. As a rough rule of thumb for reliable variance/ICC estimates, aim for at least 10 clusters (ideally 20+) and at least 2 (ideally 5+) observations per cluster, and a total sample size of roughly 30 or more. Fewer than 5 clusters or a total n below ~30 produces very uncertain variance estimates and flags a 'needs expert review' notice rather than refusing."
+limitations:
+  - "A mixed-effects model cannot prove that the fixed-effect predictor caused the difference in the outcome; it only models association."
+  - "The random intercept assumes exchangeability of within-cluster residuals; if observations within a cluster are ordered over time you may need a temporal/autocorrelation structure this analysis does not fit."
+  - "This analysis fits a random intercept only — it does not fit random slopes, so it cannot model level-1 (within-cluster) effects that vary by cluster, and you should not interpret a level-1 association as a level-2 (between-cluster) effect (ecological fallacy)."
+  - "The variance components (and therefore ICC) are imprecise with few clusters; treat small-number-of-clusters results as preliminary."
+  - "Missing values in the chosen columns are excluded listwise (and reported), never imputed."
+pack:
+  - agri-animal
+  - health
+  - life-science
+  - social
+requires:
+  - statsmodels
+reference: >-
+    Synthetic nested data; cross-checked vs statsmodels MixedLM (REML)
+test_data:
+  - "Synthetic deterministic data in tests/test_mixed_effects.py with hand-computable group offsets; coefficients, variance components and ICC are compared against statsmodels MixedLM as the documented reference implementation."

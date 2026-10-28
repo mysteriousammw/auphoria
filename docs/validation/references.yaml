@@ -1,0 +1,155 @@
+# AUPHORIA reference fixtures
+#
+# For every shipped analysis: the independent reference it is cross-checked
+# against and the exact expected values. These are the values the analysis's
+# own tests assert (see src/auphoria/analyses/<id>/tests/). They come from
+# hand-computed textbook examples and/or the reference implementation
+# (SciPy, statsmodels, scikit-learn — the permissive, independently-written
+# libraries the project uses). R is intentionally NOT a runtime dependency,
+# so independent references are published/worked examples + second-library
+# reproduction rather than an R call.
+#
+# Structure per analysis:
+#   source:       where the reference values come from
+#   how_produced: how they were computed / documented
+#   values:       {metric_name: {value, tolerance, unit?}} — the ground truth
+#
+# Tolerances are absolute unless noted.
+
+version: 1
+
+analyses:
+
+  ttest:
+    source: "Hand-computed textbook example (independent-samples t); cross-checked vs scipy.stats.ttest_ind"
+    how_produced: "Two groups with hand-chosen means; t, df, p computed by hand in the test docstring and matched to scipy."
+    values:
+      t: {value: 5.1962, tolerance: 0.01}
+      df: {value: 6, tolerance: 0.0}
+      mean_A: {value: 4.0, tolerance: 1e-4}
+      mean_B: {value: 10.0, tolerance: 1e-4}
+
+  ttest-paired:
+    source: "Hand-computed paired example; cross-checked vs scipy.stats.ttest_rel"
+    how_produced: "Paired differences built in the test; t, d_z and 95% CI computed by hand and matched to scipy."
+    values:
+      t: {value: 7.4833, tolerance: 1e-4}
+      d_z: {value: 3.3466, tolerance: 0.01}
+      lower_ci: {value: 2.8 - 2.7764 * 0.37417, tolerance: 1e-3}
+
+  correlation:
+    source: "Hand-computed Pearson r on x=[1..5]; cross-checked vs scipy.stats.pearsonr"
+    how_produced: "y chosen linear in x so r → 1; a second set gives a known r; matched to scipy."
+    values:
+      r_perfect: {value: 1.0, tolerance: 1e-6}
+
+  spearman-correlation:
+    source: "Hand-computed rho = 0.5 (rank-d^2 sum = 10) for x=[1..5], y=[3,1,4,2,5]; cross-checked vs scipy.stats.spearmanr"
+    how_produced: "Rank correlation computed by hand from ranked differences, matched to scipy (1e-6)."
+    values:
+      rho: {value: 0.5, tolerance: 1e-6}
+
+  chi-square:
+    source: "2x2 table [[30,10],[10,30]]; cross-checked vs scipy.stats.chi2_contingency"
+    how_produced: "chi2, df, p and Cramer's V computed by hand and matched to scipy (1e-6)."
+    values:
+      chi2: {value: 18.05, tolerance: 1e-3}
+      df: {value: 1, tolerance: 0.0}
+      cramers_v: {value: 0.475, tolerance: 1e-3}
+
+  anova-oneway:
+    source: "Three groups, means 4/10/16; cross-checked vs scipy.stats.f_oneway + studentized_range"
+    how_produced: "SS_between, SS_within, F, eta-squared and Tukey q computed by hand and matched to scipy (1e-6)."
+    values:
+      ss_between: {value: 288, tolerance: 1e-6}
+      ss_within: {value: 24, tolerance: 1e-6}
+      F: {value: 54.0, tolerance: 1e-6}
+      eta_squared: {value: 0.9231, tolerance: 1e-4}
+
+  mann-whitney:
+    source: "A=[1,2,3], B=[4,5,6,7]; cross-checked vs scipy.stats.mannwhitneyu"
+    how_produced: "Rank-sum U and exact two-sided p = 2/35 = 0.05714 computed by hand and matched to scipy."
+    values:
+      U: {value: 0.0, tolerance: 1e-6}
+      p: {value: 0.05714, tolerance: 1e-4}
+      rank_biserial_r: {value: 1.0, tolerance: 1e-4}
+
+  summary:
+    source: "Hand-computed descriptive stats on small numeric columns"
+    how_produced: "Mean, median, SD, quartiles and IQR computed by hand in the test and asserted per column."
+    values: {}
+
+  describe:
+    source: "Hand-built mixed-type frame with deliberately inserted problems"
+    how_produced: "Missing values, duplicates, a constant column, an outlier and a negative age are each caught, reported, and neither changed nor removed (asserted per flag)."
+    values: {}
+
+  ancova:
+    source: "Tiny orthogonal 2-group dataset; cross-checked vs statsmodels.formula.api.ols"
+    how_produced: "Covariate slope 3/4 = 0.75, group offset 10/3, group F = 120 on df(1,3), partial eta-squared 40/41 — matched to statsmodels OLS."
+    values:
+      covariate_slope: {value: 0.75, tolerance: 1e-3}
+      group_F: {value: 120.0, tolerance: 1e-2}
+      partial_eta_sq: {value: 0.97561, tolerance: 1e-4}
+
+  mixed-effects:
+    source: "Synthetic nested data; cross-checked vs statsmodels MixedLM (REML)"
+    how_produced: "Fixed-effect coefficients, variance components and ICC computed and matched to statsmodels MixedLM within 1e-4."
+    values:
+      group_B_offset: {value: 3.0, tolerance: 1e-4}
+
+  pca:
+    source: "Perfect-correlation 2-column data; cross-checked vs sklearn.decomposition.PCA"
+    how_produced: "Hand-computed: PC1 explains ~100% variance with loading 1/sqrt(2) per column; matched to sklearn."
+    values:
+      pc1_loading: {value: 0.7071068, tolerance: 1e-4}
+      pc1_variance_ratio: {value: 1.0, tolerance: 1e-4}
+
+  factor-analysis:
+    source: "Synthetic two-factor data; cross-checked vs sklearn.decomposition.FactorAnalysis + textbook Bartlett/KMO"
+    how_produced: "Bartlett chi2 = 3498.26 (df=15), KMO = 0.784; loadings matched to sklearn (1e-3, sign-aligned); two-factor structure recovered."
+    values:
+      bartlett_chi2: {value: 3498.26, tolerance: 0.05}
+      kmo: {value: 0.784, tolerance: 0.01}
+
+  clustering-kmeans:
+    source: "Three well-separated blobs; cross-checked vs sklearn.cluster.KMeans + silhouette_score"
+    how_produced: "Cluster labels (0 mismatches after relabel), centres and silhouette 0.9317 matched to sklearn (1e-4)."
+    values:
+      silhouette: {value: 0.9317, tolerance: 1e-4}
+      label_mismatches: {value: 0, tolerance: 0.0}
+
+  kaplan-meier:
+    source: "Hand-computed survival curve for times [2,3,5,6], events [1,1,0,1]; cross-checked vs statsmodels SurvfuncRight + hand log-rank"
+    how_produced: "S(t) = [0.75, 0.50, 0.00] at [2,3,6]; log-rank chi2 = 147/51 = 2.882, p = 0.08956 — matched to statsmodels + scipy."
+    values:
+      survival_2: {value: 0.75, tolerance: 1e-4}
+      survival_3: {value: 0.50, tolerance: 1e-4}
+      logrank_chi2: {value: 2.8824, tolerance: 1e-3}
+      logrank_p: {value: 0.08956, tolerance: 1e-3}
+
+  cox-regression:
+    source: "Synthetic survival data; cross-checked vs statsmodels.duration.hazard_regression.PHReg"
+    how_produced: "Hazard ratios (exp(coef)), 95% CI and p matched to statsmodels PHReg within 1e-3 (asserted in test)."
+    values: {}
+
+  diagnostic-test:
+    source: "Tiny 10-row set (scores 1-10 vs binary reference); cross-checked vs sklearn.metrics"
+    how_produced: "Youden threshold, sensitivity/specificity = 1.0, AUC = 1.0, confusion matrix 5/0/0/5 — matched to sklearn (1e-4)."
+    values:
+      sensitivity: {value: 1.0, tolerance: 1e-4}
+      specificity: {value: 1.0, tolerance: 1e-4}
+      auc: {value: 1.0, tolerance: 1e-4}
+
+  ml-classification-eval:
+    source: "Synthetic features; cross-checked vs scikit-learn (LogisticRegression, same split/seed)"
+    how_produced: "Test accuracy, precision/recall/F1, ROC-AUC and confusion matrix matched to sklearn (1e-4) with random_state=1 (asserted in test)."
+    values: {}
+
+  ml-regression-eval:
+    source: "Synthetic features; cross-checked vs scikit-learn LinearRegression (same split/seed)"
+    how_produced: "RMSE 0.45065, MAE 0.38224, R2 0.96328 matched to sklearn (1e-3/1e-4)."
+    values:
+      rmse: {value: 0.45065, tolerance: 1e-3}
+      mae: {value: 0.38224, tolerance: 1e-4}
+      r2: {value: 0.96328, tolerance: 1e-4}

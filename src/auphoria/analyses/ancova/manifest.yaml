@@ -1,0 +1,96 @@
+id: ancova
+name: ANCOVA (Analysis of Covariance)
+maturity: experimental
+levels: [intermediate, advanced]
+disciplines:
+  - agriculture
+  - health
+  - life-sciences
+  - psychology
+  - education
+description: >
+  Tests whether two or more independent groups differ on a numeric outcome
+  after statistically adjusting for one numeric covariate (for example, final
+  exam score across two teaching methods while adjusting for prior aptitude,
+  or plant yield across two fertilisers while adjusting for initial plant
+  size). ANCOVA is fitted with ordinary least squares (statsmodels) using
+  outcome ~ covariate + group. It reports covariate-adjusted group means, a
+  covariate-adjusted F test for the group effect, the covariate coefficient
+  and its p-value, and a partial eta-squared effect size, plus a figure of
+  the outcome plotted against the covariate with the parallel fitted lines.
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric outcome you want to compare (e.g. final_score).
+    constraints: must be a numeric column
+  - name: group
+    kind: categorical-column
+    required: true
+    description: The grouping column with two or more categories (e.g. teaching_method).
+    constraints: must be a categorical column with two or more categories
+  - name: covariate
+    kind: numeric-column
+    required: true
+    description: The single numeric covariate to adjust for (e.g. pretest_score).
+    constraints: must be a numeric column
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+outputs:
+  - adjusted group means (at the covariate mean) plus raw means and covariate means
+  - ANCOVA table (sum of squares, degrees of freedom, mean square, F, p for the group and covariate effects)
+  - effect size table (partial eta-squared for the group, covariate slope coefficient)
+  - scatter figure of outcome vs covariate coloured by group with parallel fitted lines
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The outcome is a numeric (continuous) variable and the relationship between
+    the covariate and the outcome is approximately linear.
+  - Homogeneity of regression slopes (the slope of the outcome on the covariate
+    is the same in every group; checked with the group-by-covariate
+    interaction). If it is violated the covariate-adjusted comparison is hard
+    to interpret.
+  - The residuals are approximately normally distributed (checked with
+    Shapiro-Wilk).
+  - Equal outcome variance across groups (ANCOVA is reasonably robust to mild
+    violations for larger samples).
+  - The groups are independent, each has at least two observations, and the
+    covariate is measured before (or independently of) the treatment so it is
+    not itself affected by the group.
+  - Minimum sample size. ANCOVA needs enough rows to estimate both the
+    covariate slope and the group differences. The tool recommends at least
+    about 12 complete rows in total and about 5 per group. Below that the
+    analysis is flagged for expert review and the results should be treated as
+    preliminary.
+limitations:
+  - ANCOVA adjusts for only the one covariate you provide. Unmeasured or poorly
+    measured confounders can still explain a group difference, so a significant
+    result does not prove causation.
+  - If the covariate is measured after the treatment, or is itself affected by
+    the group, the adjustment is misleading.
+  - Non-parallel slopes mean the group effect depends on the covariate value, so
+    a single adjusted comparison is hard to interpret.
+  - Missing values in the three chosen columns are excluded (listwise, and
+    reported) but never imputed; heavy missingness can bias the result.
+  - This is an advanced analysis carried at experimental maturity. Outside the
+    intended conditions (small total n, very small groups, non-normal
+    residuals) it emits a prominent requirement for expert review.
+pack:
+  - agri-animal
+  - health
+  - social
+requires:
+  - statsmodels
+reference: >-
+    Tiny orthogonal 2-group dataset; cross-checked vs statsmodels.formula.api.ols
+test_data:
+  - "Deterministic synthetic data in tests/test_ancova.py: a two-group,
+    6-row design with a trivially hand-computable fit (covariate coefficient =
+    0.75, group-B offset = 10/3, partial F for the group effect = 120 on
+    df(1, 3)) compared against statsmodels OLS as the reference library; plus a
+    larger synthetic dataset for the normal-case agreement checks."

@@ -1,0 +1,63 @@
+# AUPHORIA discipline packs.
+#
+# Each pack is an OPTIONAL install (a pyproject "extra"). The core install
+# stays light; a user installs the pack(s) they need. `deps` are the heavy
+# packages that pack's analyses require and that the extra installs. The
+# install commands use the literal REPO_URL_PLACEHOLDER, substituted after
+# upload by scripts/set_repo_url.py.
+#
+# `analyses` is informational (which analyses ship under this pack); the
+# authoritative mapping lives in catalog/analyses.yaml (the `pack` field) and
+# each analysis's own manifest (`pack` + `requires`).
+
+version: 1
+
+packs:
+  - id: agri-animal
+    name: Agriculture & Animal Science
+    description: >
+      Classical experimental designs (CRD, RCBD, Latin square, split-plot,
+      factorial), mean separation (Tukey, LSD, Duncan), heritability and
+      variance components, growth curves, and feed-trial designs.
+    deps:
+      - statsmodels>=0.13,<1
+      - scikit-learn>=1.2,<2
+
+  - id: life-science
+    name: Life Science
+    description: >
+      Dose-response, qPCR relative quantification, enzyme kinetics, and
+      RNA-seq differential expression from a counts table with enrichment,
+      with strong design checks and heavy-data warnings.
+    deps:
+      - statsmodels>=0.13,<1
+      - scikit-learn>=1.2,<2
+      - PyDESeq2>=0.4,<1
+      - gseapy>=1.0,<2
+
+  - id: health
+    name: Health & Clinical
+    description: >
+      2x2 epidemiology tables (risk and odds ratios), diagnostic accuracy,
+      meta-analysis, and Kaplan-Meier survival analysis.
+    deps:
+      - statsmodels>=0.13,<1
+      - scikit-learn>=1.2,<2
+
+  - id: social
+    name: Social & Behavioural Sciences
+    description: >
+      Likert scale handling, confirmatory factor analysis, structural
+      equation basics, and inter-rater agreement.
+    deps:
+      - statsmodels>=0.13,<1
+      - scikit-learn>=1.2,<2
+
+  - id: econ-eng
+    name: Economics & Engineering
+    description: >
+      Regression with robust errors, panel data, instrumental variables,
+      curve fitting, and error propagation.
+    deps:
+      - statsmodels>=0.13,<1
+      - scikit-learn>=1.2,<2

@@ -1,0 +1,109 @@
+site_name: AUPHORIA
+site_description: >-
+  AUPHORIA — beginner-friendly, offline data analysis for university students
+  who cannot code. Runs on your computer or in Google Colab, with no accounts
+  and no uploads.
+# TODO-VERIFY: `site_url` / `repo_url` use a placeholder address until the
+# repository is published (PUBLISH_CHECKLIST.md step 3 runs set_repo_url.py).
+# The build must succeed with them in place; keep them parseable by mkdocs by
+# using a placeholder GitHub URL that set_repo_url.py will substitute.
+site_url: https://github.com/REPO_URL_PLACEHOLDER
+repo_url: https://github.com/REPO_URL_PLACEHOLDER
+edit_uri: ""
+
+# Docs live in docs_site/ (authored pages + generated analyses/) to keep the
+# root docs/ folder free for the project's own development documentation.
+docs_dir: docs_site
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.indexes
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - include-markdown
+
+copyright: >
+  AUPHORIA is free, open-source software for teaching and research guidance.
+  It does not certify your science — see the responsible-use page.
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/REPO_URL_PLACEHOLDER
+
+# TODO-VERIFY: every `site_url` / `repo_url` / social link uses
+# REPO_URL_PLACEHOLDER until the repository is published (PUBLISH_CHECKLIST.md
+# step 3 runs scripts/set_repo_url.py). The build passes without a real URL.
+
+nav:
+  - Home: index.md
+  - Quickstart (15 min): quickstart.md
+  - Which analysis?: choose.md
+  - Analyses:
+      - analyses/index.md
+      - analyses/ttest.md
+      - analyses/ttest-paired.md
+      - analyses/mann-whitney.md
+      - analyses/correlation.md
+      - analyses/spearman-correlation.md
+      - analyses/chi-square.md
+      - analyses/anova-oneway.md
+      - analyses/ancova.md
+      - analyses/mixed-effects.md
+      - analyses/summary.md
+      - analyses/describe.md
+      - analyses/pca.md
+      - analyses/factor-analysis.md
+      - analyses/clustering-kmeans.md
+      - analyses/kaplan-meier.md
+      - analyses/cox-regression.md
+      - analyses/diagnostic-test.md
+      - analyses/ml-classification-eval.md
+      - analyses/ml-regression-eval.md
+  - Gallery: gallery.md
+  - Troubleshooting: troubleshooting.md
+  - FAQ: faq.md
+  - Known issues: known-issues.md
+  - Responsible use: responsible-use.md
+  - Discipline packs: DISCIPLINE_PACKS.md
+  - Validation: validation.md
+  - Decision guide: research/decision-guide.md

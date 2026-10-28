@@ -1,0 +1,5 @@
+Column,Type,Values,Unique,Missing,Missing %,Suggested role
+treatment,binary,30,2,0,0.0,group
+height_cm,numeric,30,27,0,0.0,outcome
+weight_g,numeric,27,21,3,10.0,weight
+light_hours,ordinal,30,7,0,0.0,group

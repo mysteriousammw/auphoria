@@ -1,0 +1,76 @@
+id: ttest
+name: Independent-Samples t-Test
+maturity: experimental
+levels: [beginner, intermediate]
+disciplines:
+  - agriculture
+  - animal-science
+  - life-sciences
+  - health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - engineering
+  - environmental-science
+  - computer-science
+description: >
+  Compares the average of a numeric outcome between two independent groups
+  (for example, plant height between a treatment and a control) and reports
+  the difference, the p-value, and an effect size (Cohen's d).
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric outcome you want to compare (e.g. height_cm).
+    constraints: must be a numeric column
+  - name: group
+    kind: categorical-column
+    required: true
+    description: The grouping column with exactly two categories (e.g. treatment).
+    constraints: must have exactly two categories
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+  - name: equal_var
+    type: boolean
+    default: false
+    description: >
+      Use the classic pooled-variance test instead of Welch's. Defaults to
+      false because Welch works whether or not the two groups have equal
+      spread, and is the recommended modern choice.
+  - name: tail
+    type: choice
+    default: two-sided
+    choices: [two-sided, greater, less]
+    description: Direction of the test.
+outputs:
+  - group statistics table (n, mean, standard deviation per group)
+  - t-test result table (t, degrees of freedom, p-value, mean difference, Cohen's d)
+  - box-and-whisker figure comparing the two groups
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The outcome is measured on a continuous (numeric) scale.
+  - The two groups are independent (one observation does not belong to both).
+  - Each group has at least two non-missing observations.
+  - For small samples, the outcome should be roughly normally distributed
+    within each group; if it is very skewed, results are approximate.
+  - Welch's variant does not assume equal variances; the pooled variant does.
+limitations:
+  - Only two groups can be compared. For three or more groups use a one-way
+    comparison (planned analysis).
+  - A significant p-value does not prove the difference is caused by the
+    group; correlation is not causation.
+  - Missing values in the two chosen columns are excluded (and reported), not
+    imputed.
+reference: >-
+    Hand-computed textbook example (independent-samples t); cross-checked vs scipy.stats.ttest_ind
+test_data:
+  - "Deterministic synthetic data in tests/test_ttest.py, with hand-calculated
+     t, df and p compared against SciPy's reference implementation and
+     textbook values (Welch and pooled variants)."

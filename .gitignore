@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editable installs / metadata
+*.egg-link
+pip-wheel-metadata/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# AUPHORIA generated output (never commit a user's results)
+AUPHORIA_results/
+
+# Generated docs build output + logs
+site/
+*.log
+.ipynb_checkpoints/
+
+# Local editor/IDE
+.idea/
+.vscode/

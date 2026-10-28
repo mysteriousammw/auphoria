@@ -1,0 +1,1094 @@
+catalogue_version: 2
+analysis_packs:
+  core: Works in every discipline; ship first.
+  agri-animal: Agriculture, animal science, agronomy, veterinary.
+  life-science: Biology, biotechnology, ecology, bioinformatics-leaning biology.
+  health: Medicine, public health, clinical, nursing.
+  social: Psychology, social sciences, education, surveys, psychometrics.
+  econ-eng: Economics, business, engineering, physics, applied stats.
+  ml: Computer science, machine learning, data science.
+  bioinformatics: Genomics, transcriptomics, high-throughput biology.
+level_notes:
+  BS: Final-year project / undergraduate dissertation. Bivariate tests and simple
+    regression.
+  MPhil: MPhil / MS theses. Multivariable models, ANOVA, non-parametrics.
+  PhD: 'Doctoral theses. Advanced: survival, mixed models, SEM, ML, longitudinal.'
+analyses:
+- id: summary
+  name: Descriptive Summary
+  plain_english_question: What do my data look like overall (averages, spread, counts,
+    missing values)?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - agriculture
+  - animal-science
+  - biology
+  - biotechnology
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - business
+  - engineering
+  - physics
+  - environmental-science
+  - computer-science
+  - bioinformatics
+  design: any
+  data_requirements: One or more columns; any variable type (numeric, categorical,
+    date, text).
+  assumptions_to_check: None (descriptive only). Inspect for typos, impossible values,
+    and units before any test.
+  alternatives_when_assumptions_fail: Not applicable; this is the 'look first' step
+    everyone should run.
+  python_library_and_function: 'pandas: Series.mean/.median/.std/.quantile; value_counts'
+  outputs: Table of n, missing, mean, median, SD, quartiles, range per numeric column;
+    category counts & percentages; histograms.
+  common_mistakes: Reporting a mean for highly skewed data; ignoring missing-value
+    counts; trusting the mean when extreme outliers exist (report median/IQR too).
+  priority: P1
+  pack:
+  - core
+  sources:
+  - https://about.illinoisstate.edu/jhkahn/apastats/
+  - https://guides.library.illinois.edu/spss/statistics_tests
+- id: describe
+  name: Describe My Data
+  plain_english_question: What is actually in my data file (types, missing values,
+    duplicates, outliers, suspicious values) before I test anything?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - agriculture
+  - animal-science
+  - biology
+  - biotechnology
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - business
+  - engineering
+  - physics
+  - environmental-science
+  - computer-science
+  - bioinformatics
+  design: any
+  data_requirements: A loaded data frame; no columns required. Works on any mix of
+    numeric/categorical/date/text columns.
+  assumptions_to_check: None - this is purely descriptive quality-check; nothing is
+    tested or changed.
+  alternatives_when_assumptions_fail: Not applicable; run `summary` for numeric statistics
+    once the data look clean.
+  python_library_and_function: 'auphoria.core.data_card: profile_data_card (also uses
+    pandas duplicates / IQR heuristics)'
+  outputs: Data-card table (column, type, values, unique, missing, suggested role);
+    dataset overview; PASS/WARN verdicts; flags for duplicates/constant columns/outliers/suspicious
+    values.
+  common_mistakes: Trusting an outlier flag as 'proof' it is wrong; forgetting that
+    constant columns are useless predictors; ignoring duplicate rows that double-weight
+    results.
+  priority: P1
+  pack:
+  - core
+  sources:
+  - https://about.illinoisstate.edu/jhkahn/apastats/
+  - https://guides.library.illinois.edu/spss/statistics_tests
+- id: ttest
+  name: Independent-Samples t-Test
+  plain_english_question: Do two independent groups differ in their average value
+    of a numeric variable?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - agriculture
+  - animal-science
+  - biology
+  - biotechnology
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - business
+  - engineering
+  - physics
+  - environmental-science
+  - computer-science
+  design: independent groups
+  data_requirements: Numeric outcome + a grouping column with exactly two categories
+    (the two groups).
+  assumptions_to_check: Outcome roughly normal in each group (for small samples);
+    groups independent. Welch variant does not need equal variances.
+  alternatives_when_assumptions_fail: Mann-Whitney U when normality is doubtful; if
+    >2 groups use one-way ANOVA (then Kruskal-Wallis).
+  python_library_and_function: scipy.stats.ttest_ind (Welch default); pingouin.ttest
+    for effect size
+  outputs: Group n/mean/SD, t, df, p, mean difference, Cohen's d, boxplot-by-group.
+  common_mistakes: Using a paired test on independent data; ignoring unequal variances;
+    reporting only p and not the effect size/difference; treating significance as
+    importance.
+  priority: P1
+  pack:
+  - core
+  sources:
+  - https://stats.oarc.ucla.edu/spss/whatstat/
+  - https://www.pearson.com/en-us/subject-catalog/p/biostatistics-for-the-biological-and-health-sciences/P200000007576
+- id: ttest-paired
+  name: Paired-Samples t-Test
+  plain_english_question: Do measurements taken on the same subjects (before vs after)
+    differ on average?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - biology
+  - engineering
+  - agriculture
+  - animal-science
+  design: paired / repeated (2 time points)
+  data_requirements: Two numeric columns recorded on the same units (e.g. pre-test
+    and post-test), or one outcome + a subject id and a 2-level time column.
+  assumptions_to_check: The pair differences are approximately normal; pairs genuinely
+    paired (not just two columns merged).
+  alternatives_when_assumptions_fail: Wilcoxon signed-rank test on the differences;
+    if >2 time points use repeated-measures ANOVA or Friedman.
+  python_library_and_function: scipy.stats.ttest_rel; pingouin.ttest(paired=True)
+  outputs: Mean difference, t, df, p, 95% CI of the difference, Cohen's d_z, before/after
+    plot.
+  common_mistakes: Running an independent t-test on paired data (loses power and is
+    wrong); pairing that is not true pairing; ignoring that each row must be one subject
+    at two times.
+  priority: P1
+  pack:
+  - core
+  - health
+  - social
+  sources:
+  - https://www.pearson.com/en-us/subject-catalog/p/biostatistics-for-the-biological-and-health-sciences/P200000007576
+  - https://sscc.wisc.edu/sscc/pubs/spss/classintro/spss_students2.html
+- id: correlation
+  name: Pearson Correlation
+  plain_english_question: How strongly and in which direction are two numeric variables
+    linearly related?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - agriculture
+  - animal-science
+  - biology
+  - biotechnology
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - business
+  - engineering
+  - physics
+  - environmental-science
+  - computer-science
+  - bioinformatics
+  design: correlated observations / observational
+  data_requirements: Two numeric columns (same rows).
+  assumptions_to_check: Roughly linear relationship; no severe outliers; the pair
+    is roughly bivariate normal for a valid p.
+  alternatives_when_assumptions_fail: Spearman rank correlation for monotonic-but-not-linear
+    or non-normal; look at the scatterplot.
+  python_library_and_function: scipy.stats.pearsonr; pingouin.corr
+  outputs: r, p, n, direction and strength in plain English, scatterplot with honest
+    trend line.
+  common_mistakes: Concluding causation; ignoring that r only captures linear association
+    (a U-shape gives r ~ 0); one outlier dominating r; not looking at the scatter
+    first.
+  priority: P1
+  pack:
+  - core
+  sources:
+  - https://stats.oarc.ucla.edu/spss/whatstat/
+- id: spearman-correlation
+  name: Spearman Rank Correlation
+  plain_english_question: Do two variables tend to increase or decrease together,
+    based on their ranks?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - psychology
+  - social-sciences
+  - education
+  - medicine
+  - public-health
+  - biology
+  - environmental-science
+  - economics
+  - business
+  design: correlated observations
+  data_requirements: Two ordinal or numeric columns; does not assume normality.
+  assumptions_to_check: The relationship is monotonic (steadily up/down), not necessarily
+    straight-line.
+  alternatives_when_assumptions_fail: Use Pearson if the relationship is clearly linear
+    and data normal; otherwise report rho with caution when severely tied.
+  python_library_and_function: scipy.stats.spearmanr; pingouin.corr(method='spearman')
+  outputs: rho, p, n, scatterplot of ranks.
+  common_mistakes: Using Pearson on non-normal or monotonic-nonlinear data; treating
+    rank correlation as if it were about raw magnitude.
+  priority: P1
+  pack:
+  - core
+  - social
+  sources:
+  - https://inside.tamuc.edu/academics/cvSyllabi/syllabi/202420/28848.pdf
+- id: chi-square
+  name: Chi-Square Test of Independence
+  plain_english_question: Are two categorical variables associated (does the pattern
+    of counts differ between groups)?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - agriculture
+  - animal-science
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - business
+  - environmental-science
+  - biology
+  design: independent groups (categorical)
+  data_requirements: Two categorical columns (e.g. treatment x outcome category).
+  assumptions_to_check: Expected cell count >= 5 in each cell (else use Fisher's exact);
+    categories are mutually exclusive.
+  alternatives_when_assumptions_fail: Fisher's exact test for 2x2 tables with small
+    counts; if more than two categories and small counts, collapse or use exact methods.
+  python_library_and_function: scipy.stats.chi2_contingency; pingouin.chi2_independence
+  outputs: Contingency table with counts/percentages, chi-square, df, p, Cramer's
+    V effect size.
+  common_mistakes: Running chi-square with too-small expected counts; treating a correlation
+    result as a chi-square; confusing association with causation; ignoring row/column
+    percentages.
+  priority: P1
+  pack:
+  - core
+  - health
+  - social
+  sources:
+  - https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0179032&type=printable
+- id: anova-oneway
+  name: One-Way ANOVA
+  plain_english_question: Do three or more independent groups differ in their average
+    value of a numeric outcome?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - agriculture
+  - animal-science
+  - biology
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - business
+  - engineering
+  - physics
+  - environmental-science
+  design: independent groups (3+)
+  data_requirements: Numeric outcome + a categorical group column with 3+ categories.
+  assumptions_to_check: Outcome roughly normal in each group; equal variances across
+    groups (Levene's); groups independent.
+  alternatives_when_assumptions_fail: Kruskal-Wallis when normality/equal-variance
+    fail; if only 2 groups use t-test; post-hoc (Tukey) to find which groups differ.
+  python_library_and_function: scipy.stats.f_oneway; pingouin.anova; statsmodels OLS
+  outputs: F, df, p, group means/SD, ANOVA table, effect size (eta-squared), Tukey
+    post-hoc, boxplots.
+  common_mistakes: Running many t-tests instead of ANOVA (inflation of type-I error);
+    ignoring that a significant F is not pairwise info (need post-hoc); equal-variance
+    assumption ignored.
+  priority: P1
+  pack:
+  - core
+  sources:
+  - https://pdfs.semanticscholar.org/4467/3ea5f5e031432abee5f3a9c49a79f3ba3efb.pdf
+  - https://digitalcommons.wayne.edu/oa_theses/90/
+- id: mann-whitney
+  name: Mann-Whitney U Test
+  plain_english_question: Do two independent groups differ in their distribution when
+    data are not normal?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - biology
+  - agriculture
+  - animal-science
+  - environmental-science
+  design: independent groups (non-parametric)
+  data_requirements: Numeric or ordinal outcome + 2-level grouping; does not require
+    normality.
+  assumptions_to_check: Two samples independent; the variable is at least ordinal;
+    shapes similar if interpreting as a location shift.
+  alternatives_when_assumptions_fail: Use t-test when data are reasonably normal;
+    Kruskal-Wallis if >2 groups.
+  python_library_and_function: scipy.stats.mannwhitneyu; pingouin.mwu
+  outputs: U, p, group medians, effect size (rank-biserial or r).
+  common_mistakes: Using it when the data are normal (loses power vs t-test); interpreting
+    as a median test when assumptions differ; ignoring ties handling.
+  priority: P1
+  pack:
+  - core
+  - health
+  - social
+  sources:
+  - https://www.pearson.com/en-us/subject-catalog/p/biostatistics-for-the-biological-and-health-sciences/P200000007576
+- id: kruskal-wallis
+  name: Kruskal-Wallis H Test
+  plain_english_question: Do three or more independent groups differ in their distribution
+    when data are not normal?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - education
+  - biology
+  - agriculture
+  - environmental-science
+  design: independent groups (3+, non-parametric)
+  data_requirements: Numeric or ordinal outcome + categorical group with 3+ levels.
+  assumptions_to_check: Independence; variable at least ordinal; similar shapes for
+    a location interpretation.
+  alternatives_when_assumptions_fail: Use one-way ANOVA when assumptions hold; if
+    2 groups use Mann-Whitney.
+  python_library_and_function: scipy.stats.kruskal; pingouin.kruskal
+  outputs: H, df, p, group medians, non-parametric post-hoc (Dunn's).
+  common_mistakes: Using it on strictly normal data (loses power); not following up
+    with appropriate post-hoc/FDR; confusing it with Friedman (which is repeated measures).
+  priority: P1
+  pack:
+  - core
+  - social
+  - health
+  sources:
+  - https://www.pearson.com/en-us/subject-catalog/p/biostatistics-for-the-biological-and-health-sciences/P200000007576
+- id: regression-linear
+  name: Simple Linear Regression
+  plain_english_question: Can I predict a numeric outcome from one numeric predictor,
+    and is the relationship real?
+  levels:
+  - BS
+  - MPhil
+  - PhD
+  disciplines:
+  - economics
+  - business
+  - psychology
+  - social-sciences
+  - education
+  - environmental-science
+  - engineering
+  - physics
+  - biology
+  - public-health
+  design: observational / correlational
+  data_requirements: One numeric outcome + one numeric predictor.
+  assumptions_to_check: Linear relationship; roughly normal residuals; homoscedasticity;
+    no strong outliers/leverage.
+  alternatives_when_assumptions_fail: Add a term (quadratic/log) for curvature; use
+    rank-based (Spearman) or robust regression; transform the outcome.
+  python_library_and_function: scipy.stats.linregress; statsmodels OLS
+  outputs: Slope, intercept, R2, p, 95% CI of slope, residual diagnostics plot, fitted-line
+    scatter.
+  common_mistakes: Interpreting slope as causal; extrapolating beyond the observed
+    range; ignoring residuals/outliers; reporting R2 as 'explained variation' without
+    caveat.
+  priority: P1
+  pack:
+  - core
+  - econ-eng
+  sources:
+  - http://ethesis.nitrkl.ac.in/2480/1/thesis.pdf
+  - https://stats.oarc.ucla.edu/spss/whatstat/
+- id: regression-multiple
+  name: Multiple Linear Regression
+  plain_english_question: How do several predictors jointly relate to a numeric outcome,
+    after adjusting for one another?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - economics
+  - business
+  - psychology
+  - social-sciences
+  - education
+  - public-health
+  - environmental-science
+  - engineering
+  - agriculture
+  design: observational (multivariable)
+  data_requirements: Numeric outcome + two or more predictors (numeric or dummy-coded
+    categorical).
+  assumptions_to_check: Linearity; independent residuals; homoscedasticity; no severe
+    multicollinearity (VIF); no extreme influence points.
+  alternatives_when_assumptions_fail: Regularised regression / check VIF and drop
+    collinear; robust/HC standard errors; consider interactions.
+  python_library_and_function: statsmodels.formula.api.ols; sklearn.linear_model.LinearRegression
+  outputs: Coefficients with p and 95% CI, overall R2 and F, ANOVA table, VIF, residual
+    plots.
+  common_mistakes: Overfitting with too many predictors for the sample; ignoring multicollinearity;
+    reporting coefficients without confidence intervals; not checking residuals.
+  priority: P1
+  pack:
+  - core
+  - econ-eng
+  - social
+  sources:
+  - https://digitalcommons.wayne.edu/oa_theses/90/
+  - https://stats.oarc.ucla.edu/spss/whatstat/
+- id: logistic-regression
+  name: Binary Logistic Regression
+  plain_english_question: What predicts a yes/no outcome, and how strong is each predictor's
+    effect (odds ratio)?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - medicine
+  - public-health
+  - psychology
+  - social-sciences
+  - economics
+  - business
+  - agriculture
+  - biology
+  - bioinformatics
+  design: observational (binary outcome)
+  data_requirements: Binary outcome (0/1) + one or more predictors (numeric or categorical).
+  assumptions_to_check: Linearity of continuous predictors vs log-odds; adequate events
+    per variable; no severe multicollinearity; no perfect separation.
+  alternatives_when_assumptions_fail: Use Firth/corrected logistic for separation;
+    categorise or spline continuous predictors; consider penalised regression.
+  python_library_and_function: statsmodels Logit; sklearn.linear_model.LogisticRegression
+  outputs: Odds ratios with 95% CI, p for each predictor, model fit (Pseudo-R2, likelihood-ratio),
+    classification table / AUC.
+  common_mistakes: Too few events per variable; interpreting OR without CI; confusing
+    odds ratios with risk ratios; not checking for separation.
+  priority: P1
+  pack:
+  - health
+  - social
+  - econ-eng
+  - bioinformatics
+  sources:
+  - https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0179032&type=printable
+  - https://catalog.upenn.edu/courses/bsta/bsta.pdf
+- id: odds-and-risk
+  name: Relative Risk & Odds Ratio from a 2x2 Table
+  plain_english_question: How much more (or less) likely is an event in one group
+    than another?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - medicine
+  - public-health
+  - epidemiology
+  - animal-science
+  - agriculture
+  design: cohort / case-control / trial (binary outcome)
+  data_requirements: '2x2 table: group x event (yes/no), or two categorical columns
+    to construct it.'
+  assumptions_to_check: Study designed to estimate the chosen measure (RR for cohort/trial;
+    OR also for case-control); cell counts adequate.
+  alternatives_when_assumptions_fail: If counts tiny use Fisher's exact and exact
+    CIs.
+  python_library_and_function: statsmodels.stats.contingency_tables; manual
+  outputs: RR or OR with 95% CI, p, 2x2 table with counts/percentages.
+  common_mistakes: Interchanging RR and OR; computing RR when the study design needs
+    OR; not reporting confidence intervals.
+  priority: P1
+  pack:
+  - health
+  - agri-animal
+  sources:
+  - https://catalog.upenn.edu/courses/bsta/bsta.pdf
+  - https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0179032&type=printable
+- id: kaplan-meier
+  name: Kaplan-Meier Survival Analysis
+  plain_english_question: How does the time until an event differ between groups,
+    accounting for people who drop out?
+  levels:
+  - PhD
+  - MPhil
+  disciplines:
+  - medicine
+  - public-health
+  - biology
+  - engineering
+  design: time-to-event (censored)
+  data_requirements: Time-to-event column + event indicator (0=censored, 1=event)
+    + group column.
+  assumptions_to_check: Right-censoring is non-informative; censoring independent
+    of survival time; groups comparable.
+  alternatives_when_assumptions_fail: Cox proportional-hazards for adjusting/covariates;
+    competing-risk models if multiple event types.
+  python_library_and_function: lifelines.KaplanMeierFitter; statsmodels.SurvfuncRight
+  outputs: Survival curves per group, median survival, log-rank p-value, at-risk table.
+  common_mistakes: Ignoring censoring (dropping those without the event); computing
+    a plain mean time; comparing curves without the log-rank test.
+  priority: P1
+  pack:
+  - health
+  - life-science
+  sources:
+  - https://catalog.upenn.edu/courses/bsta/bsta.pdf
+  - https://www.pearson.com/en-us/subject-catalog/p/biostatistics-for-the-biological-and-health-sciences/P200000007576
+- id: cox-regression
+  name: Cox Proportional-Hazards Regression
+  plain_english_question: Which factors relate to the hazard (risk over time) of an
+    event, and how strong are they?
+  levels:
+  - PhD
+  disciplines:
+  - medicine
+  - public-health
+  - biology
+  design: time-to-event (censored, multivariable)
+  data_requirements: Time-to-event + event indicator + one or more covariates.
+  assumptions_to_check: Proportional hazards (log-log survival plots or Schoenfeld
+    residuals); non-informative censoring; linearity of continuous predictors.
+  alternatives_when_assumptions_fail: Stratified Cox or time-varying coefficients
+    for non-proportional hazards; competing-risk models.
+  python_library_and_function: lifelines.CoxPHFitter; statsmodels PHReg
+  outputs: Hazard ratios with 95% CI, p, global fit, proportional-hazards check.
+  common_mistakes: Not testing proportional-hazards assumption; interpreting HR as
+    absolute risk; ignoring censoring structure.
+  priority: P2
+  pack:
+  - health
+  - life-science
+  sources:
+  - https://catalog.upenn.edu/courses/bsta/bsta.pdf
+- id: cronbach-alpha
+  name: Cronbach's Alpha (Scale Reliability)
+  plain_english_question: Does my multi-item questionnaire scale measure the thing
+    consistently (internally)?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - psychology
+  - social-sciences
+  - education
+  - public-health
+  design: psychometrics
+  data_requirements: Several numeric item columns that form a scale (responses to
+    a questionnaire's items).
+  assumptions_to_check: Items are on the same response scale; roughly one underlying
+    dimension; no blatant reverse-coding not yet handled.
+  alternatives_when_assumptions_fail: Report McDonald's omega; examine item-total
+    correlations and consider dropping weak items; EFA if multidimensional.
+  python_library_and_function: pingouin.cronbach_alpha; sklearn
+  outputs: Alpha with 95% CI, per-item correlations, guidance on whether scale is
+    reliable.
+  common_mistakes: Assuming alpha proves unidimensionality; reporting alpha on a scale
+    with reverse-coded items not flipped; alpha high but items redundant.
+  priority: P1
+  pack:
+  - social
+  - health
+  sources:
+  - https://pmc.ncbi.nlm.nih.gov/articles/PMC10353679/
+  - https://www.apa.org/pubs/journals/releases/amp-amp0000191.pdf
+- id: pca
+  name: Principal Component Analysis
+  plain_english_question: Can I reduce many numeric variables to a few combined scores
+    that capture most of the variation?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - bioinformatics
+  - environmental-science
+  - psychology
+  - social-sciences
+  - agriculture
+  - computer-science
+  design: dimensionality reduction / exploratory
+  data_requirements: Many numeric columns (e.g. gene expression, soil chemistry, questionnaire
+    items, spectral data); variables standardised.
+  assumptions_to_check: Variables are correlated enough (KMO / Bartlett's); appropriate
+    scaling of units; check how many components to keep (scree, variance explained).
+  alternatives_when_assumptions_fail: Factor analysis (when latent construct intended);
+    t-SNE/UMAP for visualisation only; robust PCA for outliers.
+  python_library_and_function: sklearn.decomposition.PCA; scipy
+  outputs: Variance-explained plot, component loadings, score scatter/biplot, how-many-components
+    guidance.
+  common_mistakes: Forgetting to standardise variables on different scales; keeping
+    too many/too few components; treating PCA as a factor model when a latent dimension
+    is meant.
+  priority: P1
+  pack:
+  - bioinformatics
+  - life-science
+  - social
+  - ml
+  sources:
+  - https://pakbs.org/pjbot/papers/1512404688.pdf
+  - https://cran.r-project.org/web/views/Cluster.html
+- id: ml-classification-eval
+  name: ML Classification Model Evaluation
+  plain_english_question: How well does my classifier predict categories, and is the
+    reported accuracy honest (not overfit)?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - computer-science
+  - bioinformatics
+  - business
+  design: supervised machine learning (cross-validated)
+  data_requirements: Features matrix + a categorical label column.
+  assumptions_to_check: Proper train/test separation (no leakage); class balance reported;
+    metric chosen for the use-case (accuracy vs precision/recall/F1); enough samples.
+  alternatives_when_assumptions_fail: Use stratified cross-validation; resampling
+    (SMOTE) only with care; report F1/ROC-AUC on imbalanced classes rather than accuracy.
+  python_library_and_function: 'scikit-learn: train_test_split, cross_val_score, classification_report,
+    roc_auc_score'
+  outputs: Confusion matrix, accuracy/precision/recall/F1, ROC-AUC, cross-validation
+    scores with mean and spread.
+  common_mistakes: Data leakage (normalising before the split); reporting test-set
+    accuracy of a model tuned on the same set; ignoring class imbalance.
+  priority: P1
+  pack:
+  - ml
+  - bioinformatics
+  - econ-eng
+  sources:
+  - https://scikit-learn.org/stable/model_selection.html
+  - https://scikit-learn.org/stable/modules/cross_validation.html
+- id: ml-regression-eval
+  name: ML Regression Model Evaluation
+  plain_english_question: How well does my predictive model match continuous values,
+    and is it honestly evaluated?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - computer-science
+  - economics
+  - business
+  - engineering
+  - bioinformatics
+  design: supervised machine learning (continuous target)
+  data_requirements: Features matrix + numeric target.
+  assumptions_to_check: No leakage; scale of the target considered when judging error;
+    train/test (or CV) separation.
+  alternatives_when_assumptions_fail: Compare RMSE vs MAE vs R2; use log-scale error
+    for skewed targets; cross-validate.
+  python_library_and_function: 'scikit-learn: mean_squared_error, mean_absolute_error,
+    r2_score, cross_val_score'
+  outputs: RMSE, MAE, R2, predicted-vs-actual plot, CV scores.
+  common_mistakes: Reporting R2 as 'goodness of fit' without checking residuals/edge
+    cases; evaluating on data used in training.
+  priority: P1
+  pack:
+  - ml
+  - econ-eng
+  sources:
+  - https://sebastianraschka.com/pdf/lecture-notes/stat451fs20/11-eval4-algo__slides.pdf
+  - https://scikit-learn.org/stable/model_selection.html
+- id: clustering-kmeans
+  name: K-Means Clustering
+  plain_english_question: Can these observations be grouped into clusters so that
+    members of a cluster are similar?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - computer-science
+  - bioinformatics
+  - business
+  - agriculture
+  - environmental-science
+  design: unsupervised learning
+  data_requirements: Numeric columns (scaled); you must expect/seek clusters.
+  assumptions_to_check: Variables scaled to equal units; choose k carefully (elbow/silhouette);
+    clusters meaningful, not an artefact.
+  alternatives_when_assumptions_fail: Hierarchical clustering or DBSCAN for non-spherical/density
+    clusters; k-medoids for outliers.
+  python_library_and_function: sklearn.cluster.KMeans; scipy.cluster.hierarchy
+  outputs: Cluster assignments, cluster centres, silhouette/elbow plots, cluster profiles.
+  common_mistakes: Clustering raw unscaled variables; choosing k by eye only; forcing
+    spherical clusters on non-spherical data; not standardising.
+  priority: P2
+  pack:
+  - ml
+  - bioinformatics
+  - econ-eng
+  sources:
+  - https://cran.r-project.org/web/views/Cluster.html
+  - https://www.jamovi.org/modules.html
+- id: anova-repeated
+  name: Repeated-Measures ANOVA
+  plain_english_question: Do mean values change across several time points measured
+    on the same subjects?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - psychology
+  - social-sciences
+  - education
+  - medicine
+  - public-health
+  - agriculture
+  design: repeated measures (within-subject, 3+ time points)
+  data_requirements: One outcome measured at 3+ time points per subject (or a subject
+    id + time + value).
+  assumptions_to_check: Sphericity; normally distributed differences; no carry-over/order
+    effects.
+  alternatives_when_assumptions_fail: Friedman test (non-parametric); mixed-effects/multilevel
+    model with random intercept for subject.
+  python_library_and_function: pingouin.rm_anova; statsmodels AnovaRM
+  outputs: F, df, p, sphericity check, time-point means, interaction plot.
+  common_mistakes: Treating repeated measurements as independent; ignoring sphericity;
+    using repeated ANOVA when many levels or missing data (use mixed model).
+  priority: P2
+  pack:
+  - social
+  - health
+  - life-science
+  sources:
+  - https://psychology.osu.edu/courses/psych-3321
+  - https://www.ruraluniv.ac.in/includes/academics/faculties/dept/11/pdf/Mphil_edn_201819.pdf
+- id: ancova
+  name: Analysis of Covariance (ANCOVA)
+  plain_english_question: Do groups differ on a numeric outcome after controlling
+    for a continuous covariate?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - psychology
+  - education
+  - social-sciences
+  - agriculture
+  - medicine
+  design: independent groups + covariate
+  data_requirements: Numeric outcome + group column + one or more numeric covariates.
+  assumptions_to_check: Linearity between covariate and outcome; homogeneity of regression
+    slopes across groups; normality; equal variances.
+  alternatives_when_assumptions_fail: Mixed/multilevel model; robust methods; transform.
+  python_library_and_function: pingouin.ancova; statsmodels OLS with group + covariate
+  outputs: Adjusted means, F for group effect, covariate effect, p, effect size.
+  common_mistakes: Ignoring the homogeneity-of-slopes assumption; treating a measured
+    (non-randomised) covariate as if causal; double-counting the covariate.
+  priority: P2
+  pack:
+  - social
+  - agri-animal
+  - health
+  sources:
+  - https://www.ruraluniv.ac.in/includes/academics/faculties/dept/11/pdf/Mphil_edn_201819.pdf
+- id: friedman
+  name: Friedman Test (Repeated Measures, Non-parametric)
+  plain_english_question: Do at least one of several related measurements differ,
+    when data are not normal?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - psychology
+  - social-sciences
+  - medicine
+  - education
+  design: repeated measures (non-parametric)
+  data_requirements: Three or more related (within-subject) columns.
+  assumptions_to_check: Related samples; sufficient blocks.
+  alternatives_when_assumptions_fail: Repeated-measures ANOVA when normal; otherwise
+    post-hoc Wilcoxon with correction.
+  python_library_and_function: scipy.stats.friedmanchisquare; pingouin.friedman
+  outputs: Chi-square statistic, df, p, medians per condition.
+  common_mistakes: Using it on independent groups; not following up with corrected
+    pairwise comparisons.
+  priority: P2
+  pack:
+  - social
+  - health
+  sources:
+  - https://www.pearson.com/en-us/subject-catalog/p/biostatistics-for-the-biological-and-health-sciences/P200000007576
+- id: mixed-effects
+  name: Linear Mixed-Effects Model (Multilevel)
+  plain_english_question: How do predictors relate to a numeric outcome when observations
+    are grouped, nested, or repeated (clustered data)?
+  levels:
+  - PhD
+  disciplines:
+  - psychology
+  - education
+  - agriculture
+  - medicine
+  - biology
+  - environmental-science
+  design: clustered / nested / repeated (random effects)
+  data_requirements: Numeric outcome + predictors + a grouping/id column (subject,
+    classroom, plot, site).
+  assumptions_to_check: Normality of residuals and random effects; appropriate random
+    structure; no severe imbalance.
+  alternatives_when_assumptions_fail: Generalised linear mixed model for non-normal
+    outcomes; simpler cluster-robust SE if only adjusting inference.
+  python_library_and_function: statsmodels MixedLM; pingouin for mixed ANOVA helpers
+  outputs: Fixed-effect coefficients with CI and p, random-effect variance, intraclass
+    correlation.
+  common_mistakes: Ignoring clustering (pseudo-replication); over-fitting random effects
+    on tiny data; interpreting level-1 slopes as level-2 effects.
+  priority: P2
+  pack:
+  - social
+  - agri-animal
+  - life-science
+  - health
+  sources:
+  - https://link.springer.com/chapter/10.1007/978-0-387-87458-6_13
+- id: factor-analysis
+  name: Exploratory Factor Analysis (EFA)
+  plain_english_question: Do the items I measured group into a few underlying latent
+    dimensions?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - psychology
+  - social-sciences
+  - education
+  - public-health
+  design: psychometrics / latent structure
+  data_requirements: Several correlated numeric item columns; adequate sample (rule
+    of thumb ~5-10 per item, 100+).
+  assumptions_to_check: Correlations sufficient (KMO, Bartlett's); correct number
+    of factors; rotation choice; adequacy of sample size.
+  alternatives_when_assumptions_fail: PCA if purely data-reduction; CFA if you already
+    hypothesise the structure; consider sample-size limits.
+  python_library_and_function: factor_analyzer (FactorAnalyzer); sklearn PCA as approximation
+  outputs: KMO/Bartlett, factor loadings matrix, eigenvalues/scree, variance explained,
+    suggested factor labels.
+  common_mistakes: Too-small sample; interpreting loadings without rotation guidance;
+    naming factors beyond the data; conflating EFA with PCA.
+  priority: P2
+  pack:
+  - social
+  - health
+  sources:
+  - https://pmc.ncbi.nlm.nih.gov/articles/PMC10353679/
+  - https://tpmap.org/submission/index.php/tpm/article/download/304/187/651
+- id: diagnostic-test
+  name: Diagnostic Test Performance (Sensitivity/Specificity/ROC)
+  plain_english_question: How well does a test or model separate those with vs without
+    a condition?
+  levels:
+  - PhD
+  - MPhil
+  disciplines:
+  - medicine
+  - public-health
+  - bioinformatics
+  design: diagnostic accuracy / classification threshold
+  data_requirements: Test result + true reference standard (binary), or scores + labels
+    for ROC.
+  assumptions_to_check: Reference standard is valid; independent sample; threshold
+    choice justified; prevalence reported.
+  alternatives_when_assumptions_fail: Report AUC plus operating-characteristic curve;
+    over-sampling caution for ROC.
+  python_library_and_function: 'scikit-learn: roc_auc_score, confusion_matrix; statsmodels'
+  outputs: Sensitivity, specificity, PPV/NPV, confusion matrix, ROC curve with AUC,
+    optimised threshold.
+  common_mistakes: Reporting sensitivity without specificity & prevalence; using accuracy
+    on imbalanced classes; cherry-picking the threshold.
+  priority: P2
+  pack:
+  - health
+  - bioinformatics
+  sources:
+  - https://pmc.ncbi.nlm.nih.gov/articles/PMC5286748/
+  - https://www.fda.gov/files/medical%20devices/published/Guidance-for-Industry-and-FDA-Staff---Statistical-Guidance-on-Reporting-Results-from-Studies-Evaluating-Diagnostic-Tests-(PDF-Version).pdf
+- id: bland-altman
+  name: Bland-Altman Agreement
+  plain_english_question: Are two measurement methods close enough to be used interchangeably
+    on the same subjects?
+  levels:
+  - PhD
+  - MPhil
+  disciplines:
+  - medicine
+  - engineering
+  - biology
+  - agriculture
+  design: method comparison (paired, continuous)
+  data_requirements: Two paired numeric measurements of the same quantity on the same
+    subjects.
+  assumptions_to_check: Differences roughly normally distributed; bias and limits
+    not proportional to magnitude (check the plot).
+  alternatives_when_assumptions_fail: Agreement analysis on log scale when variability
+    scales with magnitude; report ICC too.
+  python_library_and_function: pingouin.bland_altman; statsmodels
+  outputs: Bias, 95% limits of agreement, Bland-Altman plot, decision on interchangeability.
+  common_mistakes: Using correlation to claim agreement (correlation ignores bias);
+    ignoring censoring of the limits; small samples.
+  priority: P2
+  pack:
+  - health
+  - life-science
+  sources:
+  - https://pmc.ncbi.nlm.nih.gov/articles/PMC5829700/
+- id: panel-regression
+  name: Panel / Longitudinal Fixed-Effects Regression
+  plain_english_question: What predicts an outcome using repeated observations per
+    unit, adjusting for stable unobserved differences (panel data)?
+  levels:
+  - PhD
+  disciplines:
+  - economics
+  - business
+  - social-sciences
+  design: panel / longitudinal (within-unit)
+  data_requirements: Outcome + predictors + unit id + time; multiple observations
+    per unit.
+  assumptions_to_check: Choose FE vs RE (Hausman); within-unit variation exists; no
+    severe serial dependence.
+  alternatives_when_assumptions_fail: Random-effects/mixed model if appropriate; first-differences;
+    robust clustered SE.
+  python_library_and_function: statsmodels PanelOLS / linearmodels; MixedLM for RE
+  outputs: Coefficients, within-R2, Hausman guidance, cluster-robust SE.
+  common_mistakes: Ignoring within-unit correlation; using RE when FE needed (bias);
+    small T large N pitfalls.
+  priority: P3
+  pack:
+  - econ-eng
+  - social
+  sources:
+  - https://phdeconomics.unisi.it/wp-content/uploads/sites/127/2024/12/Panel-Data-Econometrics_40.pdf
+- id: time-series
+  name: Time-Series Decomposition & Trend
+  plain_english_question: Is there a trend/seasonality in a variable measured over
+    time, and can I forecast it simply?
+  levels:
+  - PhD
+  - MPhil
+  disciplines:
+  - economics
+  - environmental-science
+  - engineering
+  - public-health
+  design: time (longitudinal regular)
+  data_requirements: A date/time column + a numeric value; regular time interval.
+  assumptions_to_check: Stationarity for forecasting; autocorrelation structure; adequate
+    length; no leakage across train/test.
+  alternatives_when_assumptions_fail: ARIMA/ETS for forecasting; differencing; STL
+    decomposition for trend/season.
+  python_library_and_function: 'statsmodels.tsa: seasonal_decompose, acf/pacf; (ARIMA
+    later)'
+  outputs: Trend/season plot, decomposition, autocorrelation plot, simple forecast
+    with CI.
+  common_mistakes: Forgetting seasonality; using regression on time ignoring autocorrelation;
+    forecasting beyond supported horizon.
+  priority: P3
+  pack:
+  - econ-eng
+  - life-science
+  sources:
+  - https://www.ntu.edu.sg/media/docs/librariesprovider117/admission/courses/he3003-econometrics-ii.pdf?sfvrsn=1f08db06_2
+- id: differential-expression
+  name: Differential Expression / Count Comparison (RNA-seq style)
+  plain_english_question: Are counts (e.g. gene/transcript reads) different between
+    conditions, accounting for over-dispersion?
+  levels:
+  - PhD
+  - MPhil
+  disciplines:
+  - bioinformatics
+  design: negative-binomial / generalized linear (groups)
+  data_requirements: Count matrix (samples x features) + condition labels; needs normalisation/offsets.
+  assumptions_to_check: Over-dispersion; library-size normalisation; multiple-testing
+    correction (FDR/BH).
+  alternatives_when_assumptions_fail: Limma-voom style; log-transform with shrinkage;
+    non-parametric rank-based for small n.
+  python_library_and_function: pydeseq2 / statsmodels GLM(negative binomial); multiple
+    testing via statsmodels.multipletests
+  outputs: Per-feature log-fold-change, FDR-adjusted p, mean-dispersion plot, top-features
+    table.
+  common_mistakes: Using a plain t-test on counts (ignoring dispersion/library size);
+    no FDR correction; tiny sample sizes with no pooling.
+  priority: P3
+  pack:
+  - bioinformatics
+  sources:
+  - https://epublications.marquette.edu/cgi/viewcontent.cgi?article=1587&context=theses_open
+  - https://bch709.plantgenomicslab.org/DEG2022/index.html
+- id: sem
+  name: Structural Equation Modelling (CFA/Path)
+  plain_english_question: Does my hypothesised network of relationships between latent
+    constructs fit the data?
+  levels:
+  - PhD
+  disciplines:
+  - psychology
+  - social-sciences
+  - education
+  design: latent-variable / path (confirmatory)
+  data_requirements: Multiple indicator columns per latent construct; large samples;
+    a hypothesised model.
+  assumptions_to_check: Multivariate normality (or use robust); model identification;
+    adequate sample; local fit indices.
+  alternatives_when_assumptions_fail: EFA first if structure uncertain; PLS-SEM for
+    small/predictive; treat as exploratory.
+  python_library_and_function: semopy (SEM); fit indices CFI/TLI/RMSEA/SRMR
+  outputs: Fit indices (CFI, TLI, RMSEA, SRMR), path loadings, modification indices.
+  common_mistakes: Theory-free model; very large samples making RMSEA 'significant';
+    ignoring local fit.
+  priority: P3
+  pack:
+  - social
+  sources:
+  - https://degrees.asu.edu/masters-phd/major/ASU00/LAPSYQUPHD/psychology-quantitative-research-methods-phd
+  - https://morgridge.du.edu/academics-advising/programs-gr/phd-research-methods-and-statistics

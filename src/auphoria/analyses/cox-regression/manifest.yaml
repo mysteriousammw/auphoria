@@ -1,0 +1,92 @@
+id: cox-regression
+name: Cox Proportional-Hazards Regression
+maturity: experimental
+levels: [advanced]
+disciplines:
+  - health
+  - life-sciences
+  - engineering
+  - economics
+  - social-sciences
+description: >
+  Models the time until an event (survival / time-to-event data) with one or
+  more numeric covariates, estimating a hazard ratio for each predictor: how
+  the instantaneous risk of the event changes per unit of that predictor while
+  the others are held fixed. Built on statsmodels' PHReg (permissive licence;
+  lifelines/autograd is avoided).
+inputs:
+  - name: time
+    kind: numeric-column
+    required: true
+    description: Time to event or censoring (e.g. months, days, years).
+    constraints: numeric; must be non-negative
+  - name: event
+    kind: numeric-column
+    required: true
+    description: Event indicator - exactly 0 (censored) or 1 (event happened).
+    constraints: values must be only 0 or 1
+  - name: covariate
+    kind: numeric-column
+    required: true
+    description: >-
+      One or more numeric predictors. A single column name (e.g. age), or a
+      comma-separated list for a multivariable model (e.g. age, BMI, stage).
+    constraints: numeric; must vary (not constant). A covariate entry may be a
+      comma-separated list of several numeric columns.
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level used for the p-value "significant" flags and the assumption checks.
+outputs:
+  - hazard-ratio table (exp(coef), 95% CI lower/upper, log HR, log HR SE, p per covariate)
+  - model-fit table (log-likelihood, total complete rows, event count)
+  - proportional-hazards verdict (Schoenfeld residual correlation with event time)
+  - forest plot of hazard ratios with 95% CIs
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - >-
+    Proportional hazards: the hazard ratio for each predictor is roughly
+    constant over time (checked with a Schoenfeld-residual correlation vs event
+    time; if violated the hazard ratio is only an average over follow-up).
+  - >-
+    Non-informative censoring: subjects who are censored would, had they been
+    followed longer, have the same future risk as those still under observation.
+  - >-
+    Linearity of continuous predictors: each numeric covariate relates to the
+    log hazard in a straight-line fashion (no bending) unless it is transformed
+    or categorised.
+  - Events are independent across subjects; time and covariates are measured
+    without error.
+minimum sample size: >-
+  Aim for at least 30 events and a total of at least 50 complete rows
+  (10 events per covariate is a rough rule of thumb). The analysis refuses to
+  run with zero events, warns and requests expert review when there are fewer
+  than 10 events or fewer than 30 complete rows, and treats such results as
+  preliminary only.
+limitations:
+  - A hazard ratio is a relative effect, not an estimate of absolute risk or of
+    how many subjects will experience the event by a given time.
+  - Cox proportional hazards measures association, not causation; the hazard
+    ratios can be confounded by unmeasured predictors.
+  - If proportional hazards is violated, the single hazard ratio does not
+    capture time-varying effects.
+  - Missing values in the chosen columns are excluded listwise (and reported),
+    never imputed; very heavy missingness can bias results.
+  - Strongly collinear covariates inflate standard errors and make individual
+    hazard ratios unstable (flagged for review when |r| exceeds 0.95).
+pack:
+  - health
+  - life-science
+requires:
+  - statsmodels
+reference: >-
+    Synthetic survival data; cross-checked vs statsmodels.duration.hazard_regression.PHReg
+test_data:
+  - "Deterministic synthetic survival data in tests/test_cox_regression.py,
+     with hazard ratios (exp(coef)) and p-values compared against statsmodels'
+     PHReg as the reference implementation, plus guardrail tests for event,
+     constant-covariate and no-events refusals and listwise-missing handling."

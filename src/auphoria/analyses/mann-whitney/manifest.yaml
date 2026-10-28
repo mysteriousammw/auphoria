@@ -1,0 +1,76 @@
+id: mann-whitney
+name: Mann-Whitney U Test
+maturity: experimental
+levels: [beginner, intermediate]
+disciplines:
+  - agriculture
+  - animal-science
+  - life-sciences
+  - health
+  - psychology
+  - social-sciences
+  - education
+  - economics
+  - engineering
+  - environmental-science
+  - computer-science
+description: >
+  Compares the distribution of a numeric or ordinal outcome between two
+  independent groups (for example, survey scores between a treatment and a
+  control) without assuming the data are normally distributed. Reports the
+  U statistic, the p-value, group medians, and an effect size
+  (rank-biserial r).
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric or ordinal outcome you want to compare (e.g. score).
+    constraints: must be a numeric column
+  - name: group
+    kind: categorical-column
+    required: true
+    description: The grouping column with exactly two categories (e.g. treatment).
+    constraints: must have exactly two categories
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+  - name: tail
+    type: choice
+    default: two-sided
+    choices: [two-sided, greater, less]
+    description: Direction of the test.
+outputs:
+  - group statistics table (n, median per group)
+  - Mann-Whitney U test result table (U, p-value, n1, n2, rank-biserial r)
+  - box-and-whisker figure comparing the two groups
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The two groups are independent (one observation does not belong to both).
+  - The outcome is measured on at least an ordinal scale, so values can be
+    ranked.
+  - To read the result as a location shift (one group 'tends higher'), the
+    two distributions should have a similar shape (spread); otherwise the
+    test is best described as comparing distributions (stochastic
+    superiority), not medians.
+limitations:
+  - Only two groups can be compared. For three or more groups use a
+    Kruskal-Wallis test (planned analysis).
+  - No normality assumption is needed, but when the data ARE reasonably
+    normal a t-test has more power — the Mann-Whitney test should not be
+    used just to 'be safe' on normal data.
+  - A significant result shows the groups' distributions sit apart; it is
+    not automatically a difference of medians and not a test of means.
+  - Missing values in the two chosen columns are excluded (and reported), not
+    imputed.
+reference: >-
+    A=[1,2,3], B=[4,5,6,7]; cross-checked vs scipy.stats.mannwhitneyu
+test_data:
+  - "Deterministic synthetic data in tests/test_mann_whitney.py, with
+     hand-computed ranks and U (groups of size 3 and 4 giving U = 0,
+     p = 2 * 1/C(7,3) = 0.05714 two-sided) compared against SciPy's
+     reference implementation."
