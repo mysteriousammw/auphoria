@@ -3,11 +3,6 @@
 This page takes you from "nothing installed" to a completed, report-ready
 analysis in about 15 minutes. Pick your platform below.
 
-!!! note "Repository not published yet"
-    The install commands below use `https://github.com/mysteriousammw/auphoria`. Until the repository
-    is published (see `docs/PUBLISH_CHECKLIST.md`), install locally from the
-    source tree instead — the "Install locally" tab covers that.
-
 === "macOS"
 
     1. **Install Python 3.10–3.12** if you don't have it. On a Mac, the
@@ -82,12 +77,14 @@ analysis in about 15 minutes. Pick your platform below.
     ```
     On Windows, use `uvx` the same way inside PowerShell or WSL.
 
-=== "Install locally (before publishing)"
+=== "Install locally (developers)"
 
-    The `https://github.com/mysteriousammw/auphoria` address is substituted after upload. Until then,
-    install from the source tree you have on this machine:
+    If you are developing AUPHORIA itself (or prefer an editable install
+    from a source tree), clone the repository and install it in editable
+    mode:
     === "macOS / Linux / WSL"
         ```bash
+        git clone https://github.com/mysteriousammw/auphoria
         cd auphoria                 # the folder with pyproject.toml
         python3.11 -m venv .venv
         .venv/bin/pip install -e .
@@ -95,6 +92,7 @@ analysis in about 15 minutes. Pick your platform below.
         ```
     === "Windows"
         ```powershell
+        git clone https://github.com/mysteriousammw/auphoria
         cd auphoria
         py -3.11 -m venv .venv
         .venv\Scripts\pip install -e .

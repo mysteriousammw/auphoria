@@ -33,7 +33,8 @@ the plumbing.
 [Read the 15-minute quickstart](quickstart.md) — one install line, then a
 guided run. Choose your platform:
 
-- [macOS](#macos) · [Windows](#windows) · [Linux / WSL](#linux--wsl) ·
+- [macOS](quickstart.md#macos) · [Windows](quickstart.md#windows) ·
+  [Linux / WSL](quickstart.md#linux--wsl) ·
   [Google Colab (no install)](quickstart.md#google-colab-no-install-on-your-laptop)
 
 ## Which analysis should I use?
@@ -55,7 +56,4 @@ your science.** Read [Responsible use](responsible-use.md). If a number looks
 wrong, [report it](known-issues.md) — validation of every
 analysis is tracked on the [Validation](validation.md) page.
 
----
-
-*Install commands in these pages use `https://github.com/mysteriousammw/auphoria` until the
-repository is published (see `docs/PUBLISH_CHECKLIST.md`).*
+------

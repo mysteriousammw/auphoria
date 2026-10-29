@@ -30,7 +30,8 @@ Windows PowerShell:
 py -m pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 ```
 
-Locally, before publishing, the same extras install from the source tree:
+If you are developing from a local source tree, the same extras install with
+editable mode:
 
 ```bash
 .venv/bin/pip install -e ".[health]"          # or -e ".[health,agri-animal]"

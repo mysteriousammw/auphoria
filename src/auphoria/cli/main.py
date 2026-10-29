@@ -386,12 +386,22 @@ def _example_command(analysis_id: str, name: str) -> str:
 
 
 def _load_sample_for(name: str):
-    """Return the sample DataFrame best matching an analysis name, if any."""
+    """Return the sample DataFrame best matching an analysis name, if any.
+
+    Tries the sample with the same name first, then falls back to the first
+    available sample so the example-command column picker always has data.
+    """
     from auphoria.adapters.adapters import read_data_frame
     from auphoria.sample_data import sample_files, sample_path
 
     for fname in sorted(sample_files()):
-        df, _ = read_data_frame(sample_path(fname))
+        if fname == name:
+            df, _ = read_data_frame(sample_path(fname))
+            return df
+    # No sample shares the analysis name: fall back to the first available
+    # sample so the example-command column picker always has data.
+    if sample_files():
+        df, _ = read_data_frame(sample_path(sorted(sample_files())[0]))
         return df
     return None
 

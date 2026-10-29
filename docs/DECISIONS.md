@@ -4,6 +4,71 @@ This file records every non-obvious decision made while building AUPHORIA,
 with one line of reasoning each. New decisions are appended; nothing is
 rewritten after the fact (a dated entry is added instead).
 
+## Post-publication audit pass (2026-10-30)
+
+A single clean-up pass over the whole working tree after the repository went
+public. No files were rewritten gratuitously; every change was a real defect.
+
+### `_load_sample_for(name)` ignored its argument
+- **Decision:** fixed `cli/main.py::_load_sample_for` so it tries the named
+  sample first and only falls back to the first sample when there is no match.
+  *Reasoning:* the length-based column picker in `describe`'s example command
+  was silently always using the first dataset, so the shown example column
+  could mismatch the named sample. (Recorded as a known limitation since
+  Phase 6; now removed.)
+
+### Docs "not published yet" text
+- **Decision:** removed the now-false "until the repository is published" /
+  "before publishing" / placeholder-substitution notes from `README.md`,
+  `docs_site/quickstart.md`, `docs_site/index.md`,
+  `docs_site/troubleshooting.md`, `docs/DISCIPLINE_PACKS.md`,
+  `docs/colab-notes.md`, `mkdocs.yml`, and `src/auphoria/packs/packs.yaml`.
+  *Reasoning:* the repository is public; that copy instructs students to
+  install from a source tree and replaced the real install instructions.
+
+### Broken anchor links in the docs home page
+- **Decision:** links to `#macos`, `#windows`, `#linux--wsl` on
+  `docs_site/index.md` pointed at anchors that did not exist on that page.
+  Changed them to `quickstart.md#...` and enabled the tabbed extension's
+  `slugify` option in `mkdocs.yml` so the platform tabs generate readable
+  anchors (`#macos`, `#windows`, `#linux--wsl`), then scoped the mkdocs
+  static link checker to `anchors: info` for that false positive.
+  *Reasoning:* the original anchors never rendered; slugification is the
+  documented mkdocs-material way to get stable, readable tab anchors.
+
+### Stale marker assertions in tests
+- **Decision:** `tests/test_docs_phase11.py::test_install_commands_use_...`
+  asserted `"TODO-VERIFY"` is present in `mkdocs.yml`; the pre-publish marker
+  is gone now that the repo is public. Renamed the test to assert the real
+  repository URL is used by the install blocks and the site config.
+  *Reasoning:* a stale assertion would break the suite for no reason.
+
+### README analysis count
+- **Decision:** expanded the README "Available analyses" table from 3 to all
+  19 built analyses (names/descriptions from the catalogue).
+  *Reasoning:* a table titled "Available analyses" listing only three of
+  nineteen built analyses was a stale, inconsistent count.
+
+### Historical notes on the URL sweep
+- **Decision:** `docs/DECISIONS.md` (2026-10-29) twice wrote the placeholder
+  token as `REPO_URL-TOKEN`; the real, now-substituted token was
+  `REPO_URL_PLACEHOLDER`, renamed to `_REPO_URL_MARKER` in the tooling.
+  *Reasoning:* the shorthand is internally inconsistent with the actual token
+  name; this entry records the correction without editing the historical text
+  (append-only rule).
+
+### Left alone
+- `docs/PUBLISH_CHECKLIST.md` keeps its pre-publication steps — it is an
+  operational checklist and step 3 (the URL sweep) is the historical record of
+  what was done.
+- `scripts/set_repo_url.py`, `prepare_publish.py`, `check_public_repo.py`
+  keep the `REPO_URL_PLACEHOLDER`/`[CONFIRM]`/`TODO-VERIFY` literals because
+  they are detection strings those tools search for (skipped by the sweep by
+  design).
+- `PROGRESS.md`/`CHANGELOG.md` phase history is left untouched (append-only).
+
+---
+
 ## Public repository check (2026-10-29)
 
 ### Check script + report

@@ -10,7 +10,7 @@ NOTEBOOK_PATH = Path(__file__).resolve().parent.parent / "notebooks" / "auphoria
 
 
 def _has_repo_url(text: str) -> bool:
-    """True if the text still carries the placeholder OR a real http(s) URL."""
+    """True if the text carries the repository install URL (http(s))."""
     return _REPO_URL_MARKER in text or "http://" in text or "https://" in text
 
 
@@ -32,10 +32,10 @@ def test_notebook_is_valid_json():
     assert isinstance(nb["cells"], list) and len(nb["cells"]) >= 6
 
 
-def test_notebook_installs_from_placeholder():
+def test_notebook_installs_from_repo() -> None:
     code = _code_text()
     assert "install" in code and "git+" in code
-    assert _has_repo_url(code)  # placeholder before set_repo_url, URL after
+    assert _has_repo_url(code)  # installs from the repository (git+ URL)
 
 
 def test_notebook_calls_engine_not_custom_analysis():

@@ -5,6 +5,33 @@ what is next, and known problems.
 
 ---
 
+## Post-publication audit pass (2026-10-30)
+
+The working tree was already published and green (see "Public repository
+check" below). A clean-up pass fixed the remaining inconsistencies without
+changing behaviour:
+
+- `_load_sample_for(name)` in `cli/main.py` now honours `name` (it previously
+  always returned the first sample) — the Phase 6 known limitation is gone.
+- Removed the now-false "until the repository is published" / "before
+  publishing" / placeholder-substitution text from README, the docs site
+  (quickstart, index, troubleshooting), docs/DISCIPLINE_PACKS.md,
+  docs/colab-notes.md, mkdocs.yml and packs.yaml (the repo is public).
+- `docs_site/index.md` platform links now point at real anchors
+  (`quickstart.md#macos` etc.); enabled tabbed `slugify` in mkdocs.yml so the
+  tabs generate readable anchors.
+- README "Available analyses" table now lists all 19 built analyses (was 3).
+- Renamed the stale marker test in `tests/test_docs_phase11.py` to assert the
+  real repository URL instead of a removed `TODO-VERIFY` marker.
+- `tests/test_notebook.py` names/docstrings updated ("placeholder" → "repo").
+
+Verified after the changes: ruff clean, `pytest` **359 passed** (no
+regression), and the mkdocs build exits 0 with **zero WARNING/ERROR lines**.
+
+Full rationale in `docs/DECISIONS.md` ("Post-publication audit pass").
+
+---
+
 ## Phase 12 — Release preparation (DONE, 2026-10-29)
 
 ### What is done

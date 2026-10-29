@@ -69,13 +69,14 @@ def test_analysis_docs_are_generated_and_current() -> None:
     assert "current" in (proc.stdout + proc.stderr).lower()
 
 
-def test_install_commands_use_placeholder_and_are_marked() -> None:
-    """Install blocks keep https://github.com/mysteriousammw/auphoria and carry a TODO-VERIFY note."""
+def test_install_commands_use_real_repo_url() -> None:
+    """Install blocks in the quickstart carry the public repository URL."""
     quickstart = (REPO_ROOT / "docs_site" / "quickstart.md").read_text(encoding="utf-8")
-    mkdocs_yml = (REPO_ROOT / "mkdocs.yml").read_text(encoding="utf-8")
     assert "https://github.com/mysteriousammw/auphoria" in quickstart
     assert "pipx install git+https://github.com/mysteriousammw/auphoria" in quickstart
-    assert "TODO-VERIFY" in mkdocs_yml
+    # The docs site itself references the same repository (mkdocs repo_url).
+    mkdocs_yml = (REPO_ROOT / "mkdocs.yml").read_text(encoding="utf-8")
+    assert "https://github.com/mysteriousammw/auphoria" in mkdocs_yml
 
 
 def test_demo_video_scripts_exist() -> None:

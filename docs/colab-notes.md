@@ -5,7 +5,7 @@ Colab. This page is the human checklist the automated test
 (`tests/test_colab_phase5.py`) cannot replace, plus what the notebook can and
 cannot promise.
 
-## Before publishing (local check, 2 minutes)
+## Local check (2 minutes)
 
 The automated suite already executes the notebook end-to-end with a fake
 `google.colab` (see `tests/test_colab_phase5.py`). For a quick human pass:
@@ -22,8 +22,8 @@ Both must pass before touching a real Colab session.
 1. **Open** https://colab.research.google.com → Upload → pick
    `notebooks/auphoria_colab.ipynb`.
 2. **Runtime → Run all** (or run the numbered cells one by one).
-3. **Cell 1 (install):** wait for `AUPHORIA <version> ready.` If the
-   repository is not yet published, use the zip install:
+3. **Cell 1 (install):** wait for `AUPHORIA <version> ready.` If you want to
+   test local, uncommitted changes from a source tree, use the zip install:
 
    - On your laptop: `zip -r auphoria_src.zip auphoria/ -x "*.venv/*"
      -x "*__pycache__*"` from the folder containing `pyproject.toml`.

@@ -48,24 +48,6 @@ uvx --from git+https://github.com/mysteriousammw/auphoria auphoria
 
 > On Windows `uvx` works the same way inside PowerShell or WSL.
 
-### Until the repository is published
-
-The `https://github.com/mysteriousammw/auphoria` above is replaced with the real address in a later
-step (see `docs/PUBLISH_CHECKLIST.md`). Until then, install **locally** from
-the source tree:
-
-```
-cd auphoria                     # the folder with pyproject.toml
-python -m venv .venv            # Python 3.10, 3.11 or 3.12
-.venv/bin/pip install -e .      # Windows: .venv\Scripts\pip install -e .
-.venv/bin/auphoria --version    # Windows: .venv\Scripts\auphoria --version
-.venv/bin/auphoria doctor
-```
-
-`pip install -e .` installs AUPHORIA in editable ("development") mode so the
-code on disk is exactly what you run. This is only for the local build; once
-the repository is public, use the `pipx` / `uvx` commands above.
-
 ### Optional discipline packs
 
 The core install is deliberately light (numpy, pandas, scipy, matplotlib,
@@ -92,14 +74,8 @@ try an analysis whose pack isn't installed, AUPHORIA tells you the exact
 command to run instead of crashing — `auphoria packs` lists them all, and
 `auphoria list --pack health` shows a pack's analyses.
 
-**Locally (before publishing)** the same extras install from the source tree:
-
-```bash
-.venv/bin/pip install -e ".[health]"
-```
-
-The `https://github.com/mysteriousammw/auphoria` is replaced with the real address after upload
-(see `docs/PUBLISH_CHECKLIST.md`).
+If you are developing from the source tree, the same extras install with
+`.venv/bin/pip install -e ".[health]"`.
 
 ---
 
@@ -146,11 +122,33 @@ auphoria run --data ./plant_growth.csv --analysis ttest --outcome height_cm --gr
 
 ### Available analyses (maturity: experimental)
 
-| ID            | Name                        | What it does                                   |
-|---------------|-----------------------------|------------------------------------------------|
-| `summary`     | Descriptive summary         | Mean, median, SD, quartiles; counts/percentages|
-| `ttest`       | Independent-samples t-test  | Compare a numeric outcome across two groups    |
-| `correlation` | Pearson correlation         | Strength/direction of a linear relationship    |
+| ID                    | Name                                          | What it does                                                             |
+|-----------------------|-----------------------------------------------|--------------------------------------------------------------------------|
+| `summary`             | Descriptive Summary                            | Mean, median, SD, quartiles; counts/percentages                          |
+| `describe`            | Describe My Data                               | Data-card audit: types, missingness, duplicates, outliers, suspicious values |
+| `ttest`               | Independent-Samples t-Test                     | Compare a numeric outcome across two independent groups                  |
+| `ttest-paired`        | Paired-Samples t-Test                          | Compare before/after measurements on the same subjects                   |
+| `correlation`         | Pearson Correlation                            | Strength/direction of a linear relationship between two numeric variables|
+| `spearman-correlation`| Spearman Rank Correlation                      | Monotonic relationship between two variables, based on ranks             |
+| `chi-square`          | Chi-Square Test of Independence                | Association between two categorical variables                            |
+| `anova-oneway`        | One-Way ANOVA                                  | Compare a numeric outcome across three or more independent groups        |
+| `mann-whitney`        | Mann-Whitney U Test                            | Compare two independent groups when data are not normal                  |
+| `kaplan-meier`        | Kaplan-Meier Survival Analysis                 | Time-until-event between groups, handling dropouts                       |
+| `cox-regression`      | Cox Proportional-Hazards Regression            | Which factors relate to the risk of an event over time                   |
+| `pca`                 | Principal Component Analysis                   | Reduce many numeric variables to a few combined scores                   |
+| `ml-classification-eval` | ML Classification Evaluation                | How well a classifier predicts categories, honestly evaluated            |
+| `ml-regression-eval`  | ML Regression Evaluation                       | How well a predictive model matches continuous values                    |
+| `clustering-kmeans`   | K-Means Clustering                             | Group similar observations into clusters                                 |
+| `ancova`              | Analysis of Covariance (ANCOVA)                | Group differences on an outcome after controlling for a covariate        |
+| `mixed-effects`       | Linear Mixed-Effects Model                     | Predictors of a numeric outcome in clustered / nested / repeated data    |
+| `factor-analysis`     | Exploratory Factor Analysis (EFA)              | Group measured items into a few underlying latent dimensions             |
+| `diagnostic-test`     | Diagnostic Test Performance                    | Sensitivity, specificity, ROC / AUC of a test or model                   |
+
+Advanced analyses (`ancova`, `mixed-effects`, `pca`, `factor-analysis`,
+`clustering-kmeans`, `kaplan-meier`, `cox-regression`, `diagnostic-test`,
+`ml-classification-eval`, `ml-regression-eval`) live in the optional
+discipline packs and show a "needs expert review" notice when used outside
+their intended conditions.
 
 List all analyses and their details with:
 

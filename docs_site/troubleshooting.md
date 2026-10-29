@@ -45,7 +45,7 @@ the relevant pack:
 
 ```bash
 pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
-# or before publishing:
+# or, if you are installing from a local source tree:
 pip install -e ".[health]"
 ```
 
