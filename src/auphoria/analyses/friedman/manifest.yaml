@@ -1,0 +1,69 @@
+id: friedman
+name: Friedman Test
+maturity: experimental
+description: >
+  Tests whether at least one time point (repeated measurement) differs from
+  the others for a numeric outcome measured on the same subjects at two or
+  more times, without assuming normally distributed data. It is the
+  non-parametric alternative to repeated-measures ANOVA. Reports the chi2
+  (Friedman) statistic, degrees of freedom, the p-value, medians by time,
+  and pairwise post-hoc comparisons with a Bonferroni correction.
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric or ordinal outcome measured repeatedly (e.g. score).
+    constraints: must be a numeric column
+  - name: subject
+    kind: categorical-column
+    required: true
+    description: The column identifying each subject measured repeatedly (e.g. id).
+    constraints: must identify each subject
+  - name: time
+    kind: categorical-column
+    required: true
+    description: The column identifying the time point or condition (e.g. week).
+    constraints: must have two or more categories
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+outputs:
+  - descriptives table by time point (n, median, IQR)
+  - Friedman test result table (chi2, df, p-value, n subjects, significance)
+  - pairwise post-hoc table (Wilcoxon signed-rank, Bonferroni-corrected p-values)
+  - median-by-time line/box figure
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The outcome is measured at least twice (preferably three or more times)
+    on the SAME subjects, so the measurements at different times are related.
+  - The outcome is measured on at least an ordinal scale, so values can be
+    ranked.
+  - The subjects are a sample from the population of interest; the test does
+    not assume normality but does assume the blocking (subject) effect is
+    present in the data.
+limitations:
+  - Needs two or more time points and at least three subjects (with fewer
+    than three subjects the chi2 approximation is unreliable).
+  - A significant result shows SOME time point tends to rank higher or lower
+    than the others, but it does not say WHICH times differ — follow up with
+    the pairwise post-hoc table.
+  - It is a test on ranks, not on the mean values; it answers whether the
+    distributions differ, not by how much.
+  - Missing cells within a subject mean that subject cannot be used at all
+    (the subject must have an outcome at every time). Incomplete subjects are
+    dropped and reported, never imputed.
+pack:
+  - social
+  - health
+requires: []
+reference: >-
+  3 treatments x 6 subjects; cross-checked vs scipy.stats.friedmanchisquare
+test_data:
+  - "Deterministic synthetic data in tests/test_friedman.py: 3 time points x 6
+     subjects, cross-checked against SciPy's reference implementation with the
+     Bonferroni-corrected post-hoc verified against raw p-values."

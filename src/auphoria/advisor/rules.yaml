@@ -134,6 +134,42 @@ rules:
     not_fit: "Needs a numeric/ordinal outcome and a group column with THREE or more categories (for 2 groups use Mann-Whitney)."
     small_sample: "Sample too small for Kruskal-Wallis (needs at least 12 non-missing rows over 3+ groups)."
 
+  - analysis: anova-repeated
+    question: compare
+    priority: 5
+    needs:
+      min_numeric: 1
+      min_categorical: 2
+      groups: "3plus"
+      min_rows: 18
+    reason: "The same subjects are measured at 3+ time points (a time column + subject column) — repeated-measures ANOVA says whether the outcome changes over time while accounting for the subjects."
+    not_fit: "Needs a numeric outcome, a subject (id) column, and a time column with 3+ points measured on the SAME subjects."
+    small_sample: "Too few subjects/occasions for repeated-measures ANOVA (needs at least 18 rows and 3 time points on each subject)."
+
+  - analysis: friedman
+    question: compare
+    priority: 7
+    needs:
+      min_numeric: 1
+      min_categorical: 2
+      groups: "3plus"
+      min_rows: 18
+    reason: "Repeated measures on the same subjects at 3+ times but the outcome is skewed or not normal — the non-parametric Friedman test."
+    not_fit: "Needs a numeric/ordinal outcome, a subject column, and a time column with 3+ points on the same subjects."
+    small_sample: "Too few complete subjects/times for the Friedman test (needs at least 18 rows and 3 time points)."
+
+  - analysis: differential-expression
+    question: compare
+    priority: 8
+    needs:
+      min_numeric: 4
+      min_categorical: 1
+      groups: "2"
+      min_rows: 6
+    reason: "Counts in many numeric columns with a two-condition group column — differential expression finds which features differ between the conditions (RNA-seq style)."
+    not_fit: "Needs many numeric count columns (samples) and a two-category condition column."
+    small_sample: "Too few samples for reliable differential expression (needs at least 4 samples, preferably 6+ per condition)."
+
   - analysis: mixed-effects
     question: compare
     priority: 70
@@ -186,6 +222,16 @@ rules:
     not_fit: "Needs TWO binary (exactly two categories) columns: an exposure and an outcome."
     small_sample: "Too few rows for a stable risk ratio (needs at least 10, and events in each group)."
 
+  - analysis: bland-altman
+    question: relate
+    priority: 40
+    needs:
+      min_numeric: 2
+      min_rows: 10
+    reason: "Two measurements of the SAME quantity (two methods on the same subjects) — Bland-Altman shows how much they agree and the limits of agreement."
+    not_fit: "Needs two numeric columns measuring the same thing in the same units (two methods/raters on the same observations)."
+    small_sample: "Too few pairs for stable agreement limits (needs at least 10)."
+
   - analysis: summary
     question: relate
     priority: 90
@@ -233,6 +279,18 @@ rules:
     not_fit: "Needs a numeric target plus at least two numeric feature columns (3+ numeric columns total)."
     small_sample: "Too few rows for a trustworthy ML evaluation (needs at least 30; more is better)."
 
+  - analysis: panel-regression
+    question: predict
+    priority: 13
+    needs:
+      min_numeric: 2
+      min_categorical: 2
+      groups: "3plus"
+      min_rows: 30
+    reason: "Repeated observations of the SAME entities over time (an entity column + time column + numeric outcome) — panel/fixed-effects regression removes the time-invariant entity effects from your predictor effects."
+    not_fit: "Needs a numeric outcome, an entity (id) column, a time column, and at least one numeric predictor."
+    small_sample: "Too few entities/observations for a stable panel regression (needs at least 8 entities and 30 rows)."
+
   - analysis: ml-classification-eval
     question: predict
     priority: 20
@@ -279,6 +337,17 @@ rules:
     not_fit: "Needs a time-to-event column, an event (0/1) column, and at least one covariate."
     small_sample: "Too few rows for a stable Cox model (needs at least 30 and enough events)."
 
+  - analysis: time-series
+    question: over_time
+    priority: 30
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      min_rows: 24
+    reason: "A single time series with a datetime column and a numeric value — splits it into trend, seasonal and residual and fits a trend."
+    not_fit: "Needs a datetime/date column and a single numeric value column measured over time."
+    small_sample: "Too short a series for decomposition (needs at least 2 full seasonal periods)."
+
   # ------------------------------------------------------------ reliability
   - analysis: cronbach-alpha
     question: reliability
@@ -289,6 +358,16 @@ rules:
     reason: "Several numeric items that should measure the same thing — Cronbach's alpha tells you how consistently the scale hangs together."
     not_fit: "Needs at least TWO numeric item columns (the items of your scale)."
     small_sample: "Too few rows for a stable reliability estimate (needs at least 30 responses)."
+
+  - analysis: sem
+    question: reliability
+    priority: 7
+    needs:
+      min_numeric: 3
+      min_rows: 30
+    reason: "Several numeric items you hypothesise load on ONE latent construct — a confirmatory one-factor SEM reports CFI/RMSEA and fit quality."
+    not_fit: "Needs at least THREE numeric item columns."
+    small_sample: "Too few rows for a trustworthy confirmatory factor analysis (needs at least 30; 100+ preferred)."
 
   - analysis: factor-analysis
     question: reliability

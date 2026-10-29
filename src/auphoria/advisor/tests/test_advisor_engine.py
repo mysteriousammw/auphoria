@@ -123,12 +123,12 @@ RECOMMEND_CASES = [
     ("compare-2cat", "compare", two_categorical, None,
      ["chi-square", "summary", "describe"]),
 
-    # relate — two numeric -> correlation (+ rank alternative)
+    # relate — two numeric -> correlation (+ rank alternative, agreement)
     ("relate-2numeric", "relate", two_numeric, None,
-     ["correlation", "spearman-correlation", "summary", "describe"]),
+     ["correlation", "spearman-correlation", "bland-altman", "summary", "describe"]),
     ("relate-2numeric-roles", "relate", two_numeric,
      {"x": "outcome", "y": "outcome"},
-     ["correlation", "spearman-correlation", "summary", "describe"]),
+     ["correlation", "spearman-correlation", "bland-altman", "summary", "describe"]),
     ("relate-2cat", "relate", two_categorical, None,
      ["chi-square", "odds-and-risk", "summary", "describe"]),
 

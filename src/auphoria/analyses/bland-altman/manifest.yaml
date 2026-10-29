@@ -1,0 +1,78 @@
+id: bland-altman
+name: Bland-Altman Agreement
+maturity: experimental
+levels: [intermediate]
+disciplines:
+  - medicine
+  - health
+  - life-sciences
+  - biology
+  - engineering
+  - agriculture
+description: >
+  Assesses how closely two measurement methods agree when both measure the
+  same quantity on the same subjects (one row per subject). It reports the
+  mean difference (bias), the SD of the differences, the 95% limits of
+  agreement (bias +/- 1.96 * SD), confidence intervals, a Bland-Altman plot,
+  and a proportional-bias check (does the difference grow with the size of
+  the measurement?). The limits are NOT a pass/fail verdict by themselves:
+  you must judge them against an acceptable difference you choose in advance.
+inputs:
+  - name: method_a
+    kind: numeric-column
+    required: true
+    description: The first measurement method (e.g. the test instrument or method under evaluation).
+    constraints: must be a numeric column
+  - name: method_b
+    kind: numeric-column
+    required: true
+    description: The second measurement method (e.g. the reference / established method).
+    constraints: must be a numeric column
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: "Significance level for the confidence intervals and the proportional-bias check."
+outputs:
+  - agreement statistics table (n, bias, SD of differences, 95% limits of agreement, SE of bias)
+  - limits of agreement table with 95% confidence intervals
+  - proportional-bias check table (correlation |difference| vs mean, r and p)
+  - Bland-Altman plot (difference vs mean, bias line, limits, shaded band, regression line)
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - Both methods measure the same underlying quantity on a continuous
+    (numeric) scale, on the same subjects, one pair per row are genuine
+    matched measurements.
+  - The differences (method_a - method_b) are roughly normally distributed;
+    the limits of agreement assume this. Checked with Shapiro-Wilk when the
+    sample size allows.
+  - The bias and limits of agreement do not change with the magnitude being
+    measured (no proportional bias). A correlation between |difference| and
+    the mean is checked and flagged as a WARN when significant.
+  - At least three complete pairs are needed for the analysis to run.
+limitations:
+  - "The limits of agreement are NOT a pass/fail check by themselves: whether
+    a given bias and spread is acceptable must be judged externally against a
+    pre-chosen clinically or professionally acceptable difference."
+  - With small samples the limits of agreement are very unstable (wide
+    confidence intervals); results are preliminary.
+  - If the differences grow with magnitude (proportional bias), a log-scale
+    analysis is more appropriate.
+  - The bias differing from zero (shown by a t-test) is not the same as poor
+    agreement, and an insignificant t-test is not proof of good agreement.
+  - This analysis does not say which method is 'more accurate' — it only
+    measures how well they agree with each other.
+  - Missing values in the two chosen columns are excluded (and reported), not
+    imputed.
+reference: >-
+    Hand-computed synthetic example (differences -0.2, 0.1, -0.1, 0.0, 0.1 ->
+    bias -0.02, SD 0.13038, limits -0.2756 and 0.2356); cross-checked against
+    a simple in-test hand routine on a larger random dataset.
+test_data:
+  - "Deterministic synthetic data in tests/test_bland_altman.py: method_a =
+    [1,2,3,4,5], method_b = [1.2,1.9,3.1,4.0,4.9] (differences -0.2,0.1,-0.1,
+    0.0,0.1 -> bias -0.02, SD 0.13038, lower LoA -0.2756, upper LoA 0.2356),
+    plus a larger engineered dataset with known proportional bias."

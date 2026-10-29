@@ -102,6 +102,9 @@ nav:
       - analyses/logistic-regression.md
       - analyses/odds-and-risk.md
       - analyses/cronbach-alpha.md
+      - analyses/anova-repeated.md
+      - analyses/friedman.md
+      - analyses/bland-altman.md
       - analyses/ancova.md
       - analyses/mixed-effects.md
       - analyses/pca.md
@@ -109,6 +112,8 @@ nav:
       - analyses/clustering-kmeans.md
       - analyses/kaplan-meier.md
       - analyses/cox-regression.md
+      - analyses/panel-regression.md
+      - analyses/time-series.md
       - analyses/diagnostic-test.md
       - analyses/ml-classification-eval.md
       - analyses/ml-regression-eval.md

@@ -5,6 +5,64 @@ what is next, and known problems.
 
 ---
 
+## Wave 2 — complete P2/P3 named plans (2026-10-30)
+
+All seven Wave 2 analyses built and verified (each = manifest + analysis +
+README + per-analysis tests, then wired docs/auto-demos/README/dashboard):
+
+- **`anova-repeated`** — repeated-measures ANOVA in long format: Mauchly
+  sphericity, within-subjects F, partial eta², Bonferroni post-hocs.
+- **`friedman`** — non-parametric repeated measures (3+ time points), scipy
+  `friedmanchisquare` + Wilcoxon-style post-hoc, no normality needed.
+- **`bland-altman`** — method-agreement: bias, 95% limits of agreement, LoA
+  plot with CI on the limits.
+- **`panel-regression`** — panel/longitudinal fixed-effects regression
+  (within-group estimator), cluster-robust SEs, Hausman-style indication.
+- **`time-series`** — seasonal-trend decomposition (additive) + linear trend
+  fit and residual checks on a single time-ordered series.
+- **`differential-expression`** — counts-matrix differential expression via
+  PyDESeq2 (Wald test, fdr_bh), MA-style volcano + per-gene tables. This is
+  the supervisor's sequencing-data module; runs on the bundled `counts`
+  sample.
+- **`sem`** — one-factor confirmatory factor analysis (semopy): loadings,
+  fit indices CFI/TLI/RMSEA/SRMR, factor correlation.
+
+**Supporting changes**
+- Five new deterministic sample datasets (repeated, bland_altman, panel,
+  time_series, counts, sem_items) registered in samples.py / _DATASETS /
+  build_all; CSVs built.
+- `rules.yaml` entries + advisor scenario-test expectations updated for all
+  seven.
+- Reference fixtures in `docs/validation/references.yaml`; analysis docs
+  pages generated; README "Available analyses" table now 32 rows (built ==
+  table, no count drift).
+- **Bug found & fixed**: the `demos` dict in `cli/main.py` had SEVEN
+  duplicate keys (a merge artefact) — the first copy carried the wrong role
+  mapping (e.g. anova-repeated used `group: time` instead of `group: subject`,
+  failing at runtime); Python silently kept the last (correct) copy. Removed
+  the dead duplicates; all demos re-verified.
+
+**Verified**
+- Full suite: 478 collected, all pass (ran chunked to survive the 8 GB box —
+  previous OOM was caused by one long pytest run; per-analysis + advisor
+  suites run in isolation first).
+- `ruff check` clean on all 7 new analyses and cli/main.py.
+- `gen_analysis_docs.py --check` and `gen_validation_dashboard.py --check`
+  both current.
+- Every `auphoria demo --analysis <id>` for the seven completes (Run
+  complete + results dir).
+- All 7 analyses have non-empty `what_does_not_tell` (checked live run.json).
+- Stale `.pytest_cache/v/cache/lastfailed` (3 renamed test node-IDs from
+  Wave 1) cleared.
+
+**Known problems / next**
+- Changes are UNCOMMITTED (untracked + modified). Next step: `git add` + a
+  "Wave 2" commit, then the push-and-verify loop
+  (`gh run list` → watch Tests → confirm all matrix rows), because Windows
+  may surface platform issues the 8 GB Mac cannot.
+
+---
+
 ## Wave 1 — complete P1 plan (2026-10-30)
 
 Built all six missing P1 analyses as a parallel batch (each = manifest +

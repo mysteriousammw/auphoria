@@ -1,0 +1,121 @@
+id: anova-repeated
+name: Repeated-Measures ANOVA
+maturity: experimental
+levels:
+  - intermediate
+  - advanced
+disciplines:
+  - psychology
+  - social-sciences
+  - education
+  - medicine
+  - public-health
+description: >-
+  Tests whether a numeric outcome changes across several time points measured
+  on the SAME subjects (a within-subject design). The data are in LONG format:
+  one row per subject per time point, with a subject id, a time column and the
+  numeric reading. The outcome is pivoted to wide (subject by time) and
+  analysed with statsmodels AnovaRM. It reports descriptives per time point,
+  Mauchly's sphericity test, the within-subjects ANOVA table (sum of squares,
+  df, mean square, F, p and a hand-computed partial eta-squared),
+  Bonferroni-corrected paired t-test post-hoc comparisons between time points,
+  and a line plot of the mean across time with faint per-subject trajectories.
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric reading measured repeatedly (e.g. reaction_time).
+    constraints: must be a numeric column
+  - name: subject
+    kind: categorical-column
+    required: true
+    description: The id column identifying each subject (e.g. participant_id).
+    constraints: must be a categorical column with distinct subject ids
+  - name: time
+    kind: categorical-column
+    required: true
+    description: The within-subject factor naming the repeated measurement (e.g. time_point).
+    constraints: must be a categorical column with two or more time points
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+outputs:
+  - descriptives per time point (n, mean, SD)
+  - Mauchly sphericity test (W, chi-square, df, p)
+  - within-subjects ANOVA table (sum of squares, df, mean square, F, p, partial eta-squared)
+  - Bonferroni-corrected paired t-test post-hoc comparisons between time points
+  - line plot of mean across time with faint per-subject trajectories
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - >-
+    The outcome is numeric and measured on the same subjects at every time
+    point (a within-subject, repeated-measures design).
+  - >-
+    Sphericity: the variances of the differences between every pair of time
+    points are roughly equal. This is checked with Mauchly's test and reported.
+    When it is violated (p < alpha) the ordinary repeated-measures F is only an
+    approximation and a mixed model is recommended.
+  - >-
+    The differences between time points are approximately normally distributed
+    (paired t-tests are reasonably robust for moderate samples).
+  - >-
+    No carry-over or order effects: measurement at one time point does not
+    change the value at the next simply because of the order in which they
+    were taken.
+  - >-
+    Every subject is measured at every included time point (no missing cells).
+    Missing values are excluded listwise with a warning, never imputed. If
+    that leaves any subject without a complete set of time points the analysis
+    refuses and suggests a mixed model instead.
+  - >-
+    Minimum sample size: at least 2 time points and at least 3 subjects are
+    required to run. Results with fewer than about 10 subjects are unstable and
+    are flagged for expert review.
+limitations:
+  - >-
+    A significant time effect only tells you the outcome changes across time.
+    It does NOT say which specific time points differ; that requires the
+    post-hoc comparisons.
+  - >-
+    With exactly 2 time points the repeated-measures F equals the squared
+    paired t-test and sphericity is not an issue (there is only one difference
+    to check).
+  - >-
+    A within-subject ANOVA does not prove causation, and the time factor is
+    treated as a simple categorical grouping that you have told it nothing else
+    about (no assumed spacing or trend shape).
+  - >-
+    Missing data is excluded listwise (and reported) but never imputed. Heavy
+    missingness biases the result, and a subject with an incomplete set of
+    time points is refused rather than silently averaged.
+  - >-
+    If sphericity is violated the p-value is only approximate. Consider a
+    Greenhouse-Geisser corrected test or a mixed-effects model.
+  - >-
+    This is an advanced analysis carried at experimental maturity. It emits a
+    prominent requirement for expert review when used with small samples, when
+    sphericity is violated, or when only 2 time points are available.
+pack:
+  - social
+  - health
+  - life-science
+requires:
+  - statsmodels
+reference: >-
+  Balanced 6-subject by 3-time synthetic dataset; the within-subjects F (and
+  its hand-computed partial eta-squared) are cross-checked against the same
+  statsmodels AnovaRM call in tests/test_anova_repeated.py; Mauchly W comes from
+  the within-subjects covariance matrix.
+test_data:
+  - >-
+    Deterministic synthetic data in tests/test_anova_repeated.py: a balanced
+    6-subject, 3-time long-format design (hand-computable sums of squares, F =
+    21.7857 on df(2, 10), partial eta-squared = 0.8133) compared against
+    statsmodels AnovaRM as the reference library, with paired t-test post-hoc
+    comparisons under Bonferroni correction; plus refusal and missing-data
+    fixtures for the guardrails.

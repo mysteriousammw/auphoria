@@ -535,6 +535,18 @@ def demo_command(
                                           "extra": {"reference": "true_status"}}),
         "ml-classification-eval": ("features", {"group": "label"}),
         "ml-regression-eval": ("features", {"outcome": "target"}),
+        "anova-repeated": ("repeated", {"outcome": "score", "group": "subject",
+                                        "extra": {"time": "time"}}),
+        "bland-altman": ("bland_altman", {"outcome": "method_a",
+                                          "extra": {"method_b": "method_b"}}),
+        "friedman": ("repeated", {"outcome": "score", "group": "subject",
+                                  "extra": {"time": "time"}}),
+        "panel-regression": ("panel", {"outcome": "profit", "group": "firm",
+                                       "extra": {"time": "year"}}),
+        "time-series": ("time_series", {"outcome": "value",
+                                        "extra": {"period": "period"}}),
+        "differential-expression": ("counts", {"group": "condition"}),
+        "sem": ("sem_items", {}),
     }
     if analysis not in demos:
         _handle_error(AuphoriaError(

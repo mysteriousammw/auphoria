@@ -52,6 +52,7 @@ packs:
     deps:
       - statsmodels>=0.13,<1
       - scikit-learn>=1.2,<2
+      - semopy>=2.3,<3
 
   - id: econ-eng
     name: Economics & Engineering

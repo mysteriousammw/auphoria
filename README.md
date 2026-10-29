@@ -139,22 +139,30 @@ auphoria run --data ./plant_growth.csv --analysis ttest --outcome height_cm --gr
 | `logistic-regression` | Binary Logistic Regression                     | Predict a yes/no outcome; odds ratios with confidence intervals         |
 | `odds-and-risk`       | Relative Risk & Odds Ratio                     | Risk/odds ratio from a 2×2 exposure × outcome table, with CIs           |
 | `cronbach-alpha`      | Cronbach's Alpha (Scale Reliability)           | How consistently a set of questionnaire items measure one thing         |
+| `anova-repeated`      | Repeated-Measures ANOVA                        | Compare a numeric outcome across time points measured on the same subjects |
+| `friedman`            | Friedman Test (Repeated Measures)              | Non-parametric repeated-measures: 3+ time points without normality       |
+| `bland-altman`        | Bland-Altman Agreement                         | Whether two measurement methods agree, with limits of agreement          |
 | `kaplan-meier`        | Kaplan-Meier Survival Analysis                 | Time-until-event between groups, handling dropouts                       |
 | `cox-regression`      | Cox Proportional-Hazards Regression            | Which factors relate to the risk of an event over time                   |
 | `pca`                 | Principal Component Analysis                   | Reduce many numeric variables to a few combined scores                   |
 | `ml-classification-eval` | ML Classification Evaluation                | How well a classifier predicts categories, honestly evaluated            |
 | `ml-regression-eval`  | ML Regression Evaluation                       | How well a predictive model matches continuous values                    |
+| `panel-regression`    | Panel / Longitudinal (Fixed-Effects) Regression| Within-group effect of predictors over time on a numeric outcome         |
+| `time-series`         | Time-Series Decomposition & Trend              | Split a series into trend, seasonal and residual; fit a trend            |
+| `differential-expression` | Differential Expression (Counts)           | Which genes/features differ in counts between conditions (RNA-seq style) |
+| `sem`                 | Structural Equation Model (1-factor CFA)       | Whether observed items load on one latent construct                      |
 | `clustering-kmeans`   | K-Means Clustering                             | Group similar observations into clusters                                 |
 | `ancova`              | Analysis of Covariance (ANCOVA)                | Group differences on an outcome after controlling for a covariate        |
 | `mixed-effects`       | Linear Mixed-Effects Model                     | Predictors of a numeric outcome in clustered / nested / repeated data    |
 | `factor-analysis`     | Exploratory Factor Analysis (EFA)              | Group measured items into a few underlying latent dimensions             |
 | `diagnostic-test`     | Diagnostic Test Performance                    | Sensitivity, specificity, ROC / AUC of a test or model                   |
 
-Advanced analyses (`ancova`, `mixed-effects`, `pca`, `factor-analysis`,
-`clustering-kmeans`, `kaplan-meier`, `cox-regression`, `diagnostic-test`,
-`ml-classification-eval`, `ml-regression-eval`) live in the optional
-discipline packs and show a "needs expert review" notice when used outside
-their intended conditions.
+Advanced analyses (`ancova`, `mixed-effects`, `anova-repeated`, `pca`,
+`factor-analysis`, `clustering-kmeans`, `kaplan-meier`, `cox-regression`,
+`bland-altman`, `panel-regression`, `time-series`, `differential-expression`,
+`sem`, `diagnostic-test`, `ml-classification-eval`, `ml-regression-eval`) live
+in the optional discipline packs and show a "needs expert review" notice when
+used outside their intended conditions.
 
 List all analyses and their details with:
 

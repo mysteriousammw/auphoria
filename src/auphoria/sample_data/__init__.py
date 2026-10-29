@@ -25,6 +25,12 @@ _DATASETS = {
     "diagnosis": "diagnosis.csv",
     "features": "features.csv",
     "cohort": "cohort.csv",
+    "repeated": "repeated.csv",
+    "bland_altman": "bland_altman.csv",
+    "panel": "panel.csv",
+    "time_series": "time_series.csv",
+    "counts": "counts.csv",
+    "sem_items": "sem_items.csv",
 }
 
 

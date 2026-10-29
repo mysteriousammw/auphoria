@@ -141,6 +141,118 @@ def cohort(n_rows: int = 120, seed: int = 53) -> pd.DataFrame:
     return df
 
 
+def repeated(n_subjects: int = 24, n_times: int = 3, seed: int = 61) -> pd.DataFrame:
+    """Repeated measures in LONG format (repeated-measures ANOVA / Friedman).
+
+    Each subject (id) is measured at every time point (time = t1..t3). The
+    outcome rises over time with a per-subject random intercept, so a
+    repeated-measures design (not an independent-samples test) is the honest
+    tool.
+    """
+    rng = np.random.default_rng(seed)
+    rows = []
+    for s in range(n_subjects):
+        intercept = rng.normal(0, 2.5)
+        base = rng.normal(55.0 + intercept, 4.0)
+        for t, lift in enumerate((0.0, 3.0, 6.0)):
+            score = base + lift + rng.normal(0, 1.8)
+            rows.append({
+                "subject": f"S{s+1:02d}",
+                "time": f"t{t+1}",
+                "score": round(score, 1),
+            })
+    return pd.DataFrame(rows)
+
+
+def bland_altman(n_pairs: int = 40, seed: int = 67) -> pd.DataFrame:
+    """Two measures of the same quantity (Bland-Altman agreement demo).
+
+    method_a and method_b measure the same value, with a small systematic
+    bias (method_b reads ~0.6 lower on average) and measurement noise, so the
+    limits of agreement are meaningful.
+    """
+    rng = np.random.default_rng(seed)
+    true = rng.normal(100.0, 10.0, n_pairs)
+    a = true + rng.normal(0, 1.5, n_pairs)
+    b = true - 0.6 + rng.normal(0, 1.8, n_pairs)
+    return pd.DataFrame({
+        "subject": [f"P{i+1:02d}" for i in range(n_pairs)],
+        "method_a": np.round(a, 1).astype(float),
+        "method_b": np.round(b, 1).astype(float),
+    })
+
+
+def panel(n_firms: int = 30, n_years: int = 5, seed: int = 71) -> pd.DataFrame:
+    """Panel (longitudinal) data (panel / fixed-effects regression demo).
+
+    Repeated firm-year observations with an individual (firm) effect and
+    time-varying covariates, so a panel regression (with firm fixed effects)
+    is appropriate.
+    """
+    rng = np.random.default_rng(seed)
+    rows = []
+    for f in range(n_firms):
+        effect = rng.normal(0, 3.0)  # time-invariant firm effect
+        for yr in range(n_years):
+            invest = rng.normal(20.0, 6.0)
+            market = rng.normal(8.0, 3.0)
+            profit = 5.0 + effect + 0.5 * invest + 1.4 * market \
+                + rng.normal(0, 2.0)
+            rows.append({
+                "firm": f"f{f+1:02d}",
+                "year": 2019 + yr,
+                "invest": round(invest, 2),
+                "market_value": round(market, 2),
+                "profit": round(profit, 2),
+            })
+    return pd.DataFrame(rows)
+
+
+def time_series(n: int = 120, seed: int = 73) -> pd.DataFrame:
+    """A single time series (time-series decomposition / trend demo).
+
+    A monthly-ish series with a trend + seasonal component + noise, so
+    trend/seasonal decomposition is meaningful.
+    """
+    rng = np.random.default_rng(seed)
+    t = np.arange(n)
+    trend = 0.2 * t
+    seasonal = 3.0 * np.sin(2 * np.pi * t / 12.0)
+    noise = rng.normal(0, 1.5, n)
+    value = trend + seasonal + noise
+    return pd.DataFrame({
+        "period": pd.date_range("2020-01-01", periods=n, freq="MS"),
+        "value": np.round(value, 2).astype(float),
+    })
+
+
+def counts(n_samples_per: int = 6, n_genes: int = 100, seed: int = 79) -> pd.DataFrame:
+    """A small RNA-seq-style counts matrix (differential-expression demo).
+
+    One row per biological sample; a 'condition' column (control/treated);
+    the remaining columns are per-gene integer counts. A handful of genes
+    are over-expressed in 'treated' so differential expression is real.
+    """
+    rng = np.random.default_rng(seed)
+    rows = []
+    de_up = set(range(10, 18))      # genes over-expressed in treated
+    de_down = set(range(40, 48))    # genes under-expressed in treated
+    for i in range(n_samples_per * 2):
+        cond = "control" if i < n_samples_per else "treated"
+        size = rng.integers(4, 8) * 1_000_000
+        exp = size / 1_000_000.0
+        rec = {"condition": cond}
+        for g in range(n_genes):
+            base = rng.lognormal(mean=3.0, sigma=0.5)
+            if cond == "treated" and g in de_up:
+                base *= 4.0
+            if cond == "treated" and g in de_down:
+                base *= 0.25
+            rec[f"g{g:03d}"] = int(rng.poisson(base * exp))
+        rows.append(rec)
+    return pd.DataFrame(rows)
+
+
 def build_all(out_dir: str | None = None) -> dict[str, str]:
     """(Re)generate the bundled CSVs. Returns {name: path}."""
     from pathlib import Path
@@ -167,6 +279,12 @@ def build_all(out_dir: str | None = None) -> dict[str, str]:
         "diagnosis": to_csv(diagnosis(), "diagnosis"),
         "features": to_csv(features(), "features"),
         "cohort": to_csv(cohort(), "cohort"),
+        "repeated": to_csv(repeated(), "repeated"),
+        "bland_altman": to_csv(bland_altman(), "bland_altman"),
+        "panel": to_csv(panel(), "panel"),
+        "time_series": to_csv(time_series(), "time_series"),
+        "counts": to_csv(counts(), "counts"),
+        "sem_items": to_csv(sem_items(), "sem_items"),
     }
     return out
 
@@ -210,6 +328,23 @@ def schools(n_schools: int = 6, per_school: int = 12, seed: int = 37) -> pd.Data
             "score": np.round(score, 1).astype(float),
         }))
     return pd.concat(rows, ignore_index=True)
+
+
+def sem_items(n_rows: int = 300, seed: int = 43) -> pd.DataFrame:
+    """One-factor questionnaire items (structural-equation-model demo).
+
+    Four items all load onto a single latent factor with strong, positive
+    loadings, so a one-factor CFA fits well (CFI near 1, RMSEA < 0.06). Only
+    the numeric item columns are returned because the CFA treats every
+    numeric column as an item.
+    """
+    rng = np.random.default_rng(seed)
+    F = rng.normal(0, 1, n_rows)
+    loadings = [0.80, 0.70, 0.75, 0.65]
+    items = {}
+    for i, lam in enumerate(loadings, start=1):
+        items[f"item{i}"] = np.round(lam * F + rng.normal(0, 0.6, n_rows), 2)
+    return pd.DataFrame(items)
 
 
 def psych(n_rows: int = 120, seed: int = 41) -> pd.DataFrame:
