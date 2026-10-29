@@ -159,7 +159,7 @@ class Engine:
                 "Something unexpected went wrong while running the analysis.",
                 hint=(
                     "Details were written to log.txt in the results folder. "
-                    "Report this to the AUPHORIA maintainers (REPO_URL_PLACEHOLDER)."
+                    "Report this to the AUPHORIA maintainers (https://github.com/mysteriousammw/auphoria)."
                     if results_dir is not None
                     else "Please retry and report this to the maintainers."
                 ),
@@ -272,7 +272,7 @@ class Engine:
                 "The analysis ran into an unexpected error.",
                 hint=(
                     "The technical details are in log.txt. Report this to the "
-                    "maintainers (REPO_URL_PLACEHOLDER)."
+                    "maintainers (https://github.com/mysteriousammw/auphoria)."
                 ),
             ) from exc
 

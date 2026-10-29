@@ -8,7 +8,7 @@ receives security fixes.
 ## Reporting a vulnerability
 
 Please **do not open a public issue** for a security problem. Instead email
-the maintainers directly (address managed at REPO_URL_PLACEHOLDER) with:
+the maintainers directly (address managed at https://github.com/mysteriousammw/auphoria) with:
 
 1. A short description of the issue.
 2. The steps or code needed to reproduce it.

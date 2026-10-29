@@ -48,7 +48,7 @@ is what 0.1.0 ships.
   WARNING/ERROR (encodes the acceptance criterion).
 - **`tests/test_docs_phase11.py`** (5 tests) — docs build without warnings,
   required pages exist, analysis docs current, install blocks use
-  REPO_URL_PLACEHOLDER + TODO-VERIFY, demo scripts exist.
+  https://github.com/mysteriousammw/auphoria + TODO-VERIFY, demo scripts exist.
 - New `docs` extra (`mkdocs`, `mkdocs-material`, `mkdocs-include-markdown`);
   mkdocs deps added to `dev`.
 
@@ -83,7 +83,7 @@ is what 0.1.0 ships.
   registry (id, name, description, heavy deps) ships in the wheel.
 - **Deps-guard**: before running an analysis, the engine refuses if a manifest
   `requires` module is missing, printing the exact pack install command
-  (`pip install "auphoria[<pack>] @ git+REPO_URL_PLACEHOLDER"`) instead of a
+  (`pip install "auphoria[<pack>] @ git+https://github.com/mysteriousammw/auphoria"`) instead of a
   raw ImportError.
 - **Manifest `pack` (list) + `requires` fields**, validated by pydantic, added
   to the 10 advanced analyses.
@@ -91,7 +91,7 @@ is what 0.1.0 ships.
   and **`auphoria list --pack <name>`** filter; `auphoria doctor` reports pack
   dependency status.
 - **`docs/DISCIPLINE_PACKS.md`** and a README "Optional discipline packs"
-  section with exact REPO_URL_PLACEHOLDER install syntax.
+  section with exact https://github.com/mysteriousammw/auphoria install syntax.
 - **`tests/test_packs_phase9.py`** covering the registry, deps-guard
   messaging, and the CLI commands.
 
@@ -196,4 +196,4 @@ is what 0.1.0 ships.
 - Offline install still needs one internet step (pip); docs cover Colab as the
   no-install path.
 
-[0.1.0]: REPO_URL_PLACEHOLDER
+[0.1.0]: https://github.com/mysteriousammw/auphoria

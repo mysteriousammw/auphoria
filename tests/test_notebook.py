@@ -5,13 +5,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-REPO_URL_PLACEHOLDER = "REPO_URL_PLACEHOLDER"
+_REPO_URL_MARKER = "https://github.com/mysteriousammw/auphoria"
 NOTEBOOK_PATH = Path(__file__).resolve().parent.parent / "notebooks" / "auphoria_colab.ipynb"
 
 
 def _has_repo_url(text: str) -> bool:
     """True if the text still carries the placeholder OR a real http(s) URL."""
-    return REPO_URL_PLACEHOLDER in text or "http://" in text or "https://" in text
+    return _REPO_URL_MARKER in text or "http://" in text or "https://" in text
 
 
 def _load():

@@ -2,7 +2,7 @@
 
 Covers: the pack registry (packs.yaml), the deps-guard (missing_requires /
 deps_message), the CLI `packs` and `list --pack` commands, and that the
-REPO_URL_PLACEHOLDER install syntax is what the guard teaches.
+https://github.com/mysteriousammw/auphoria install syntax is what the guard teaches.
 """
 
 from __future__ import annotations
@@ -39,10 +39,10 @@ def test_pack_deps_are_heavy_and_optional():
 
 def test_install_commands_use_placeholder():
     cmd = install_command_git("health")
-    assert "REPO_URL_PLACEHOLDER" in cmd
+    assert "https://github.com/mysteriousammw/auphoria" in cmd
     assert "auphoria[health]" in cmd
     # Local form has no placeholder.
-    assert "REPO_URL_PLACEHOLDER" not in install_command("health")
+    assert "https://github.com/mysteriousammw/auphoria" not in install_command("health")
 
 
 def test_missing_requires_detects_absent_module():
@@ -65,7 +65,7 @@ def test_deps_message_teaches_the_pack_install():
     msg = deps_message(["statsmodels"], "health")
     assert "statsmodels" in msg
     assert "health" in msg
-    assert "REPO_URL_PLACEHOLDER" in msg
+    assert "https://github.com/mysteriousammw/auphoria" in msg
     assert "pip install" in msg
 
 
@@ -81,7 +81,7 @@ def test_packs_cli_lists_all_packs(cli_python):
     assert proc.returncode == 0, proc.stderr
     for pid in ("agri-animal", "life-science", "health", "social", "econ-eng"):
         assert pid in proc.stdout
-    assert "REPO_URL_PLACEHOLDER" in proc.stdout
+    assert "https://github.com/mysteriousammw/auphoria" in proc.stdout
 
 
 def test_list_pack_filter(cli_python):

@@ -18,14 +18,14 @@ accounted for below.
 - [ ] Create an empty repository on GitHub (owner/name chosen by you).
 - [ ] Push the current tree to it:
       `git remote add origin <git-url>` then `git push -u origin main`.
-- [ ] No `REPO_URL_PLACEHOLDER` should have leaked before this point; it is
+- [ ] No `https://github.com/mysteriousammw/auphoria` should have leaked before this point; it is
       replaced next. This includes the **docs site**: `mkdocs.yml` holds
       `site_url`/`repo_url` and `docs_site/` install blocks, all using the
       placeholder.
 
 ## 3. Run `scripts/set_repo_url.py` with the repository address
 - [ ] `python scripts/set_repo_url.py https://github.com/<owner>/<repo>`
-- [ ] It replaces `REPO_URL_PLACEHOLDER` everywhere it appears: `README.md`,
+- [ ] It replaces `https://github.com/mysteriousammw/auphoria` everywhere it appears: `README.md`,
       `CITATION.cff`, `pyproject.toml`, `docs/`, `docs_site/`, and `mkdocs.yml`
       (site_url/repo_url), plus the engine/pack install hints.
 - [ ] Verify nothing is left (the `--check` exit code 0 means nothing to

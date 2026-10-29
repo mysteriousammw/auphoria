@@ -70,11 +70,11 @@ def test_analysis_docs_are_generated_and_current() -> None:
 
 
 def test_install_commands_use_placeholder_and_are_marked() -> None:
-    """Install blocks keep REPO_URL_PLACEHOLDER and carry a TODO-VERIFY note."""
+    """Install blocks keep https://github.com/mysteriousammw/auphoria and carry a TODO-VERIFY note."""
     quickstart = (REPO_ROOT / "docs_site" / "quickstart.md").read_text(encoding="utf-8")
     mkdocs_yml = (REPO_ROOT / "mkdocs.yml").read_text(encoding="utf-8")
-    assert "REPO_URL_PLACEHOLDER" in quickstart
-    assert "pipx install git+REPO_URL_PLACEHOLDER" in quickstart
+    assert "https://github.com/mysteriousammw/auphoria" in quickstart
+    assert "pipx install git+https://github.com/mysteriousammw/auphoria" in quickstart
     assert "TODO-VERIFY" in mkdocs_yml
 
 

@@ -120,7 +120,7 @@ is handed over:
    - Confirm you can run `scripts/set_repo_url.py` and cut a tag/release (see
      `.github/workflows/release.yml`).
    - If repositories/accounts change, update every URL that currently uses
-     `REPO_URL_PLACEHOLDER` (run `scripts/set_repo_url.py` with the new
+     `https://github.com/mysteriousammw/auphoria` (run `scripts/set_repo_url.py` with the new
      address).
 4. **If the project is abandoned (no maintainer reachable for a sustained
    period):** the repository may be forked by the community under a

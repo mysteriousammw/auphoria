@@ -14,7 +14,7 @@ published or tagged (per the phase instruction).
 - **Version 0.1.0** pinned in `core/version.py`.
 - **CHANGELOG** consolidated from the per-phase "Unreleased" sections into a
   single **`[0.1.0] - 2026-10-29`** entry (phase subsections + known
-  limitations); `[0.1.0]: REPO_URL_PLACEHOLDER` link kept for set_repo_url.
+  limitations); `[0.1.0]: https://github.com/mysteriousammw/auphoria` link kept for set_repo_url.
 - **Release workflow** (`.github/workflows/release.yml`): tag-triggered
   `v*` + workflow_dispatch. `verify-tag` job (tests, ruff, validation +
   analysis-docs `--check`, docs build, `--version`+`doctor` smoke) →
@@ -66,7 +66,7 @@ demo-video script. The site builds cleanly with zero warnings (acceptance).
   discipline packs, decision guide, and known issues.
 - **Quickstart** covers macOS / Windows / Linux+WSL / **Google Colab**
   (no-install) / uv, each with platform-tabbed command blocks. Every install
-  command uses `REPO_URL_PLACEHOLDER` and is marked TODO-VERIFY until the repo
+  command uses `https://github.com/mysteriousammw/auphoria` and is marked TODO-VERIFY until the repo
   is published.
 - **"Which analysis do I choose?"** (`choose.md`) turns the advisor's decision
   guide into a plain-language page (describe / compare / relate / predict /
@@ -107,9 +107,71 @@ demo-video script. The site builds cleanly with zero warnings (acceptance).
 - Record the demo video and embed it in the gallery.
 
 ### Known problems
-- `site_url` / `repo_url` in mkdocs.yml use `https://github.com/REPO_URL_PLACEHOLDER`
-  (mkdocs requires a scheme; set_repo_url.py will substitute the real address
-  at publish time — PUBLISH_CHECKLIST step 3).
+- `site_url` / `repo_url` in mkdocs.yml use the real address
+  (mkdocs requires a scheme; set_repo_url.py substitutes it at publish time —
+  PUBLISH_CHECKLIST step 3).
+
+---
+
+## Public repository check (DONE, 2026-10-29)
+
+### What is done
+A read-only check of the live public repository (nothing pushed or changed
+there).
+
+- **`scripts/check_public_repo.py <repo-url>`** — shallow-clones the repo to a
+  temp dir, then: compares the expected public files (and flags anything that
+  should not be public: results/venv/caches/>5MB/data/secrets/paths/emails),
+  confirms `REPO_URL_PLACEHOLDER` is gone and the README install commands,
+  Colab link and CITATION.cff all carry the real address; checks CONTRIBUTORS
+  + README credits and that no `[CONFIRM ROLE]`/`TODO-VERIFY` remain; runs a
+  FRESH-venv install (README pipx/pip git+ command), `--version`, `doctor`,
+  `demo`, and `pytest`; executes the Colab notebook top-to-bottom with the
+  google.colab stub; validates the workflow YAML and reports whether GitHub
+  Actions is enabled.
+- **`PUBLIC_CHECK_REPORT.md`** — generated report: MISSING / WRONG /
+  WARNINGS / OK + the fresh-venv install + notebook + Actions results.
+
+### Verified against https://github.com/mysteriousammw/auphoria
+- **Install test green**: fresh venv `pip install git+<url>` → `--version`
+  (0.1.0), `doctor`, `demo` all PASS; `pytest` PASS (359) from the clone with
+  `.[dev]`.
+- **Colab notebook** executes end-to-end with the stub (download log fires).
+- **GitHub Actions enabled**; all 3 workflow YAML files valid.
+- No junk files, no extra emails/secrets in the clone; all 19 analysis
+  folders complete; all local links resolve.
+- Findings (all expected / fixable): **1 MISSING (LICENSE)**, **10 WRONG**
+  (REPO_URL_PLACEHOLDER still in 29 files: README install, Colab link,
+  CITATION.cff url/repository-code, pyproject, engine, packs; plus
+  `[CONFIRM ROLE]/[CONFIRM]/TODO-VERIFY` markers), **5 WARNINGS** (benign
+  illustrative absolute paths in docs/tests).
+
+### Local fixes made (ready to commit + push)
+The audit exposed real bugs, fixed in the LOCAL copy:
+1. `set_repo_url` could not run cleanly: `scripts/build_notebook.py` and
+   `tests/test_notebook.py` used `REPO_URL_PLACEHOLDER` as a Python *variable
+   name* — replacing it produced a syntax error. Renamed to `_REPO_URL_MARKER`.
+2. `set_repo_url` must skip its own detection/lint siblings
+   (`prepare_publish.py`, `check_public_repo.py`) or it silently disables the
+   checks that search for the placeholder; added them to the skip set.
+3. `test_tools.py` built its fixture with the placeholder inlined, so the
+   URL sweep edited it; it now reads `mod.PLACEHOLDER`.
+4. Ran `python scripts/set_repo_url.py https://github.com/mysteriousammw/auphoria`
+   → the placeholder is gone from every file except the tool itself; README
+   install commands, the Colab link and CITATION.cff now carry the real
+   address (this also converted the placeholder-asserting tests to assert the
+   real URL). Full suite **359 passed**, `ruff check` clean.
+
+### What is next
+- Commit these local fixes and push (see the push list in the report handoff).
+- Run `scripts/check_public_repo.py` again AFTER pushing to confirm the
+  public copy is clean, then handle the user-only items (licence, actions,
+  Zenodo, description/topics, person permissions, tag v0.1.0).
+
+### Known problems
+- LICENSE still missing (intentional until the licence is chosen).
+- `[CONFIRM ROLE]/[CONFIRM]` and `TODO-VERIFY` markers still present where
+  they are genuine user confirmations / unverifiable-by-agent facts.
 
 ---
 
@@ -256,7 +318,7 @@ their own extra.
 - **Deps-guard** (`core/engine.py`): before running an analysis, the engine
   checks the manifest's `requires` (heavy modules) are importable; if not it
   refuses with the exact install command
-  (`pip install "auphoria[<pack>] @ git+REPO_URL_PLACEHOLDER"`) instead of a
+  (`pip install "auphoria[<pack>] @ git+https://github.com/mysteriousammw/auphoria"`) instead of a
   raw ImportError. Fires before the analysis module even loads.
 - **Manifest `pack` + `requires` fields** (validated by pydantic): each heavy
   analysis declares its pack membership (list) and required modules. Assigned
@@ -267,7 +329,7 @@ their own extra.
   and `auphoria list --pack <name>` filters to one pack. `auphoria doctor`
   reports each pack's dependency status (informational).
 - **Docs**: `docs/DISCIPLINE_PACKS.md` (exact install syntax with
-  REPO_URL_PLACEHOLDER, per-pack analysis list, how the guard works) and a
+  https://github.com/mysteriousammw/auphoria, per-pack analysis list, how the guard works) and a
   README "Optional discipline packs" section.
 - **`tests/test_packs_phase9.py`** — pack registry, missing/requires logic,
   deps-message hints, and the CLI `packs`/`list --pack` commands.
@@ -279,7 +341,7 @@ their own extra.
   `auphoria list --pack health` returns the health analyses;
   `auphoria doctor` reports all packs `[OK]`.
 - Deps-guard verified end-to-end: with statsmodels "missing", running `ancova`
-  refuses and prints the `pip install "auphoria[agri-animal] @ git+REPO_URL_PLACEHOLDER"`
+  refuses and prints the `pip install "auphoria[agri-animal] @ git+https://github.com/mysteriousammw/auphoria"`
   hint.
 
 ### What is next
@@ -774,14 +836,14 @@ Supporting changes:
 - **scripts/set_repo_url.py** now REFUSES any address that is not a GitHub
   repository URL (`https://github.com/<org>/<repo>`); added tests for accept /
   reject (bad, GitLab, HTTP-only, org-only). Hardcoded `@main` pins removed;
-  install commands are now bare `git+REPO_URL_PLACEHOLDER`.
+  install commands are now bare `git+https://github.com/mysteriousammw/auphoria`.
 - **CI workflow** split and expanded:
   - `.github/workflows/lint.yml` - ruff on 3.10/3.11/3.12 (ubuntu).
   - `.github/workflows/tests.yml` - install + `auphoria --version` +
     `auphoria doctor` + `pytest` on 3.10/3.11/3.12 x ubuntu/windows/macos.
   - Runs only after upload (no repo/remote yet).
-- **README.md**: install commands are now `pipx install git+REPO_URL_PLACEHOLDER`
-  and `uvx --from git+REPO_URL_PLACEHOLDER auphoria` for Linux/macOS, Windows
+- **README.md**: install commands are now `pipx install git+https://github.com/mysteriousammw/auphoria`
+  and `uvx --from git+https://github.com/mysteriousammw/auphoria auphoria` for Linux/macOS, Windows
   PowerShell and WSL, plus a clearly marked "Until the repository is published"
   section with the local `pip install -e .` instructions.
 - **Templates**: CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md,
@@ -886,7 +948,7 @@ tests that assert on it, and docs).
 - `pyproject.toml` (Python 3.10–3.12, deps: NumPy/pandas/SciPy/Matplotlib/
   PyYAML; `openpyxl` optional; `auphoria` console script; MIT).
 - `README.md` (one-line install per OS + uvx no-install form; all repo URLs
-  as `REPO_URL_PLACEHOLDER`), `CHANGELOG.md`, `CITATION.cff`,
+  as `https://github.com/mysteriousammw/auphoria`), `CHANGELOG.md`, `CITATION.cff`,
   `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `LICENSE`, `.gitignore`.
 - `scripts/set_repo_url.py` replaces the placeholder after upload;
   `scripts/build_notebook.py` regenerates the Colab notebook.

@@ -1,6 +1,6 @@
 # CITATION.cff is a TEMPLATE. Fill in real values when the repository is
 # published (see docs/PUBLISH_CHECKLIST.md step 9). Leave the repository
-# address as REPO_URL_PLACEHOLDER - scripts/set_repo_url.py fills it in.
+# address as https://github.com/mysteriousammw/auphoria - scripts/set_repo_url.py fills it in.
 #
 # Authors are people only (no AI tools are authors). Abdul Momin Muhammad
 # Wisal is the project creator and lead. The other four people are kept in a
@@ -42,6 +42,6 @@ version: "0.1.0"
 # Licence is not yet chosen (see docs/LICENCE_DECISION.md). Set this once the
 # maintainer picks one (e.g. "MIT", "BSD-3-Clause", "Apache-2.0").
 license: "To-be-decided"
-url: "REPO_URL_PLACEHOLDER"
-repository-code: "REPO_URL_PLACEHOLDER"
+url: "https://github.com/mysteriousammw/auphoria"
+repository-code: "https://github.com/mysteriousammw/auphoria"
 type: software

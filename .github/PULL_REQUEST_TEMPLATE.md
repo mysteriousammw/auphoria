@@ -44,7 +44,7 @@ not tick a box you did not run.
 ## Checklist before requesting review
 
 - [ ] I have read CONTRIBUTING.md.
-- [ ] No `REPO_URL_PLACEHOLDER` was introduced where a real address is needed
+- [ ] No `https://github.com/mysteriousammw/auphoria` was introduced where a real address is needed
       (it stays only in install-literal spots).
 - [ ] No new runtime dependencies unless truly required and permissive
       (detected by the dependency policy).

@@ -98,6 +98,6 @@ def test_notebook_executes_end_to_end():
             "".join(c.get("source", [])) for c in executed.cells if c.cell_type == "code"
         )
         assert "auphoria.run(" in code
-        assert "REPO_URL_PLACEHOLDER" in code
+        assert "https://github.com/mysteriousammw/auphoria" in code
     os.environ.clear()
     os.environ.update(save_env)

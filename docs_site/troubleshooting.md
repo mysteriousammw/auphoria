@@ -44,7 +44,7 @@ scikit-learn) that are **not** part of the lightweight core install. Install
 the relevant pack:
 
 ```bash
-pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 # or before publishing:
 pip install -e ".[health]"
 ```
@@ -134,7 +134,7 @@ export AUPHORIA_RESULTS_ROOT=/path/to/a/writable/folder
 
 Make sure you're running the **first cell** and that Colab is online to fetch
 the package. If you loaded the notebook from a local copy, prefer the
-repository's hosted notebook (`REPO_URL_PLACEHOLDER`) so the install cell gets
+repository's hosted notebook (`https://github.com/mysteriousammw/auphoria`) so the install cell gets
 the right source.
 
 ### I lost my results in Colab.

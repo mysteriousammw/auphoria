@@ -10,12 +10,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "scripts" / "set_repo_url.py"
 
 
-def _make_fake_trees(tmp_path: Path):
+def _make_fake_trees(tmp_path: Path, marker: str):
     """Two tiny trees: one with the placeholder, one without; never the script."""
     (tmp_path / "sub").mkdir()
-    (tmp_path / "sub" / "a.txt").write_text("pip install REPO_URL_PLACEHOLDER@main")
+    (tmp_path / "sub" / "a.txt").write_text(f"pip install {marker}@main")
     (tmp_path / "sub" / ".git").mkdir()           # skippable dir
-    (tmp_path / "sub" / ".git" / "c.txt").write_text("REPO_URL_PLACEHOLDER")
+    (tmp_path / "sub" / ".git" / "c.txt").write_text(marker)
     (tmp_path / "b.md").write_text("no placeholder here")
     return tmp_path
 
@@ -35,7 +35,7 @@ def test_replace_in_tree_and_check(tmp_path: Path):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 
-    tree = _make_fake_trees(tmp_path)
+    tree = _make_fake_trees(tmp_path, mod.PLACEHOLDER)
     # --check path (no writes)
     changes = mod.replace_in_tree(tree, "https://github.com/o/r", check_only=True)
     assert len(changes) == 1  # only the real text file; .git and b.md excluded

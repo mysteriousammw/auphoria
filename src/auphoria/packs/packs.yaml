@@ -3,7 +3,7 @@
 # Each pack is an OPTIONAL install (a pyproject "extra"). The core install
 # stays light; a user installs the pack(s) they need. `deps` are the heavy
 # packages that pack's analyses require and that the extra installs. The
-# install commands use the literal REPO_URL_PLACEHOLDER, substituted after
+# install commands use the literal https://github.com/mysteriousammw/auphoria, substituted after
 # upload by scripts/set_repo_url.py.
 #
 # `analyses` is informational (which analyses ship under this pack); the

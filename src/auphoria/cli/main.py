@@ -259,7 +259,7 @@ def packs_command() -> None:
             typer.echo(f"             {desc}")
         typer.echo()
     typer.echo("Packs keep heavy dependencies optional so the core install stays "
-               "light. The REPO_URL_PLACEHOLDER is replaced after upload "
+               "light. The https://github.com/mysteriousammw/auphoria is replaced after upload "
                "(scripts/set_repo_url.py).")
 
 
@@ -658,7 +658,7 @@ def doctor_command() -> None:
         if missing:
             typer.echo(f"[NOTE] pack '{pid}' not fully installed "
                        f"(missing {', '.join(missing)}) - install with "
-                       f"pip install \"auphoria[{pid}] @ git+REPO_URL_PLACEHOLDER\"")
+                       f"pip install \"auphoria[{pid}] @ git+https://github.com/mysteriousammw/auphoria\"")
         else:
             typer.echo(f"[OK]   pack '{pid}' dependencies present")
 
@@ -700,7 +700,7 @@ def main(argv: list[str] | None = None) -> int:
         typer.echo(
             "\nSomething unexpected went wrong. The technical traceback is in "
             "the log (see AUPHORIA_results/). Please report this to the "
-            "maintainers (REPO_URL_PLACEHOLDER).\n",
+            "maintainers (https://github.com/mysteriousammw/auphoria).\n",
             err=True,
         )
         return 1

@@ -29,13 +29,13 @@ economics, engineering, environmental science and computer science.
 **Linux / macOS / WSL**
 
 ```
-pipx install git+REPO_URL_PLACEHOLDER
+pipx install git+https://github.com/mysteriousammw/auphoria
 ```
 
 **Windows PowerShell**
 
 ```
-py -m pipx install git+REPO_URL_PLACEHOLDER
+py -m pipx install git+https://github.com/mysteriousammw/auphoria
 ```
 
 **No-install form (uv)** — if you have
@@ -43,14 +43,14 @@ py -m pipx install git+REPO_URL_PLACEHOLDER
 anything:
 
 ```
-uvx --from git+REPO_URL_PLACEHOLDER auphoria
+uvx --from git+https://github.com/mysteriousammw/auphoria auphoria
 ```
 
 > On Windows `uvx` works the same way inside PowerShell or WSL.
 
 ### Until the repository is published
 
-The `REPO_URL_PLACEHOLDER` above is replaced with the real address in a later
+The `https://github.com/mysteriousammw/auphoria` above is replaced with the real address in a later
 step (see `docs/PUBLISH_CHECKLIST.md`). Until then, install **locally** from
 the source tree:
 
@@ -75,14 +75,14 @@ heavy dependencies install with it. Add the packs you need:
 
 ```bash
 # Linux / macOS / WSL (inside the same venv where AUPHORIA is installed):
-pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
-pip install "auphoria[agri-animal] @ git+REPO_URL_PLACEHOLDER"
+pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
+pip install "auphoria[agri-animal] @ git+https://github.com/mysteriousammw/auphoria"
 ```
 
 **Windows PowerShell**
 
 ```powershell
-py -m pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+py -m pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 ```
 
 Available packs: `agri-animal`, `life-science`, `health`, `social`, `econ-eng`.
@@ -98,7 +98,7 @@ command to run instead of crashing — `auphoria packs` lists them all, and
 .venv/bin/pip install -e ".[health]"
 ```
 
-The `REPO_URL_PLACEHOLDER` is replaced with the real address after upload
+The `https://github.com/mysteriousammw/auphoria` is replaced with the real address after upload
 (see `docs/PUBLISH_CHECKLIST.md`).
 
 ---
@@ -201,7 +201,7 @@ open it.
 
 ## Run in Google Colab (no install on your laptop)
 
-1. Open the notebook: `REPO_URL_PLACEHOLDER` → `notebooks/auphoria_colab.ipynb`
+1. Open the notebook: `https://github.com/mysteriousammw/auphoria` → `notebooks/auphoria_colab.ipynb`
    (or run directly in Colab from the same link).
 2. Run the install cell, upload your file with the button, pick the analysis
    and columns, click **Run**, and a zip of your results downloads to your
@@ -217,7 +217,7 @@ open it.
 ## Installing from source / developing
 
 ```
-git clone REPO_URL_PLACEHOLDER
+git clone https://github.com/mysteriousammw/auphoria
 cd auphoria
 python3.11 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
@@ -284,7 +284,7 @@ If you use AUPHORIA in your work, please cite it:
 
 > Abdul Momin Muhammad Wisal. (2026). *AUPHORIA: beginner-friendly data
 > analysis for university students who cannot code* (Version 0.1.0).
-> [Software]. `REPO_URL_PLACEHOLDER`
+> [Software]. `https://github.com/mysteriousammw/auphoria`
 
 The full citation metadata is in [CITATION.cff](CITATION.cff). Project
 contact: `ammw@aup.edu.pk`.

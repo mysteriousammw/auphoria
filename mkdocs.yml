@@ -7,8 +7,8 @@ site_description: >-
 # repository is published (PUBLISH_CHECKLIST.md step 3 runs set_repo_url.py).
 # The build must succeed with them in place; keep them parseable by mkdocs by
 # using a placeholder GitHub URL that set_repo_url.py will substitute.
-site_url: https://github.com/REPO_URL_PLACEHOLDER
-repo_url: https://github.com/REPO_URL_PLACEHOLDER
+site_url: https://github.com/mysteriousammw/auphoria
+repo_url: https://github.com/mysteriousammw/auphoria
 edit_uri: ""
 
 # Docs live in docs_site/ (authored pages + generated analyses/) to keep the
@@ -68,10 +68,10 @@ copyright: >
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/REPO_URL_PLACEHOLDER
+      link: https://github.com/mysteriousammw/auphoria
 
 # TODO-VERIFY: every `site_url` / `repo_url` / social link uses
-# REPO_URL_PLACEHOLDER until the repository is published (PUBLISH_CHECKLIST.md
+# https://github.com/mysteriousammw/auphoria until the repository is published (PUBLISH_CHECKLIST.md
 # step 3 runs scripts/set_repo_url.py). The build passes without a real URL.
 
 nav:

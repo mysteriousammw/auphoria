@@ -4,7 +4,7 @@ Each discipline pack is an OPTIONAL install (a pyproject "extra"). The core
 install stays light (numpy/pandas/scipy/matplotlib/...); a student who needs a
 discipline's advanced or specialised analyses installs the pack they want:
 
-    pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+    pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 
 Every analysis carries an optional ``pack`` and ``requires`` list in its
 manifest. ``requires`` names the Python packages that analysis needs; the pack
@@ -45,8 +45,8 @@ def install_command(pack_id: str) -> str:
 
 
 def install_command_git(pack_id: str) -> str:
-    """The public install command, using the REPO_URL_PLACEHOLDER literal."""
-    return f'pip install "auphoria[{pack_id}] @ git+REPO_URL_PLACEHOLDER"'
+    """The public install command, using the https://github.com/mysteriousammw/auphoria literal."""
+    return f'pip install "auphoria[{pack_id}] @ git+https://github.com/mysteriousammw/auphoria"'
 
 
 def missing_requires(requires: list[str] | None) -> list[str]:

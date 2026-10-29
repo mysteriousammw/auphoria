@@ -21,13 +21,13 @@ import json
 import sys
 from pathlib import Path
 
-REPO_URL_PLACEHOLDER = "REPO_URL_PLACEHOLDER"
+_REPO_URL_MARKER = "https://github.com/mysteriousammw/auphoria"
 NOTEBOOK_PATH = Path(__file__).resolve().parent.parent / "notebooks" / "auphoria_colab.ipynb"
 
 # Shared code fragments ------------------------------------------------------
 
 _INSTALL = f'''\
-REPO_URL = "{REPO_URL_PLACEHOLDER}"   # your published GitHub repository
+REPO_URL = "{_REPO_URL_MARKER}"   # your published GitHub repository
 
 # 1) INSTALL FROM THE PUBLISHED REPO (normal case):
 #    -----------------------------------------------
@@ -238,7 +238,7 @@ _FOOTER_MD = '''\
   vanish when the runtime stops. Always download your results (cell 5) before
   you leave.
 
-See the README at REPO_URL_PLACEHOLDER for the command-line tool and the
+See the README at https://github.com/mysteriousammw/auphoria for the command-line tool and the
 offline laptop install (recommended for confidential data).
 '''
 
@@ -330,7 +330,7 @@ def main() -> int:
     assert parsed["nbformat"] == 4
     code = "".join("".join(c.get("source", "")) for c in parsed["cells"] if c["cell_type"] == "code")
     assert "auphoria.run(" in code
-    assert REPO_URL_PLACEHOLDER in code
+    assert _REPO_URL_MARKER in code
     assert "colab.upload" in code
     assert "colab.download" in code or "files.download" in code
     print(f"Wrote {NOTEBOOK_PATH} ({len(parsed['cells'])} cells).")

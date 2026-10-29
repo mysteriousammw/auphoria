@@ -4,6 +4,40 @@ This file records every non-obvious decision made while building AUPHORIA,
 with one line of reasoning each. New decisions are appended; nothing is
 rewritten after the fact (a dated entry is added instead).
 
+## Public repository check (2026-10-29)
+
+### Check script + report
+- **Decision:** `scripts/check_public_repo.py <repo-url>` does the whole check
+  in one pass on a SHALLOW clone in a temp dir (nothing pushed or changed): file
+  comparison, placeholder/address checks, credits/marker check, fresh-venv
+  install + smoke + pytest, Colab notebook execution with the google.colab
+  stub, workflow YAML validation, and a GitHub-Actions-enabled probe via `gh`.
+  It writes `PUBLIC_CHECK_REPORT.md` (MISSING / WRONG / WARNINGS / OK).
+  *Reasoning:* one reproducible, read-only command that answers every question
+  the task asked, and that a maintainer can re-run after any change.
+
+### set_repo_url fixes the audit surfaced
+- **Decision:** `set_repo_url.py` now SKIPS `prepare_publish.py` and
+  `check_public_repo.py`.
+  *Reasoning:* both use `REPO_URL_PLACEHOLDER` as a DETECTION literal (they scan
+  for it); replacing it in their own source would silently disable the exact
+  check they exist to run.
+- **Decision:** the placeholder was used as a Python *identifier* in
+  `scripts/build_notebook.py` and `tests/test_notebook.py`
+  (`REPO_URL_PLACEHOLDER = "REPO_URL_PLACEHOLDER"`), so running set_repo_url
+  turned it into a syntax error (`https://... = "https://..."`). Renamed those
+  to `_REPO_URL_MARKER` so only the string VALUE is replaced, not the name.
+  *Reasoning:* a URL sweep must never corrupt the tool's own source; the
+  identifier is internal and untouchable, the literal it holds is what changes.
+- **Decision:** after the sweep, `test_tools.py` builds its fixture from
+  `mod.PLACEHOLDER` instead of inlining the literal, so the test survives a URL
+  sweep.
+- **Decision:** set_repo_url's naive token replacement doubles a URL that was
+  already written as `https://github.com/REPO_URL_PLACEHOLDER` (mkdocs
+  `site_url`/`repo_url`, DECISIONS text) → fixed the doubled addresses
+  directly. *Reasoning:* the placeholder-prefixed-with-scheme case is a real
+  trap for future maintainers.
+
 ## Publish preparation (2026-10-29)
 
 ### Clean publish copy
@@ -92,9 +126,9 @@ rewritten after the fact (a dated entry is added instead).
   include path is RELATIVE TO THE INCLUDING FILE (`../../docs/...` from
   `docs_site/research/`), so a wrapper page in a subdirectory needs the extra
   `../`.
-- **Decision:** install command blocks use `REPO_URL_PLACEHOLDER` and are
+- **Decision:** install command blocks use `https://github.com/mysteriousammw/auphoria` and are
   marked TODO-VERIFY until the repository is published; `site_url`/`repo_url`
-  use `https://github.com/REPO_URL_PLACEHOLDER` because mkdocs rejects a
+  use `https://github.com/mysteriousammw/auphoria` because mkdocs rejects a
   scheme-less URL, and set_repo_url.py substitutes the real address later.
   *Reasoning:* the build must pass before upload; the placeholder keeps every
   published reference in one literal set_repo_url.py can replace.
@@ -145,7 +179,7 @@ rewritten after the fact (a dated entry is added instead).
 - **Decision:** analyses declare `pack` (list) + `requires` (heavy module
   names) in their manifest, and the engine refuses to run an analysis whose
   `requires` are not importable, printing the exact pack install command
-  (`pip install "auphoria[<pack>] @ git+REPO_URL_PLACEHOLDER"`).
+  (`pip install "auphoria[<pack>] @ git+https://github.com/mysteriousammw/auphoria"`).
   *Reasoning:* without the guard a missing heavy dep would surface as a raw
   ImportError after work begins; the guard teaches the fix and fails fast,
   before the module even loads.

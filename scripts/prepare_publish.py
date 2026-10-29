@@ -212,7 +212,7 @@ def audit(root: Path, missing_top: list[str]) -> dict:
     for p in _text_files(root):
         text = _read(p)
         rel = p.relative_to(root)
-        n = text.count("REPO_URL_PLACEHOLDER")
+        n = text.count("https://github.com/mysteriousammw/auphoria")
         if n:
             ph_count += n
             ph_files[str(rel)] = n
@@ -221,7 +221,7 @@ def audit(root: Path, missing_top: list[str]) -> dict:
                 todo.append(f"{rel}:{i}")
             if "[CONFIRM ROLE]" in line or "[CONFIRM]" in line:
                 confirm.append(f"{rel}:{i}")
-    ok.append(f"REPO_URL_PLACEHOLDER total: {ph_count} occurrence(s) "
+    ok.append(f"https://github.com/mysteriousammw/auphoria total: {ph_count} occurrence(s) "
               f"across {len(ph_files)} file(s): " +
               ", ".join(f"{f} ({n})" for f, n in sorted(ph_files.items())))
     if todo:

@@ -7,7 +7,7 @@ specialised analyses — lives in one of the optional **discipline packs**.
 Each pack is a `pyproject` "extra": installing the pack pulls in that
 discipline's heavy dependencies *and* unlocks its analyses.
 
-The `REPO_URL_PLACEHOLDER` below is replaced with the real repository address
+The `https://github.com/mysteriousammw/auphoria` below is replaced with the real repository address
 after upload (`scripts/set_repo_url.py`).
 
 ## Install syntax
@@ -15,19 +15,19 @@ after upload (`scripts/set_repo_url.py`).
 One pack, inside the virtualenv where AUPHORIA is installed:
 
 ```bash
-pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 ```
 
 Several packs at once:
 
 ```bash
-pip install "auphoria[health,agri-animal] @ git+REPO_URL_PLACEHOLDER"
+pip install "auphoria[health,agri-animal] @ git+https://github.com/mysteriousammw/auphoria"
 ```
 
 Windows PowerShell:
 
 ```powershell
-py -m pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+py -m pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 ```
 
 Locally, before publishing, the same extras install from the source tree:
@@ -65,7 +65,7 @@ When you run an analysis whose `requires` are not importable, AUPHORIA refuses
 ```
 A package this analysis needs is not installed.
   The analysis needs: statsmodels. Install the 'health' pack to get these:
-  pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+  pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 ```
 
 `auphoria doctor` reports which packs are fully present and which are missing

@@ -57,5 +57,5 @@ analysis is tracked on the [Validation](validation.md) page.
 
 ---
 
-*Install commands in these pages use `REPO_URL_PLACEHOLDER` until the
+*Install commands in these pages use `https://github.com/mysteriousammw/auphoria` until the
 repository is published (see `docs/PUBLISH_CHECKLIST.md`).*

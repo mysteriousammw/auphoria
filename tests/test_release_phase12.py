@@ -61,14 +61,14 @@ def test_citation_has_people_only_authors_with_confirm_placeholders():
     assert "Abdul Momin Muhammad Wisal" in cff or "Wisal" in cff
     assert "ammw@aup.edu.pk" in cff
     assert "CONFIRM ROLE" in cff
-    assert "REPO_URL_PLACEHOLDER" in cff
+    assert "https://github.com/mysteriousammw/auphoria" in cff
     assert 'version: "0.1.0"' in cff
 
 
 def test_changelog_has_0_1_0_entry():
     cl = _read("CHANGELOG.md")
     assert "## [0.1.0] - 2026-" in cl
-    assert "[0.1.0]: REPO_URL_PLACEHOLDER" in cl
+    assert "[0.1.0]: https://github.com/mysteriousammw/auphoria" in cl
 
 
 def test_publish_checklist_tracks_shipped_release_stack():

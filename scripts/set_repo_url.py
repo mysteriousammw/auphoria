@@ -61,6 +61,13 @@ def _is_skippable(path: Path) -> bool:
     # Skip this script itself so we never corrupt the tool.
     if path.name == "set_repo_url.py" and path.parent.name == "scripts":
         return True
+    # Skip the publish/check tooling: prepare_publish.py and check_public_repo.py
+    # both use the placeholder as a DETECTION literal (they search for it), so
+    # replacing it in those scripts would disable the very check they exist to
+    # run. Contains the sentinel string so the audit can flag a repo that still
+    # has placeholder-linked code at publish time.
+    if path.name in ("prepare_publish.py", "check_public_repo.py", "PUBLISH_REPORT.md"):
+        return True
     return False
 
 

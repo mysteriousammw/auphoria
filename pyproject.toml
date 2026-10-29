@@ -70,7 +70,7 @@ dev = [
 ]
 # Discipline packs (optional installs; heavy dependencies live HERE so the
 # core install stays light). A user installs the pack(s) they need:
-#   pip install "auphoria[health] @ git+REPO_URL_PLACEHOLDER"
+#   pip install "auphoria[health] @ git+https://github.com/mysteriousammw/auphoria"
 # Syntax matches the `pack` field in catalog/analyses.yaml and packs.yaml.
 agri-animal = ["statsmodels>=0.13,<1", "scikit-learn>=1.2,<2"]
 life-science = [
@@ -87,9 +87,9 @@ econ-eng = ["statsmodels>=0.13,<1", "scikit-learn>=1.2,<2"]
 auphoria = "auphoria.cli.main:main"
 
 [project.urls]
-Homepage = "REPO_URL_PLACEHOLDER"
-Repository = "REPO_URL_PLACEHOLDER"
-Documentation = "REPO_URL_PLACEHOLDER"
+Homepage = "https://github.com/mysteriousammw/auphoria"
+Repository = "https://github.com/mysteriousammw/auphoria"
+Documentation = "https://github.com/mysteriousammw/auphoria"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -4,7 +4,7 @@ This page takes you from "nothing installed" to a completed, report-ready
 analysis in about 15 minutes. Pick your platform below.
 
 !!! note "Repository not published yet"
-    The install commands below use `REPO_URL_PLACEHOLDER`. Until the repository
+    The install commands below use `https://github.com/mysteriousammw/auphoria`. Until the repository
     is published (see `docs/PUBLISH_CHECKLIST.md`), install locally from the
     source tree instead — the "Install locally" tab covers that.
 
@@ -23,7 +23,7 @@ analysis in about 15 minutes. Pick your platform below.
        ```
     3. **Install AUPHORIA**:
        ```bash
-       pipx install git+REPO_URL_PLACEHOLDER
+       pipx install git+https://github.com/mysteriousammw/auphoria
        ```
     4. **Check it works**:
        ```bash
@@ -43,7 +43,7 @@ analysis in about 15 minutes. Pick your platform below.
        Close and reopen PowerShell so `pipx` is on your PATH.
     3. **Install AUPHORIA**:
        ```powershell
-       py -m pipx install git+REPO_URL_PLACEHOLDER
+       py -m pipx install git+https://github.com/mysteriousammw/auphoria
        ```
     4. **Check it works**:
        ```powershell
@@ -65,7 +65,7 @@ analysis in about 15 minutes. Pick your platform below.
        ```
     3. **Install AUPHORIA**:
        ```bash
-       pipx install git+REPO_URL_PLACEHOLDER
+       pipx install git+https://github.com/mysteriousammw/auphoria
        ```
     4. **Check it works**:
        ```bash
@@ -78,13 +78,13 @@ analysis in about 15 minutes. Pick your platform below.
     With [uv](https://docs.astral.sh/uv/) you can run AUPHORIA **without
     installing anything**:
     ```bash
-    uvx --from git+REPO_URL_PLACEHOLDER auphoria
+    uvx --from git+https://github.com/mysteriousammw/auphoria auphoria
     ```
     On Windows, use `uvx` the same way inside PowerShell or WSL.
 
 === "Install locally (before publishing)"
 
-    The `REPO_URL_PLACEHOLDER` address is substituted after upload. Until then,
+    The `https://github.com/mysteriousammw/auphoria` address is substituted after upload. Until then,
     install from the source tree you have on this machine:
     === "macOS / Linux / WSL"
         ```bash
@@ -106,7 +106,7 @@ analysis in about 15 minutes. Pick your platform below.
 If you don't want to install anything at all, run AUPHORIA in Google Colab's
 free notebook — it already has Python and the scientific stack.
 
-1. Open the notebook: `REPO_URL_PLACEHOLDER` → `notebooks/auphoria_colab.ipynb`
+1. Open the notebook: `https://github.com/mysteriousammw/auphoria` → `notebooks/auphoria_colab.ipynb`
    (use **"Open in Colab"**, or File → Upload notebook from the raw URL).
 2. **Run the install cell** (first cell). Colab's environment is not disturbed.
 3. **Upload your file** with the button, pick the analysis, and press **RUN**.
