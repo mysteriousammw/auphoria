@@ -125,11 +125,11 @@ class RegressionLinearAnalysis(Analysis):
                 "Estimate": [round(intercept, 6), round(slope, 6)],
                 "Std. error": [round(se_intercept, 6), round(se_slope, 6)],
                 "p-value": [self.fmt_p(p), self.fmt_p(p)],
-                f"{int(alpha * 100)}% CI lower": [
+                f"{(1 - alpha) * 100:.0f}% CI lower": [
                     round(intercept_ci_lo, 6),
                     round(slope_ci_lo, 6),
                 ],
-                f"{int(alpha * 100)}% CI upper": [
+                f"{(1 - alpha) * 100:.0f}% CI upper": [
                     round(intercept_ci_hi, 6),
                     round(slope_ci_hi, 6),
                 ],

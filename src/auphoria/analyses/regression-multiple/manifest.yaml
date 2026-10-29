@@ -74,7 +74,6 @@ limitations:
   - With very many predictors relative to rows the model can overfit and R2 is
     optimistic; adjusted R2 partly corrects for this.
 pack:
-  - core
   - econ-eng
   - social
 requires:

@@ -479,7 +479,6 @@ analyses:
     reporting coefficients without confidence intervals; not checking residuals.
   priority: P1
   pack:
-  - core
   - econ-eng
   - social
   sources:

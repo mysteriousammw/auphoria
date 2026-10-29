@@ -2,7 +2,7 @@
 
 `regression-multiple` · maturity: **experimental**
 
-Discipline packs: `core`, `econ-eng`, `social`  
+Discipline packs: `econ-eng`, `social`  
 
 Validation reference: Synthetic y = 1 + 2*x1 - 1*x2 + e; cross-checked vs statsmodels.api.OLS
   
