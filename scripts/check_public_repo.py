@@ -11,7 +11,7 @@ never modified here):
   b. Compares the cloned files with the expected public list; lists MISSING
      entries and anything that should not be public (data/results/venv/large
      files/secrets/personal paths/extra emails).
-  c. Confirms https://github.com/mysteriousammw/auphoria appears nowhere; confirms the README
+  c. Confirms REPO_URL_PLACEHOLDER appears nowhere; confirms the README
      install commands, the Colab notebook link and CITATION.cff carry the
      real address and that it matches the argument.
   d. Confirms CONTRIBUTORS.md and README credits are present and that no
@@ -152,14 +152,14 @@ def check_files(root: Path, repo_url: str) -> dict:
     ok.append("No results folders, venvs, caches, build output, or >5 MB files "
               "in the clone")
 
-    # c1. https://github.com/mysteriousammw/auphoria anywhere.
+    # c1. REPO_URL_PLACEHOLDER anywhere.
     ph_files = [str(p.relative_to(root)) for p in _text_files(root)
-                if "https://github.com/mysteriousammw/auphoria" in _read(p)]
+                if "REPO_URL_PLACEHOLDER" in _read(p)]
     if ph_files:
-        wrong.append(f"https://github.com/mysteriousammw/auphoria still present in {len(ph_files)} "
+        wrong.append(f"REPO_URL_PLACEHOLDER still present in {len(ph_files)} "
                      f"file(s): {', '.join(ph_files[:25])}")
     else:
-        ok.append("https://github.com/mysteriousammw/auphoria appears nowhere")
+        ok.append("REPO_URL_PLACEHOLDER appears nowhere")
 
     # c2. Real address in README install commands, Colab link, CITATION.cff.
     readme = _read(root / "README.md")
@@ -172,7 +172,7 @@ def check_files(root: Path, repo_url: str) -> dict:
         m = re.search(pat, readme)
         if m:
             found = m.group(0)
-            if "https://github.com/mysteriousammw/auphoria" in found or repo_url not in found:
+            if "REPO_URL_PLACEHOLDER" in found or repo_url not in found:
                 wrong.append(f"{label} does not carry the real address: '{found}' "
                              f"(expected {repo_url})")
             else:
@@ -270,14 +270,14 @@ def install_test(root: Path, repo_url: str) -> tuple[list[dict], Path | None]:
     if not readme_cmd:
         results.append({"step": "README install command", "ok": False,
                         "detail": "could not find a pipx/uvx install line"})
-    elif "https://github.com/mysteriousammw/auphoria" in readme_cmd:
+    elif "REPO_URL_PLACEHOLDER" in readme_cmd:
         results.append({"step": f"README install command ({readme_cmd})",
                         "ok": False,
-                        "detail": "command contains https://github.com/mysteriousammw/auphoria; the "
+                        "detail": "command contains REPO_URL_PLACEHOLDER; the "
                                   "README was never updated with the real "
                                   "address. Retrying with the real address "
                                   "substituted."})
-        fixed = readme_cmd.replace("https://github.com/mysteriousammw/auphoria", repo_url)
+        fixed = readme_cmd.replace("REPO_URL_PLACEHOLDER", repo_url)
         # pipx is not installed on this machine; run the pip git+ form of the
         # same install (equivalent command, README documents both).
         pip_cmd = [*pip, "install", "git+" + repo_url]
@@ -322,13 +322,13 @@ def colab_check(root: Path, repo_url: str, vbin: Path) -> list[dict]:
                         "detail": "notebooks/auphoria_colab.ipynb missing"})
         return results
     text = nb.read_text(encoding="utf-8")
-    if repo_url in text and "https://github.com/mysteriousammw/auphoria" not in text:
+    if repo_url in text and "REPO_URL_PLACEHOLDER" not in text:
         results.append({"step": "Colab notebook install cell points at the "
                                 "real repository", "ok": True, "detail": repo_url})
     else:
         results.append({"step": "Colab notebook install cell", "ok": False,
                         "detail": "install cell still references "
-                                  "https://github.com/mysteriousammw/auphoria (not the real address)"})
+                                  "REPO_URL_PLACEHOLDER (not the real address)"})
     # Execute top-to-bottom with the google.colab stub (same recipe as
     # tests/test_colab_phase5.py).
     stub_dir = HOME / "tests" / "colab_stub"
