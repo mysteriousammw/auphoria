@@ -53,14 +53,12 @@ def test_contributing_has_maintainer_and_succession():
     assert "Handover checklist" in c or "handover checklist" in c.lower()
 
 
-def test_citation_has_people_only_authors_with_confirm_placeholders():
+def test_citation_lists_all_people_authors_only():
     cff = _read("CITATION.cff")
-    # Personal detail fields exist but are NOT filled with a real name/ORCID;
-    # the sole active author is the project lead and the other four people stay
-    # in a commented block under [CONFIRM ROLE] (AI tools are never authors).
-    assert "Abdul Momin Muhammad Wisal" in cff or "Wisal" in cff
+    # All five people are authors, no AI tools are. Everyone is credited.
+    for name in ("Wisal", "Haq", "Khan", "Moheb", "Anayat"):
+        assert name in cff, f"missing author {name}"
     assert "ammw@aup.edu.pk" in cff
-    assert "CONFIRM ROLE" in cff
     assert "https://github.com/mysteriousammw/auphoria" in cff
     assert 'version: "0.1.0"' in cff
 

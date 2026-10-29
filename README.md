@@ -282,8 +282,9 @@ judgement. In particular:
 
 If you use AUPHORIA in your work, please cite it (APA style):
 
-> Wisal, A. M. M. (2026). *AUPHORIA: Beginner-friendly data analysis for
-> university students who cannot code* (Version 0.1.0) [Computer software].
+> Wisal, A. M. M., Haq, I. U., Khan, S. H., Moheb, A. F., & Anayat, M.
+> (2026). *AUPHORIA: Beginner-friendly data analysis for university students
+> who cannot code* (Version 0.1.0) [Computer software].
 > `https://github.com/mysteriousammw/auphoria`
 
 The full author/credit metadata is in [CITATION.cff](CITATION.cff) and all
