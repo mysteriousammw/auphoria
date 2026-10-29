@@ -104,10 +104,13 @@ analysis in about 15 minutes. Pick your platform below.
 ## Google Colab (no install on your laptop)
 
 If you don't want to install anything at all, run AUPHORIA in Google Colab's
-free notebook — it already has Python and the scientific stack.
+free notebook — it already has Python and the scientific stack. Click the
+button to open it directly in Colab:
 
-1. Open the notebook: `https://github.com/mysteriousammw/auphoria` → `notebooks/auphoria_colab.ipynb`
-   (use **"Open in Colab"**, or File → Upload notebook from the raw URL).
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mysteriousammw/auphoria/blob/main/notebooks/auphoria_colab.ipynb)
+
+1. The notebook opens in Colab (see also **File ▸ Open notebook ▸ GitHub** →
+   `mysteriousammw/auphoria`).
 2. **Run the install cell** (first cell). Colab's environment is not disturbed.
 3. **Upload your file** with the button, pick the analysis, and press **RUN**.
 4. A **download** cell saves your results as a `.zip` (report + figures + CSV

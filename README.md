@@ -201,11 +201,21 @@ open it.
 
 ## Run in Google Colab (no install on your laptop)
 
-1. Open the notebook: `https://github.com/mysteriousammw/auphoria` → `notebooks/auphoria_colab.ipynb`
-   (or run directly in Colab from the same link).
-2. Run the install cell, upload your file with the button, pick the analysis
-   and columns, click **Run**, and a zip of your results downloads to your
-   laptop.
+Click the button — it opens AUPHORIA straight in Google Colab (your browser
+loads the notebook onto Colab's servers; no install on your laptop):
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mysteriousammw/auphoria/blob/main/notebooks/auphoria_colab.ipynb)
+
+Or open it manually:
+
+1. Go to `https://colab.research.google.com` → **File ▸ Open notebook ▸ GitHub**
+   and paste `mysteriousammw/auphoria` (choose the `notebooks/auphoria_colab.ipynb`
+   notebook); or open
+   `https://colab.research.google.com/github/mysteriousammw/auphoria/blob/main/notebooks/auphoria_colab.ipynb`.
+2. In Colab: **Runtime ▸ Run all** (this installs AUPHORIA in the session).
+3. Click **Upload your data file** and choose your CSV/Excel.
+4. Pick the analysis and columns, click **Run** — a zip of your results
+   downloads to your laptop.
 
 > **Privacy note for Colab:** the notebook runs on Google's servers. Any
 > file you upload goes to Google's temporary runtime and is deleted when the
