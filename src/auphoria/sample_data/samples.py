@@ -113,6 +113,34 @@ def diets(n_per_group: int = 10, seed: int = 23) -> pd.DataFrame:
     return df
 
 
+def cohort(n_rows: int = 120, seed: int = 53) -> pd.DataFrame:
+    """A 2x2 epidemiology table (odds-and-risk demo).
+
+    Exposure x disease with known, hand-checkable counts:
+    exposed: 40 disease / 20 no-disease; unexposed: 15 disease / 45 no-disease.
+    OR = (a*d)/(b*c) = (40*45)/(20*15) = 6.0; RR = (40/60)/(15/60) = 2.667.
+    Carries a numeric 'age' column so the table rows are not trivially rigid.
+    """
+    rng = np.random.default_rng(seed)
+    counts = {
+        ("exposed", "yes"): 40,
+        ("exposed", "no"): 20,
+        ("unexposed", "yes"): 15,
+        ("unexposed", "no"): 45,
+    }
+    rows = []
+    for (exposure, disease), n in counts.items():
+        age = rng.normal(48.0 if exposure == "exposed" else 42.0, 8.0, n)
+        rows.append(pd.DataFrame({
+            "exposure": [exposure] * n,
+            "disease": [disease] * n,
+            "age": np.round(age, 0).astype(int),
+        }))
+    df = pd.concat(rows, ignore_index=True)
+    # p = exposed share of disease among `yes` rows etc.; keep it clean
+    return df
+
+
 def build_all(out_dir: str | None = None) -> dict[str, str]:
     """(Re)generate the bundled CSVs. Returns {name: path}."""
     from pathlib import Path
@@ -138,6 +166,7 @@ def build_all(out_dir: str | None = None) -> dict[str, str]:
         "survival": to_csv(survival(), "survival"),
         "diagnosis": to_csv(diagnosis(), "diagnosis"),
         "features": to_csv(features(), "features"),
+        "cohort": to_csv(cohort(), "cohort"),
     }
     return out
 

@@ -153,3 +153,45 @@ analyses:
       rmse: {value: 0.45065, tolerance: 1e-3}
       mae: {value: 0.38224, tolerance: 1e-4}
       r2: {value: 0.96328, tolerance: 1e-4}
+
+  kruskal-wallis:
+    source: "Hand-computed H on groups A=[1,2,3], B=[4,5,6], C=[7,8,9]; cross-checked vs scipy.stats.kruskal"
+    how_produced: "Rank sums 6,15,24; N=9, n_j=3. H = 12/(9*10)*279 - 30 = 37.2 - 30 = 7.2, df = 2."
+    values:
+      H: {value: 7.2, tolerance: 1e-4}
+      df: {value: 2, tolerance: 0.0}
+
+  regression-linear:
+    source: "Hand-computed on x=[1..5], y=[2,4,5,4,5]; cross-checked vs scipy.stats.linregress"
+    how_produced: "Sxx=10, Sxy=6; slope=0.6, intercept=2.2, r=6/sqrt(60)=0.7746, R2=0.6."
+    values:
+      slope: {value: 0.6, tolerance: 1e-6}
+      intercept: {value: 2.2, tolerance: 1e-6}
+      r2: {value: 0.6, tolerance: 1e-4}
+
+  regression-multiple:
+    source: "Synthetic y = 1.0 + 2.0*x1 - 1.0*x2 + e; cross-checked vs statsmodels OLS"
+    how_produced: "Fitted coefficients and R2 matched to an independent statsmodels.api.OLS fit within 1e-6."
+    values:
+      beta_intercept: {value: 1.0, tolerance: 0.5}
+      beta_x1: {value: 2.0, tolerance: 0.5}
+      beta_x2: {value: -1.0, tolerance: 0.5}
+
+  logistic-regression:
+    source: "Synthetic data from logit(p) = -1 + 1.5*x1 - 0.8*x2 (+ noise), labels by threshold; cross-checked vs statsmodels Logit"
+    how_produced: "Recovered coefficients and LR p matched to an independent statsmodels.api.Logit fit within 1e-5."
+    values: {}
+
+  odds-and-risk:
+    source: "Hand-computed 2x2 a=40,b=20;c=15,d=45; cross-checked vs scipy chi2_contingency + fisher_exact"
+    how_produced: "OR = (40*45)/(20*15) = 6.0; RR = (40/60)/(15/60) = 2.6667."
+    values:
+      OR: {value: 6.0, tolerance: 1e-4}
+      RR: {value: 2.6667, tolerance: 1e-4}
+
+  cronbach-alpha:
+    source: "Hand-computed on 3 perfectly-correlated items x1=[1..5], x2=2x1+1, x3=2*[1..5]; cross-checked by hand"
+    how_produced: "k=3, sum(item var)=18, total var=50; alpha=(3/2)*(1-18/50)=0.96; standardised alpha=1.0."
+    values:
+      alpha: {value: 0.96, tolerance: 1e-3}
+      standardised_alpha: {value: 1.0, tolerance: 1e-4}

@@ -24,6 +24,7 @@ _DATASETS = {
     "survival": "survival.csv",
     "diagnosis": "diagnosis.csv",
     "features": "features.csv",
+    "cohort": "cohort.csv",
 }
 
 

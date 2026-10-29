@@ -87,17 +87,23 @@ nav:
   - Which analysis?: choose.md
   - Analyses:
       - analyses/index.md
+      - analyses/summary.md
+      - analyses/describe.md
       - analyses/ttest.md
       - analyses/ttest-paired.md
       - analyses/mann-whitney.md
+      - analyses/kruskal-wallis.md
       - analyses/correlation.md
       - analyses/spearman-correlation.md
       - analyses/chi-square.md
       - analyses/anova-oneway.md
+      - analyses/regression-linear.md
+      - analyses/regression-multiple.md
+      - analyses/logistic-regression.md
+      - analyses/odds-and-risk.md
+      - analyses/cronbach-alpha.md
       - analyses/ancova.md
       - analyses/mixed-effects.md
-      - analyses/summary.md
-      - analyses/describe.md
       - analyses/pca.md
       - analyses/factor-analysis.md
       - analyses/clustering-kmeans.md

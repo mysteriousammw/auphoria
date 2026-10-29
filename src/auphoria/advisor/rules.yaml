@@ -122,6 +122,18 @@ rules:
     not_fit: "Needs a numeric outcome, a group column, and at least one numeric covariate."
     small_sample: "Sample too small for ANCOVA (needs at least 12 non-missing rows)."
 
+  - analysis: kruskal-wallis
+    question: compare
+    priority: 45
+    needs:
+      min_numeric: 1
+      min_categorical: 1
+      groups: "3plus"
+      min_rows: 12
+    reason: "Three or more groups and a numeric outcome that is skewed/ordinal or has violated for ANOVA — the non-parametric Kruskal-Wallis test."
+    not_fit: "Needs a numeric/ordinal outcome and a group column with THREE or more categories (for 2 groups use Mann-Whitney)."
+    small_sample: "Sample too small for Kruskal-Wallis (needs at least 12 non-missing rows over 3+ groups)."
+
   - analysis: mixed-effects
     question: compare
     priority: 70
@@ -164,12 +176,53 @@ rules:
     not_fit: "Needs TWO categorical columns (e.g. smoking yes/no × outcome yes/no)."
     small_sample: "Sample too small for chi-square (needs at least 10 non-missing rows; check expected counts)."
 
+  - analysis: odds-and-risk
+    question: relate
+    priority: 35
+    needs:
+      min_categorical: 2
+      min_rows: 10
+    reason: "Two binary categorical columns (exposure × yes/no outcome) — computes relative risk and odds ratio with confidence intervals."
+    not_fit: "Needs TWO binary (exactly two categories) columns: an exposure and an outcome."
+    small_sample: "Too few rows for a stable risk ratio (needs at least 10, and events in each group)."
+
   - analysis: summary
     question: relate
     priority: 90
     reason: "Always worth a look first: means, spreads and counts for the columns you want to relate."
 
   # ---------------------------------------------------------------- predict
+  - analysis: regression-linear
+    question: predict
+    priority: 5
+    needs:
+      min_numeric: 2
+      min_rows: 10
+    reason: "A numeric outcome and a single numeric predictor — simple linear regression gives the slope, R², and a confidence interval."
+    not_fit: "Needs a numeric outcome column and exactly one numeric predictor column."
+    small_sample: "Too few rows for a trustworthy regression (needs at least 10 complete rows)."
+
+  - analysis: regression-multiple
+    question: predict
+    priority: 8
+    needs:
+      min_numeric: 3
+      min_rows: 20
+    reason: "A numeric outcome and several numeric predictors — multiple linear regression with adjusted R² and collinearity (VIF) checks."
+    not_fit: "Needs a numeric outcome and at least TWO numeric predictor columns."
+    small_sample: "Too few rows for a stable multiple regression (needs at least 20 complete rows and several per predictor)."
+
+  - analysis: logistic-regression
+    question: predict
+    priority: 12
+    needs:
+      min_numeric: 2
+      min_categorical: 1
+      min_rows: 30
+    reason: "A binary (yes/no) outcome and numeric predictors — logistic regression reports odds ratios with confidence intervals."
+    not_fit: "Needs a binary outcome column (two categories) and at least one numeric predictor."
+    small_sample: "Too few rows/events for a stable logistic model (needs at least 30 rows and some of each outcome)."
+
   - analysis: ml-regression-eval
     question: predict
     priority: 10
@@ -227,6 +280,16 @@ rules:
     small_sample: "Too few rows for a stable Cox model (needs at least 30 and enough events)."
 
   # ------------------------------------------------------------ reliability
+  - analysis: cronbach-alpha
+    question: reliability
+    priority: 5
+    needs:
+      min_numeric: 2
+      min_rows: 30
+    reason: "Several numeric items that should measure the same thing — Cronbach's alpha tells you how consistently the scale hangs together."
+    not_fit: "Needs at least TWO numeric item columns (the items of your scale)."
+    small_sample: "Too few rows for a stable reliability estimate (needs at least 30 responses)."
+
   - analysis: factor-analysis
     question: reliability
     priority: 10

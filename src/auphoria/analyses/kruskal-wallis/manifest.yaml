@@ -1,0 +1,63 @@
+id: kruskal-wallis
+name: Kruskal-Wallis H Test
+maturity: experimental
+description: >
+  Compares the distribution of a numeric or ordinal outcome across three or
+  more independent groups (for example, plant growth under several treatments)
+  without assuming the data are normally distributed. It is the non-parametric
+  alternative to one-way ANOVA. Reports the H statistic, degrees of freedom,
+  the p-value, and group medians.
+inputs:
+  - name: outcome
+    kind: numeric-column
+    required: true
+    description: The numeric or ordinal outcome you want to compare (e.g. score).
+    constraints: must be a numeric column
+  - name: group
+    kind: categorical-column
+    required: true
+    description: The grouping column with three or more categories (e.g. treatment).
+    constraints: must have three or more categories
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level (probability of a false positive you accept).
+outputs:
+  - group statistics table (n, median per group)
+  - Kruskal-Wallis test result table (H, df, p-value, n)
+  - box-and-whisker figure comparing the groups
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - The groups are independent (one observation does not belong to more than
+    one group).
+  - The outcome is measured on at least an ordinal scale, so values can be
+    ranked.
+  - To read the result as a shift in medians, the distributions of the groups
+    should have a similar shape (spread); otherwise the test is best described
+    as comparing distributions (stochastic ordering), not medians.
+limitations:
+  - It needs three or more groups. For exactly two groups use a
+    Mann-Whitney U test, which the engine suggests if the group column has
+    fewer than three categories.
+  - No normality assumption is needed, but when the data ARE reasonably
+    normal a one-way ANOVA has more power.
+  - A significant result shows the groups' distributions sit apart; it does
+    not say WHICH groups differ. Follow up with a post-hoc test (e.g. Dunn's)
+    if you need pairwise comparisons.
+  - Missing values in the two chosen columns are excluded (and reported), not
+    imputed.
+pack:
+  - core
+  - social
+  - health
+requires: []
+reference: >-
+  A=[1,2,3], B=[4,5,6], C=[7,8,9]; cross-checked vs scipy.stats.kruskal
+test_data:
+  - "Deterministic synthetic data in tests/test_kruskal_wallis.py, with
+     hand-computed rank sums (groups of size 3 giving H = 7.2, df = 2)
+     compared against SciPy's reference implementation."

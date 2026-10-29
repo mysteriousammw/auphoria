@@ -105,13 +105,13 @@ RECOMMEND_CASES = [
      {"outcome": "outcome", "group": "group"},
      ["ttest", "mann-whitney", "summary", "describe"]),
 
-    # compare — three groups -> ANOVA (+ chi-square needs two categoricals:
-    # this df has one, so anova only)
+    # compare — three groups -> ANOVA (+ Kruskal-Wallis for skewed data;
+    # this df has one numeric + one categorical, so no chi-square)
     ("compare-3groups", "compare", three_group, None,
-     ["anova-oneway", "summary", "describe"]),
+     ["anova-oneway", "kruskal-wallis", "summary", "describe"]),
     ("compare-3groups-roles", "compare", three_group,
      {"outcome": "outcome", "group": "group"},
-     ["anova-oneway", "summary", "describe"]),
+     ["anova-oneway", "kruskal-wallis", "summary", "describe"]),
 
     # compare — paired design (id role or all-unique subject column)
     ("compare-paired-id-role", "compare", paired_wide, {"subject": "id"},
@@ -130,17 +130,20 @@ RECOMMEND_CASES = [
      {"x": "outcome", "y": "outcome"},
      ["correlation", "spearman-correlation", "summary", "describe"]),
     ("relate-2cat", "relate", two_categorical, None,
-     ["chi-square", "summary", "describe"]),
+     ["chi-square", "odds-and-risk", "summary", "describe"]),
 
     # prediction: diagnostic-test now fits a numeric score + binary group;
-    # the ml-* analyses need 2+ numeric features (not present here)
-    ("predict-2numeric", "predict", two_numeric, None, ["summary", "describe"]),
+    # the ml-* analyses need 2+ numeric features (not present here);
+    # simple/multiple regression need 1/2+ numeric predictors
+    ("predict-2numeric", "predict", two_numeric, None,
+     ["regression-linear", "summary", "describe"]),
     ("predict-2group", "predict", two_group, None,
      ["diagnostic-test", "summary", "describe"]),
 
-    # over_time / reliability / reduce: nothing built -> summary only
+    # over_time / reliability / reduce
     ("overtime", "over_time", two_numeric, None, ["summary", "describe"]),
-    ("reliability", "reliability", two_numeric, None, ["summary", "describe"]),
+    ("reliability", "reliability", two_numeric, None,
+     ["cronbach-alpha", "summary", "describe"]),
     ("reduce", "reduce", two_numeric, None, ["summary", "describe"]),
 
     # explainable-questions over the "shape quirks" datasets
@@ -156,7 +159,7 @@ RECOMMEND_CASES = [
     ("compare-binary-outcome", "compare", binary_outcome, None,
      ["chi-square", "summary", "describe"]),
     ("relate-binary-outcome", "relate", binary_outcome, None,
-     ["chi-square", "summary", "describe"]),
+     ["chi-square", "odds-and-risk", "summary", "describe"]),
 ]
 
 

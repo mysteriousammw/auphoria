@@ -133,6 +133,12 @@ auphoria run --data ./plant_growth.csv --analysis ttest --outcome height_cm --gr
 | `chi-square`          | Chi-Square Test of Independence                | Association between two categorical variables                            |
 | `anova-oneway`        | One-Way ANOVA                                  | Compare a numeric outcome across three or more independent groups        |
 | `mann-whitney`        | Mann-Whitney U Test                            | Compare two independent groups when data are not normal                  |
+| `kruskal-wallis`      | Kruskal-Wallis H Test                          | Non-parametric ANOVA: compare 3+ groups when data are not normal        |
+| `regression-linear`   | Simple Linear Regression                       | Predict a numeric outcome from one numeric predictor; slope, R², CI     |
+| `regression-multiple` | Multiple Linear Regression                     | Predict a numeric outcome from several predictors; adjusted R², VIF     |
+| `logistic-regression` | Binary Logistic Regression                     | Predict a yes/no outcome; odds ratios with confidence intervals         |
+| `odds-and-risk`       | Relative Risk & Odds Ratio                     | Risk/odds ratio from a 2×2 exposure × outcome table, with CIs           |
+| `cronbach-alpha`      | Cronbach's Alpha (Scale Reliability)           | How consistently a set of questionnaire items measure one thing         |
 | `kaplan-meier`        | Kaplan-Meier Survival Analysis                 | Time-until-event between groups, handling dropouts                       |
 | `cox-regression`      | Cox Proportional-Hazards Regression            | Which factors relate to the risk of an event over time                   |
 | `pca`                 | Principal Component Analysis                   | Reduce many numeric variables to a few combined scores                   |

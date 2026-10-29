@@ -4,6 +4,47 @@ This file records every non-obvious decision made while building AUPHORIA,
 with one line of reasoning each. New decisions are appended; nothing is
 rewritten after the fact (a dated entry is added instead).
 
+## Wave 1 — complete the P1 plan (2026-10-30)
+
+- **Decision:** built the six missing P1 analyses (`kruskal-wallis`,
+  `regression-linear`, `regression-multiple`, `logistic-regression`,
+  `odds-and-risk`, `cronbach-alpha`) as a parallel sub-agent batch, then
+  wired catalogue/rules/references/demos/docs myself and verified every demo
+  end-to-end plus the full suite.
+  *Reasoning:* the phase-6/8 convention scales (delegating the mechanical
+  per-analysis scaffolding) while keeping the integration + verification
+  single-owned, so a sub-agent self-report is not trusted until the demo and
+  suite run green.
+
+- **Decision:** `odds-and-risk` gained an `event_level` parameter.
+  *Reasoning:* with categorical ordering alphabetical-first, a yes/no outcome
+  column wrongly labels "no" as the event; a student must be able to say which
+  category is the event, and when they don't we WARN loudly about the
+  automatic alphabetical choice rather than silently reporting a backwards
+  relative risk.
+
+- **Decision:** `regression-multiple` and `logistic-regression` declare an
+  optional single `predictor`/`outcome` input and pull all other numeric
+  columns as predictors in `run()`.
+  *Reasoning:* the engine's input mapping cannot express "all N numeric
+  columns", so the analyses read the data-card numeric set themselves and
+  refuse less than the required number of predictors (mirrors pca / factor /
+  ml-classification's column-set pattern).
+
+- **Decision:** reference fixtures, `rules.yaml` entries, demo-map entrances,
+  README table and mkdocs nav were all updated in the same pass.
+  *Reasoning:* a new built analysis must be advertised everywhere at once, or
+  the built ⊆ catalogue / advisor-coverage / validation-coverage tests fail
+  and the docs go stale.
+
+- **Decision:** the `regression-multiple` analysis uses hand-computed VIF
+  (1/(1-R²_j) from a per-predictor regression) rather than statsmodels'
+  variance_inflation_factor helper.
+  *Reasoning:* keeps the implementation transparent and dependency-light and
+  matches the project's "implement by hand, verify vs the library" ethos.
+
+---
+
 ## Post-publication audit pass (2026-10-30)
 
 A single clean-up pass over the whole working tree after the repository went

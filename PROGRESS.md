@@ -5,6 +5,63 @@ what is next, and known problems.
 
 ---
 
+## Wave 1 — complete P1 plan (2026-10-30)
+
+Built all six missing P1 analyses as a parallel batch (each = manifest +
+analysis + README + per-analysis tests, then wired catalogue/rules/
+references/demos/docs myself and verified every demo + the full suite).
+
+- **`kruskal-wallis`** — non-parametric 3+ group comparison (H, df, p,
+  group medians, rank-boxplot). scipy only.
+- **`regression-linear`** — simple linear regression (slope, intercept,
+  R², p, 95% CI, scatter + residual figures). scipy only.
+- **`regression-multiple`** — OLS with several predictors: coefficient
+  table, model F, adjusted R², hand-computed VIF collinearity checks,
+  expert-review at small n. statsmodels.
+- **`logistic-regression`** — binary logistic: OR + 95% CI, McFadden
+  pseudo-R², in-sample confusion matrix (clearly labelled), ROC figure.
+  statsmodels. Labelled in-sample accuracy optimistic → point to
+  ml-classification-eval.
+- **`odds-and-risk`** — 2×2 relative risk + odds ratio with Woolf-log CI,
+  chi-square (Yates) + Fisher. Zero-cell → Haldane correction with warning.
+  NEW `event_level` parameter so students can name the event category
+  (default = alphabetical-first with WARN).
+- **`cronbach-alpha`** — scale reliability by hand: alpha, standardised
+  alpha, item-total correlation, alpha-if-deleted, interpretation bands.
+  scipy-free.
+
+**Supporting changes**
+- New sample dataset `cohort` (2×2 exposure × disease) with hand-computable
+  OR = 6.0, RR = 2.667, registered in samples.py / _DATASETS / build_all.
+- Adder `rules.yaml` entries for all six (compare/predict/relate/reliability)
+  and updated the advisor scenario-test expectations.
+- Reference fixtures added to `docs/validation/references.yaml` for all six.
+- Demo-map entrances added to `cli/main.py` for all six (`auphoria demo`).
+- README "Available analyses" table expanded 19 → 25; mkdocs nav + analysis
+  pages regenerated (25 pages); validation dashboard regenerated.
+
+### Verified
+- `auphoria demo --analysis <id>` runs clean (exit 0, results written, no
+  errors) for all six.
+- `pytest` → **413 passed** (was 359; +54 new per-analysis tests); `ruff`
+  clean; mkdocs build has **zero WARNING/ERROR**.
+
+### What is next
+- Wave 2 (P2/P3): anova-repeated, friedman, bland-altman, panel-regression,
+  time-series, differential-expression, sem.
+- Wave 3: discipline-pack families (agri-animal designs, life-science
+  dose-response/qPCR/kinetics, health meta-analysis, social inter-rater/CFA,
+  econ-eng robust/IV/curve-fit).
+- Wave 4 cross-field fallbacks: wilcoxon-signed-rank, kappa, ICC.
+
+### Known problems
+- New analyses stay `maturity: experimental` (no human reviewer yet).
+- `regression-multiple` uses all numeric columns (other than the outcome) as
+  predictors by design; a student with an unwanted numeric column in the
+  dataset should remove it first (documented in each README).
+
+---
+
 ## Post-publication audit pass (2026-10-30)
 
 The working tree was already published and green (see "Public repository

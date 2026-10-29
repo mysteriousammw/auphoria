@@ -1,0 +1,71 @@
+id: cronbach-alpha
+name: Cronbach's Alpha (Internal Consistency)
+maturity: experimental
+levels: [advanced]
+disciplines:
+  - psychology
+  - social-sciences
+  - education
+  - health
+description: >
+  Cronbach's alpha measures the internal consistency (reliability) of a set
+  of numeric item columns that are supposed to measure one scale or
+  construct — the classic questionnaire / survey reliability statistic. It
+  uses every numeric column in the file as an item, reports the overall
+  alpha, an item (deleted-if-removed) table with corrected item-total
+  correlations, an n per item, and a plain-English interpretation of the
+  alpha value. Very small samples or a large gap between the raw and
+  standardised alpha flag a banner recommending expert review.
+inputs: []
+parameters:
+  - name: acceptable_threshold
+    type: number
+    default: 0.7
+    min: 0
+    max: 1
+    description: Values of alpha at or above this threshold are treated as
+      'acceptable' reliability for the verdict summary.
+outputs:
+  - overall Cronbach's alpha (raw) and standardised alpha
+  - number of items and number of complete observations used
+  - per-item table (n, mean, SD, corrected item-total correlation, alpha-if-deleted)
+  - interpretation of the alpha value
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - Each item column must be numeric (item responses on a numeric scale).
+  - The items are intended to measure one construct; Cronbach's alpha
+    quantifies internal consistency, not unidimensionality.
+  - A minimum sample size of about 30 observations is recommended; below
+    that the estimate is noisy and the result is flagged for expert review.
+  - Missing values are excluded row-wise (listwise) and reported, never
+    imputed.
+  - AUPHORIA does NOT automatically reverse-code any item. If any item is
+    worded in the opposite direction to the rest, you must reverse its
+    scoring before running the analysis, or alpha will be artificially low.
+limitations:
+  - Alpha is not unidimensionality and not validity; a high alpha only shows
+    the items are correlated, not that they measure one factor or that the
+    scale measures what it claims to.
+  - Alpha grows with the number of items and with the average inter-item
+    correlation; a long or redundant scale can look highly consistent without
+    being homogeneous.
+  - Missing values are excluded (listwise); heavy missingness shrinks the
+    effective sample.
+  - The result depends on the sample; alpha reported on one dataset may not
+    generalise to another.
+pack:
+  - social
+  - health
+requires: []
+reference: >-
+  x1 = [1,2,3,4,5], x2 = x1*2+1 = [3,5,7,9,11], x3 = [2,4,6,8,10];
+  k = 3, population item variances sum = 18, total (row-sum) variance = 50,
+  so alpha = (3/2)*(1 - 18/50) = 0.96; standardised alpha = 1.0 (columns are
+  perfectly correlated once standardised). Hand-computed textbook formula,
+  no external library.
+test_data:
+  - "Deterministic synthetic data in tests/test_cronbach_alpha.py, with
+     overall alpha = 0.96 and standardised alpha = 1.0 checked against the
+     textbook hand computation, plus guardrail tests for refusing <2 items,
+     missing-values handling, interpretation and report structure."
