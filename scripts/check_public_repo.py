@@ -153,8 +153,13 @@ def check_files(root: Path, repo_url: str) -> dict:
               "in the clone")
 
     # c1. REPO_URL_PLACEHOLDER anywhere.
+    # The tool files legitimately carry the sentinel as a DETECTION literal
+    # (set_repo_url, prepare_publish, check_public_repo), so never flag them.
+    _SENTINEL_FILES = {"set_repo_url.py", "prepare_publish.py",
+                       "check_public_repo.py"}
     ph_files = [str(p.relative_to(root)) for p in _text_files(root)
-                if "REPO_URL_PLACEHOLDER" in _read(p)]
+                if p.name not in _SENTINEL_FILES and
+                "REPO_URL_PLACEHOLDER" in _read(p)]
     if ph_files:
         wrong.append(f"REPO_URL_PLACEHOLDER still present in {len(ph_files)} "
                      f"file(s): {', '.join(ph_files[:25])}")

@@ -1,14 +1,13 @@
-# CITATION.cff is a TEMPLATE. Fill in real values when the repository is
-# published (see docs/PUBLISH_CHECKLIST.md step 9). Leave the repository
-# address as https://github.com/mysteriousammw/auphoria - scripts/set_repo_url.py fills it in.
+# Citation metadata for AUPHORIA.
 #
 # Authors are people only (no AI tools are authors). Abdul Momin Muhammad
-# Wisal is the project creator and lead. The other four people are kept in a
-# commented block until each of their [CONFIRM ROLE] markers is replaced with
-# the approved role/descriptor - do not uncomment them before then.
+# Wisal is the project creator and lead, and the only author listed. All
+# contributors are credited in CONTRIBUTORS.md. The other four people are kept
+# in a commented block below until each of their [CONFIRM ROLE] markers is
+# replaced with the approved role/descriptor - do not uncomment them before
+# then.
 #
-# version, doi and repository-code are left as placeholders until the first
-# release is tagged and (optionally) a DOI is minted.
+# doi and repository-code keep placeholders until a DOI is minted (Zenodo).
 cff-version: 1.2.0
 message: "If you use AUPHORIA in your research or coursework, please cite it as follows."
 title: "AUPHORIA"

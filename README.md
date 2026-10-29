@@ -280,13 +280,14 @@ judgement. In particular:
 
 ## Citation
 
-If you use AUPHORIA in your work, please cite it:
+If you use AUPHORIA in your work, please cite it (APA style):
 
-> Abdul Momin Muhammad Wisal. (2026). *AUPHORIA: beginner-friendly data
-> analysis for university students who cannot code* (Version 0.1.0).
-> [Software]. `https://github.com/mysteriousammw/auphoria`
+> Wisal, A. M. M. (2026). *AUPHORIA: Beginner-friendly data analysis for
+> university students who cannot code* (Version 0.1.0) [Computer software].
+> `https://github.com/mysteriousammw/auphoria`
 
-The full citation metadata is in [CITATION.cff](CITATION.cff). Project
+The full author/credit metadata is in [CITATION.cff](CITATION.cff) and all
+contributors are listed in [CONTRIBUTORS.md](CONTRIBUTORS.md). Project
 contact: `ammw@aup.edu.pk`.
 
 ## Acknowledgements

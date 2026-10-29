@@ -122,7 +122,7 @@ there).
 - **`scripts/check_public_repo.py <repo-url>`** — shallow-clones the repo to a
   temp dir, then: compares the expected public files (and flags anything that
   should not be public: results/venv/caches/>5MB/data/secrets/paths/emails),
-  confirms `REPO_URL_PLACEHOLDER` is gone and the README install commands,
+  confirms the `REPO_URL` placeholder is gone and the README install commands,
   Colab link and CITATION.cff all carry the real address; checks CONTRIBUTORS
   + README credits and that no `[CONFIRM ROLE]`/`TODO-VERIFY` remain; runs a
   FRESH-venv install (README pipx/pip git+ command), `--version`, `doctor`,
@@ -141,7 +141,7 @@ there).
 - No junk files, no extra emails/secrets in the clone; all 19 analysis
   folders complete; all local links resolve.
 - Findings (all expected / fixable): **1 MISSING (LICENSE)**, **10 WRONG**
-  (REPO_URL_PLACEHOLDER still in 29 files: README install, Colab link,
+  (the URL placeholder still in 29 files: README install, Colab link,
   CITATION.cff url/repository-code, pyproject, engine, packs; plus
   `[CONFIRM ROLE]/[CONFIRM]/TODO-VERIFY` markers), **5 WARNINGS** (benign
   illustrative absolute paths in docs/tests).
@@ -149,7 +149,7 @@ there).
 ### Local fixes made (ready to commit + push)
 The audit exposed real bugs, fixed in the LOCAL copy:
 1. `set_repo_url` could not run cleanly: `scripts/build_notebook.py` and
-   `tests/test_notebook.py` used `REPO_URL_PLACEHOLDER` as a Python *variable
+   `tests/test_notebook.py` used the `REPO_URL` placeholder as a Python *variable
    name* — replacing it produced a syntax error. Renamed to `_REPO_URL_MARKER`.
 2. `set_repo_url` must skip its own detection/lint siblings
    (`prepare_publish.py`, `check_public_repo.py`) or it silently disables the

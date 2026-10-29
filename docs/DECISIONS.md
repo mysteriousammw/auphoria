@@ -19,12 +19,12 @@ rewritten after the fact (a dated entry is added instead).
 ### set_repo_url fixes the audit surfaced
 - **Decision:** `set_repo_url.py` now SKIPS `prepare_publish.py` and
   `check_public_repo.py`.
-  *Reasoning:* both use `REPO_URL_PLACEHOLDER` as a DETECTION literal (they scan
+  *Reasoning:* both use the `REPO_URL` placeholder as a DETECTION literal (they scan
   for it); replacing it in their own source would silently disable the exact
   check they exist to run.
 - **Decision:** the placeholder was used as a Python *identifier* in
   `scripts/build_notebook.py` and `tests/test_notebook.py`
-  (`REPO_URL_PLACEHOLDER = "REPO_URL_PLACEHOLDER"`), so running set_repo_url
+  (`REPO_URL-TOKEN = "REPO_URL-TOKEN"`), so running set_repo_url
   turned it into a syntax error (`https://... = "https://..."`). Renamed those
   to `_REPO_URL_MARKER` so only the string VALUE is replaced, not the name.
   *Reasoning:* a URL sweep must never corrupt the tool's own source; the
@@ -33,7 +33,7 @@ rewritten after the fact (a dated entry is added instead).
   `mod.PLACEHOLDER` instead of inlining the literal, so the test survives a URL
   sweep.
 - **Decision:** set_repo_url's naive token replacement doubles a URL that was
-  already written as `https://github.com/REPO_URL_PLACEHOLDER` (mkdocs
+  already written as `https://github.com/REPO_URL-TOKEN` (mkdocs
   `site_url`/`repo_url`, DECISIONS text) → fixed the doubled addresses
   directly. *Reasoning:* the placeholder-prefixed-with-scheme case is a real
   trap for future maintainers.

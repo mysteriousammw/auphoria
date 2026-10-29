@@ -89,7 +89,7 @@ def collect_files(root: Path) -> list[Path]:
             continue
         if not child.is_file():
             continue
-        if child.name == "set_repo_url.py":
+        if _is_skippable(child):
             continue
         if _is_text(child):
             out.append(child)
