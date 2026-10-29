@@ -18,17 +18,18 @@ updated the same day.
 | Source | Count | Notes |
 |--------|-------|-------|
 | Catalogue (planned) | 32 | P1×19, P2×9, P3×4 |
-| Built (shipped) | 19 | every one `maturity: experimental` |
-| Planned but unbuilt | 13 | see Wave 1 + Wave 2 |
+| Built (shipped) | 26 | every one `maturity: experimental` |
+| Planned but unbuilt | 6 | see Wave 3 |
 | Pack-page analyses (unbuilt) | ~24 | see Wave 3 |
-| Cross-field gaps not in catalogue | 3 | see Wave 4 |
+| Cross-field gaps not in catalogue | 3+ | see Wave 4 |
 
 ## Shipped (built; do not rebuild)
 
 summary, describe, ttest, ttest-paired, correlation, spearman-correlation,
 chi-square, anova-oneway, mann-whitney, kaplan-meier, cox-regression, pca,
 ml-classification-eval, ml-regression-eval, clustering-kmeans, ancova,
-mixed-effects, factor-analysis, diagnostic-test.
+mixed-effects, factor-analysis, diagnostic-test, anova-repeated, friedman,
+bland-altman, panel-regression, time-series, differential-expression, sem.
 
 ---
 

@@ -722,3 +722,19 @@ public. No files were rewritten gratuitously; every change was a real defect.
   run() directly (bypassing the engine's plt.close), which accumulated 20+
   open figures across the suite; closing per test removes the warning with no
   behavior change.
+
+- **Decision:** AUPHORIA's genomics scope is counts-table analysis only
+  (2026-10-30). `differential-expression` does RNA-seq style DE on a sample-
+  by-gene counts matrix; it is NOT a DNA-seq / whole-genome tool.
+  *Reasoning:* raw reads (FASTQ/BAM) need alignment, variant calling and
+  assembly — external HPC-chain tools, contradicting the laptop-only,
+  tables-in rule (same as docx/pdf are unsupported inputs). Students with
+  read-level WGS data should use bwa/GATK/bcftools; students with count or
+  genotype tables stay in-scope. Wave 3 will add heritability/variance-
+  components (agri) which is the closest table-based genetics analysis.
+- **Decision:** Wave 4+ candidate additions (2026-10-30): power/sample-size
+  calculator (pre-study; currently nothing answers "how many samples"),
+  standalone multiple-testing correction (fdr_bh/bonferroni outside DE),
+  transpose/reshape utility (DE README tells students to transpose by hand),
+  Welch's t as a ttest option. *Reasoning:* each is a universal student gap
+  identified while reviewing the Wave 2 ship; none exists in the catalogue.

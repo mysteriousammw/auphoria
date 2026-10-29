@@ -5,6 +5,30 @@ what is next, and known problems.
 
 ---
 
+## Post-crash re-verification + Wave 3 scope (2026-10-30, later)
+
+- The Mac panic-rebooted 4x overnight (watchdog timeout under memory/CPU
+  pressure on the 8 GB box, Spotlight reindex + ANECompilerService) — an OS
+  fault, not a code fault. No project files lost; Wave 2 commit `6b56688` was
+  already on main, tree clean.
+- Re-verified Wave 2 chunked (per the low-RAM rule): 65/65 per-analysis
+  tests, all seven `auphoria demo --analysis <id>` complete.
+- Wave 3 scope locked per ROADMAP: build `experimental-design` (CRD/RCBD/
+  Latin square/split-plot/factorial as ONE engine with a `design` param,
+  mean separation inside) + life-science trio (dose-response IC50/EC50,
+  qPCR ΔΔCt, enzyme kinetics) first; meta-analysis, kappa/Likert, econ-eng
+  robust/IV/curve-fit next.
+- Genomic boundary recorded (DECISIONS.md): `differential-expression` is a
+  counts-table RNA-seq style DE tool — no read-level (FASTQ/BAM) DNA-seq,
+  variant calling, or whole-genome support, by the tables-only input rule.
+- Candidate additions raised for Wave 4+: power/sample-size calculator
+  (biggest student gap — nothing answers "how many samples"), standalone
+  multiple-testing correction (fdr_bh/bonferroni outside DE), a
+  transpose/reshape utility (DE README currently instructs students to
+  transpose by hand), Welch's t as a ttest option.
+
+---
+
 ## Wave 2 — complete P2/P3 named plans (2026-10-30)
 
 All seven Wave 2 analyses built and verified (each = manifest + analysis +
