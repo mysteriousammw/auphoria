@@ -243,12 +243,12 @@ by copying an existing one — the engine picks it up from the manifest.
 
 ## License
 
-AUPHORIA's licence is **not yet chosen** — see
-[docs/LICENCE_DECISION.md](docs/LICENCE_DECISION.md) for the options and
-trade-offs, which the maintainer will decide before publication. Research-grade
-scientific computing libraries (NumPy, pandas, SciPy, Matplotlib) power the
-analyses. Analysis maturity is always marked — nothing in AUPHORIA is labeled
-"validated".
+AUPHORIA is released under the **MIT License** (see [LICENSE](LICENSE)). It is
+permissive open source: anyone may use, copy, modify, merge, publish,
+distribute, sublicense and sell copies, provided the copyright notice
+is retained. Research-grade scientific computing libraries (NumPy, pandas,
+SciPy, Matplotlib) power the analyses. Analysis maturity is always marked —
+nothing in AUPHORIA is labeled "validated".
 
 ## Contributors and credits
 

@@ -12,9 +12,7 @@ version = "0.1.0"
 description = "AUPHORIA - beginner-friendly data analysis for university students who cannot code. Runs offline on your own computer or in Google Colab."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
-# License intentionally NOT set here: the maintainer chooses the licence in a
-# later step (see docs/LICENCE_DECISION.md). No LICENSE file is created until
-# then, so do not add `license =` or a `License ::` classifier prematurely.
+license = { text = "MIT" }
 authors = [{ name = "AUPHORIA contributors" }]
 keywords = ["statistics", "education", "analysis", "scientific", "cli", "beginner"]
 classifiers = [
@@ -26,6 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Mathematics",
 ]

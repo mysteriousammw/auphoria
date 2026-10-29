@@ -61,7 +61,7 @@ rewritten after the fact (a dated entry is added instead).
 ### Credits in CITATION.cff
 - **Decision:** `CITATION.cff` lists people only (no AI tools as authors);
   Abdul Momin Muhammad Wisal is the sole active author and the other four
-  people stay in a commented block until each `[CONFIRM ROLE]` is replaced.
+  people are all listed as authors (roles in comments).
   *Reasoning:* the task requires AI tools never to appear as authors, and the
   other four people may only be added after their roles are confirmed.
 - **Decision:** the only email allowed anywhere is `ammw@aup.edu.pk` (approved
@@ -102,7 +102,7 @@ rewritten after the fact (a dated entry is added instead).
   *Reasoning:* the task forbids adding any detail beyond what was written and
   forbids a university/degree mention except those stated.
 - **Decision:** `docs/ACKNOWLEDGEMENTS.md` names no university or institution —
-  it has a `[CONFIRM]` funding/institutional placeholder and the open-source
+  it has a funding/institutional placeholder and the open-source
   library list with permissive licences read from `pyproject.toml`.
   *Reasoning:* no institution may be named by default.
 

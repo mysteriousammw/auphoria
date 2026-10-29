@@ -32,7 +32,9 @@ def test_path_quoted_drag_drop(tmp_path):
     p = clean_path_input('"/some folder/my file.csv"')
     assert p.name == "my file.csv"
     assert "some folder" in str(p)
-    assert p.is_absolute()  # leading / -> absolute on POSIX
+    # Leading "/" is absolute on POSIX; on Windows it normalizes to a relative
+    # drive-less path. Either way the folder component is preserved.
+    assert "some folder" in p.parts
 
 
 def test_path_escaped_space(tmp_path):
@@ -49,11 +51,10 @@ def test_path_windows_backslashes_unix():
 
 
 def test_path_windows_unix_slash_style():
-    # A WSL-style path: the engine keeps it resolveable; on Windows it is not
-    # absolute (no drive), on POSIX it is. Assert the stable bits only.
+    # A WSL-style path keeps the filename; the slash style depends on the OS.
     p = clean_path_input("/mnt/c/Users/Student/data.csv")
-    assert p.is_absolute() or str(p).startswith("/")
-    assert "data.csv" == p.name
+    assert p.name == "data.csv"
+    assert any("mnt" in part or "Users" in part for part in p.parts)
 
 
 def test_path_absolute_unix(tmp_path):
@@ -209,12 +210,16 @@ def test_suggest_cli_builds_recommendations(cli_python, sample_csv):
 def test_demo_runs_without_file(tmp_path, monkeypatch, cli_python):
     """demo needs no data file and produces a real results folder."""
     import os
-    # Isolate HOME so the demo writes ~/AUPHORIA_results into tmp, not the real home.
+    # Isolate the results root via the documented AUPHORIA_RESULTS_ROOT override
+    # (HOME is not honored by Path.home() on Windows, so it would leak results
+    # into the real user profile there). When the env override is set, the
+    # engine uses it DIRECTLY as the root (no AUPHORIA_results subfolder).
     env = dict(os.environ)
-    env["HOME"] = str(tmp_path)
+    env["AUPHORIA_RESULTS_ROOT"] = str(tmp_path)
+    env.pop("HOME", None)
     proc = subprocess.run(cli_python + ["demo"], capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stderr
-    root = tmp_path / "AUPHORIA_results"
+    root = tmp_path
     assert root.is_dir()
     runs = list(root.glob("*_ttest_*"))
     assert runs, "demo produced no results folder"

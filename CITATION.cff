@@ -33,9 +33,8 @@ keywords:
   - reproducible research
 date-released: "2026-10-29"
 version: "0.1.0"
-# Licence is not yet chosen (see docs/LICENCE_DECISION.md). Set this once the
-# maintainer picks one (e.g. "MIT", "BSD-3-Clause", "Apache-2.0").
-license: "To-be-decided"
+# Licensed under the MIT License (see LICENSE).
+license: "MIT"
 url: "https://github.com/mysteriousammw/auphoria"
 repository-code: "https://github.com/mysteriousammw/auphoria"
 type: software

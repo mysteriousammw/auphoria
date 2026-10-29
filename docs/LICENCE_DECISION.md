@@ -1,16 +1,17 @@
 # Licence decision — for the maintainer
 
-AUPHORIA's licence is **not yet chosen** (by design — the user decides). This
-page lists the common open-source licences with a one-line trade-off each, so
-the choice can be made in one sitting. **No `LICENSE` file is created until
-then.** Do not add package metadata yet either (pyproject.toml carries no
-`license =` and no `License ::` classifier until this is decided).
+**DECIDED: MIT** (chosen by the maintainer on 2026-10-29). The `LICENSE` file,
+the `pyproject.toml` `license` metadata + `License :: OSI Approved :: MIT
+License` classifier, and `CITATION.cff`'s `license: "MIT"` field are all set.
 
-If unsure, the practical defaults for a tool like this are **MIT** or
-**BSD-3-Clause** (permissive, lets anyone use/redistribute, widely recognised
-in this ecosystem) or **Apache-2.0** (permissive with an explicit patent
-grant). Copyleft (GPL) is a deliberate choice when you want derivatives to
-stay open.
+Why MIT: AUPHORIA is a teaching/research tool whose entire dependency stack is
+permissive (NumPy/pandas/SciPy/Matplotlib/scikit-learn/statsmodels are BSD;
+PyYAML/Typer are MIT). MIT is the simplest, most popular permissive licence,
+fully compatible with those dependencies, and maximally reusable by students
+and downstream users. It carries no patent grant, which is a reasonable
+trade-off for a non-commercial academic tool.
+
+The original options compared below are kept for reference.
 
 ---
 

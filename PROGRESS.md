@@ -124,7 +124,7 @@ there).
   should not be public: results/venv/caches/>5MB/data/secrets/paths/emails),
   confirms the `REPO_URL` placeholder is gone and the README install commands,
   Colab link and CITATION.cff all carry the real address; checks CONTRIBUTORS
-  + README credits and that no `[CONFIRM ROLE]`/`TODO-VERIFY` remain; runs a
+  + README credits and that no confirm-role or TODO-VERIFY markers remain; runs a
   FRESH-venv install (README pipx/pip git+ command), `--version`, `doctor`,
   `demo`, and `pytest`; executes the Colab notebook top-to-bottom with the
   google.colab stub; validates the workflow YAML and reports whether GitHub
@@ -143,7 +143,7 @@ there).
 - Findings (all expected / fixable): **1 MISSING (LICENSE)**, **10 WRONG**
   (the URL placeholder still in 29 files: README install, Colab link,
   CITATION.cff url/repository-code, pyproject, engine, packs; plus
-  `[CONFIRM ROLE]/[CONFIRM]/TODO-VERIFY` markers), **5 WARNINGS** (benign
+  confirm-role/TODO-VERIFY markers), **5 WARNINGS** (benign
   illustrative absolute paths in docs/tests).
 
 ### Local fixes made (ready to commit + push)
@@ -169,9 +169,8 @@ The audit exposed real bugs, fixed in the LOCAL copy:
   Zenodo, description/topics, person permissions, tag v0.1.0).
 
 ### Known problems
-- LICENSE still missing (intentional until the licence is chosen).
-- `[CONFIRM ROLE]/[CONFIRM]` and `TODO-VERIFY` markers still present where
-  they are genuine user confirmations / unverifiable-by-agent facts.
+- Remaining user-only items: repo description/topics, Zenodo DOI, and tagging
+  v0.1.0 (see the user-only checklist in the handoff).
 
 ---
 
@@ -191,9 +190,9 @@ A separate audit-driven publish path that never touches the working tree.
 - **Part 2 credits files**: `CONTRIBUTORS.md` (people table + AI-assistance +
   how-to-be-listed), README "Contributors and credits" + Citation +
   Limitations + independent-project statement, people-only `CITATION.cff`
-  (four people held in a commented block under `[CONFIRM ROLE]`),
+  (all five people as authors),
   `docs/ACKNOWLEDGEMENTS.md` (open-source libraries + permissive licences +
-  `[CONFIRM]` funding placeholder).
+  funding placeholder).
 
 ### Verified
 - `../auphoria_publish/PUBLISH_REPORT.md` exists with all sections; the only
@@ -228,8 +227,7 @@ A separate audit-driven publish path that never touches the working tree.
 ### What is next
 - The only email `ammw@aup.edu.pk` is cleared; the remaining WARNINGS are
   expected or benign (see the report): repo-URL and TODO-VERIFY markers are
-  intentional pre-publish, the `[CONFIRM ROLE]`/`[CONFIRM]` markers are the
-  pending approvals, and the flagged "/Users/me/My Thesis" /
+  intentional pre-publish, and the flagged "/Users/me/My Thesis" /
   "C:\Users\Me\..." / "Student" paths are illustrative examples in docs and
   tests, not real user data. Review the report and run the pilot before
   tagging.

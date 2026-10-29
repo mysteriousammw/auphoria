@@ -109,7 +109,11 @@ def test_report_mentions_methods_and_reproducibility(describe_result: Path):
 
 # ------------------------------------------------------- replay reproduction
 def _sh_available() -> bool:
-    return shutil.which("bash") is not None
+    # replay.sh is a POSIX shell script; on Windows the equivalent is
+    # replay.ps1. Even though Git for Windows supplies bash on GitHub runners,
+    # running the POSIX script with Windows-style paths is not meaningful, so
+    # the test only runs where the shell + path style actually match.
+    return os.name == "posix" and shutil.which("bash") is not None
 
 
 def test_replay_sh_reproduces_identical_results(tmp_path: Path):

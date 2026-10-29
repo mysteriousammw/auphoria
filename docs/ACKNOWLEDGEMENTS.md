@@ -29,7 +29,7 @@ developers of the pip/Python tooling that distributes AUPHORIA.
 
 ## Funding and institutional support
 
-[CONFIRM] - Funding and institutional acknowledgements. No university or
+Funding and institutional acknowledgements. No university or
 institution is named by default; add your funders and host institutions here
 once confirmed.
 

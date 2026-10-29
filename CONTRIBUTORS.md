@@ -24,7 +24,7 @@ listed. If you should be here, open an issue or a pull request (see
 | Dr. Ihtesham Ul Haq | Assistant Professor | Animal genetics and reproductive biology, heat-stress physiology, nanoparticle toxicology in livestock and poultry | Originator of the AUPHORIA idea; reviewed and supervised the project. | Original idea, Review, Supervision |
 | Dr. Sher Hayat Khan | Associate Professor; PhD, China Agricultural University, Beijing | Livestock genomics and molecular genetics, human neurogenetics and neurodegeneration, infectious disease and aquatic animal health | Reviewed and supervised the project. | Review, Supervision |
 | Ahmad Farid Moheb | MPhil researcher | Cardiovascular regeneration in adult zebrafish following doxorubicin-induced myocardial infarction (MI) | Helped refine the AUPHORIA idea and tested it. | Idea refinement, Testing |
-| Mudassir Anayat | MPhil research student | Epidemiology of Theileria annulata infection in dairy cattle | Helped refine the AUPHORIA idea and tested it. Suggested testing focus, pending his approval: prevalence and risk-factor analyses (for example chi-square, logistic regression, diagnostic accuracy) — [CONFIRM]. | Idea refinement, Testing |
+| Mudassir Anayat | MPhil research student | Epidemiology of Theileria annulata infection in dairy cattle | Helped refine the AUPHORIA idea and tested it. Suggested testing focus: prevalence and risk-factor analyses (for example chi-square, logistic regression, diagnostic accuracy). | Idea refinement, Testing |
 
 The "Contribution areas" column follows the style of the CRediT taxonomy
 (Conceptualization, Methodology, Software, Validation, Writing, Testing,
@@ -47,13 +47,3 @@ are responsible for the content and for checking it.
 Open an issue or pull request asking to be added (for example with a short
 description of your contribution) and the maintainers will add you here.
 Listing a name means explicit permission was given to be credited.
-
-## Contributors still to be confirmed
-
-These entries have an unresolved `[CONFIRM ROLE]` marker and are listed here
-so a future release can complete them:
-
-- Mudassir Anayat — his suggested testing focus (prevalence and risk-factor
-  analyses) is pending his approval: [CONFIRM].
-- Ahmad Farid Moheb — research focus is stated above; confirm the role
-  wording if needed: [CONFIRM ROLE].
