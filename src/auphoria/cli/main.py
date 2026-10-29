@@ -678,6 +678,15 @@ def doctor_command() -> None:
 def main(argv: list[str] | None = None) -> int:
     """Entry point for the console script and `python -m auphoria`."""
     _require_python()
+    # Force UTF-8 on Windows: the default cp1252 console cannot encode Unicode
+    # characters used in output (e.g. "→", "✓", "✗"), which otherwise raise
+    # UnicodeEncodeError -> the generic error guard. Reconfigure both streams so
+    # the CLI output is readable on every platform.
+    for _stream in (sys.stdout, sys.stderr):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):  # not reconfigurable (e.g. pytest capture)
+            pass
     try:
         # standalone_mode=False: click returns the exit code as a value instead
         # of calling sys.exit, letting us surface it as a normal return.
