@@ -285,6 +285,10 @@ def build_all(out_dir: str | None = None) -> dict[str, str]:
         "time_series": to_csv(time_series(), "time_series"),
         "counts": to_csv(counts(), "counts"),
         "sem_items": to_csv(sem_items(), "sem_items"),
+        "field_trial": to_csv(field_trial(), "field_trial"),
+        "sequences": to_csv(sequences(), "sequences"),
+        "alignment_pairs": to_csv(alignment_pairs(), "alignment_pairs"),
+        "genotypes": to_csv(genotypes(), "genotypes"),
     }
     return out
 
@@ -411,3 +415,90 @@ def features(n_rows: int = 150, seed: int = 59) -> pd.DataFrame:
                        "label": label, "target": target})
     df = df.round(3)
     return df
+
+
+def field_trial(n_blocks: int = 4, seed: int = 83) -> pd.DataFrame:
+    """A designed field experiment for the experimental-design demo.
+
+    RCBD layout: 4 blocks x 3 treatments (A/B/C) with a clear treatment
+    effect (means 12/15/18) and a block effect, plus row/col and a second
+    factor so CRD / RCBD / Latin / factorial demos can all run on it.
+    """
+    rng = np.random.default_rng(seed)
+    rows = []
+    treatment_means = {"A": 12.0, "B": 15.0, "C": 18.0}
+    block_effect = [0.0, 1.5, -1.0, 2.0]
+    for b, be in enumerate(block_effect, start=1):
+        for t, tm in treatment_means.items():
+            for rep, fb in enumerate(["low", "high"], start=1):
+                rows.append({
+                    "plot": f"b{b}_{t}{rep}",
+                    "block": f"b{b}",
+                    "treatment": t,
+                    "row": f"r{b}",
+                    "col": f"c{rep}",
+                    "factor_b": fb,
+                    "yield": round(tm + be + rng.normal(0, 1.5), 1),
+                })
+    return pd.DataFrame(rows)
+
+
+def sequences(n_rows: int = 12, seed: int = 89) -> pd.DataFrame:
+    """A text column of DNA sequences (sequence-composition demo).
+
+    Mix of plausible coding-like sequences with realistic GC content and a
+    couple of short ones; used as the composition and translation sample.
+    """
+    rng = np.random.default_rng(seed)
+    seqs = []
+    for _ in range(n_rows):
+        length = int(rng.integers(24, 90))
+        gc = rng.uniform(0.35, 0.65)
+        bases = rng.choice(["A", "T", "G", "C"], size=length,
+                           p=[(1 - gc) / 2, (1 - gc) / 2, gc / 2, gc / 2])
+        seqs.append("".join(bases))
+    return pd.DataFrame({"sequence": seqs})
+
+
+def alignment_pairs(n_pairs: int = 6, seed: int = 97) -> pd.DataFrame:
+    """Sequence pairs with a conserved core (sequence-alignment demo).
+
+    Each pair shares a 10-bp core with random flanks, so the local
+    alignment finds the core and the global alignment reports high identity.
+    """
+    rng = np.random.default_rng(seed)
+    core = "ATGCGTACGT"
+    rows = []
+    for _ in range(n_pairs):
+        def _flank() -> str:
+            n = int(rng.integers(3, 8))
+            return "".join(rng.choice(list("ACGT"), size=n))
+        a = _flank() + core + _flank()
+        b = _flank() + core + _flank()
+        rows.append({"sequence_a": a, "sequence_b": b})
+    return pd.DataFrame(rows)
+
+
+def genotypes(n_markers: int = 10, seed: int = 101) -> pd.DataFrame:
+    """Biallelic genotype counts (hardy-weinberg demo).
+
+    Mixed markers: most near equilibrium, a few deliberately deviating
+    (e.g. an excess of homozygotes), so the demo shows both verdicts.
+    """
+    rng = np.random.default_rng(seed)
+    rows = []
+    for i in range(n_markers):
+        n = int(rng.integers(60, 140))
+        p = rng.uniform(0.2, 0.8)
+        if i % 4 == 3:  # deviate: excess homozygotes
+            hom = int(n * p) + int(n * 0.15)
+            het = max(0, n - 2 * hom)
+        else:
+            aa = n * p * p
+            het = 2 * n * p * (1 - p)
+            hom = n - aa - het
+            hom = int(round(aa + rng.normal(0, n * 0.01)))
+        het = max(0, int(round(n - 2 * hom)))
+        alt = max(0, n - hom - het)
+        rows.append({"n_homo_ref": hom, "n_het": het, "n_homo_alt": alt})
+    return pd.DataFrame(rows)

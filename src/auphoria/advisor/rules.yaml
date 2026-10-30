@@ -420,3 +420,58 @@ rules:
     question: null
     priority: 210
     reason: "A full data-quality check first: types, missing values, outliers, duplicates."
+
+  # ------------------------------------------------------- Wave 3: designs + sequences
+  - analysis: experimental-design
+    question: compare
+    priority: 25
+    needs:
+      min_categorical: 2
+      min_numeric: 1
+      min_rows: 12
+    reason: "Categorical treatment + block/factor columns with a numeric outcome — ANOVA under a named experimental design (CRD/RCBD/Latin/factorial) with mean separation."
+    not_fit: "Needs a treatment (categorical) and a numeric outcome; blocked designs additionally need block (and row/col or a second factor)."
+    small_sample: "Designed experiments need replication per treatment — at least 12 rows for a stable answer."
+
+  - analysis: sequence-composition
+    question: describe
+    priority: 40
+    needs:
+      min_categorical: 1
+      max_numeric: 0
+      min_rows: 1
+    reason: "A text column of DNA/RNA sequences — length, GC content and base counts are the first QC for sequence data."
+    not_fit: "Needs a text column holding nucleotide sequences (letters ACGTU/N)."
+    small_sample: "Even one sequence is informative; more sequences give a meaningful GC distribution."
+
+  - analysis: sequence-translation
+    question: describe
+    priority: 45
+    needs:
+      min_categorical: 1
+      max_numeric: 0
+      min_rows: 1
+    reason: "DNA sequences — translate to protein and find open reading frames on the forward strand."
+    not_fit: "Needs unambiguous DNA (A/C/G/T) in a text column."
+    small_sample: "One sequence is analysable; ORF discovery is more convincing with several."
+
+  - analysis: sequence-alignment
+    question: compare
+    priority: 45
+    needs:
+      min_categorical: 2
+      max_numeric: 0
+      min_rows: 1
+    reason: "Two columns of sequences — pairwise global (Needleman-Wunsch) or local (Smith-Waterman) alignment with identity."
+    not_fit: "Needs TWO text columns holding the sequences to compare."
+    small_sample: "One pair is enough for a first look."
+
+  - analysis: hardy-weinberg
+    question: compare
+    priority: 50
+    needs:
+      min_numeric: 3
+      min_rows: 1
+    reason: "Genotype counts (AA/Aa/aa) per marker — chi-square test of Hardy-Weinberg equilibrium with allele frequencies."
+    not_fit: "Needs three numeric count columns: n_homo_ref, n_het, n_homo_alt."
+    small_sample: "Small totals (expected cell < 5) make the chi-square approximation unreliable — flagged as a warning."

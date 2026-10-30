@@ -1091,3 +1091,138 @@ analyses:
   sources:
   - https://degrees.asu.edu/masters-phd/major/ASU00/LAPSYQUPHD/psychology-quantitative-research-methods-phd
   - https://morgridge.du.edu/academics-advising/programs-gr/phd-research-methods-and-statistics
+- id: experimental-design
+  name: Experimental Design ANOVA (CRD/RCBD/Latin/Factorial)
+  plain_english_question: How do treatments compare under my experimental design (blocks,
+    Latin square, factorial structure)?
+  levels:
+  - MPhil
+  - PhD
+  disciplines:
+  - agriculture
+  - animal-science
+  - biology
+  - environmental-science
+  design: between-subjects replicated (balanced)
+  data_requirements: Balanced outcome + treatment (+ block/row/col/factor_b) columns;
+    one observation per cell for blocked layouts.
+  assumptions_to_check: Normality of residuals; homogeneity of variance; balance;
+    one obs per block-treatment cell (RCBD/Latin).
+  alternatives_when_assumptions_fail: anova-oneway or kruskal-wallis for unbalanced
+    independent groups; regression-multiple with dummies for confounded designs.
+  python_library_and_function: scipy stats (f_oneway, studentized_range, levene, shapiro)
+  outputs: Design-specific ANOVA table, treatment means + Tukey/LSD separation, checks.
+  common_mistakes: Analysing a blocked design as CRD (inflates error); unbalanced
+    data; ignoring the block in the error term.
+  priority: P1
+  pack:
+  - agri-animal
+  sources:
+  - https://www.itl.nist.gov/div898/handbook/pri/section3/pri323.htm
+- id: sequence-composition
+  name: DNA/RNA Sequence Composition
+  plain_english_question: What are the length, GC% and base composition of my sequences?
+  levels:
+  - BS
+  - MPhil
+  disciplines:
+  - biology
+  - biotechnology
+  - bioinformatics
+  - life-sciences
+  design: descriptive (per-row)
+  data_requirements: One text column of DNA/RNA sequences (letters ACGTU/N).
+  assumptions_to_check: Only IUPAC letters; no FASTA headers; DNA vs RNA alphabet.
+  alternatives_when_assumptions_fail: Remove headers/ambiguity first; per-window GC
+    needs a genome browser.
+  python_library_and_function: pure python + pandas (no BioPython)
+  outputs: Per-sequence length/GC%/counts, aggregate summary, GC histogram.
+  common_mistakes: Leaving FASTA headers in the column; mixing DNA and RNA bases.
+  priority: P1
+  pack:
+  - life-science
+  - agri-animal
+  sources:
+  - https://en.wikipedia.org/wiki/GC-content
+- id: sequence-translation
+  name: DNA Translation and ORF Finding
+  plain_english_question: What protein could this DNA encode, and where are the open
+    reading frames?
+  levels:
+  - BS
+  - MPhil
+  disciplines:
+  - biology
+  - biotechnology
+  - bioinformatics
+  - life-sciences
+  design: descriptive (per-row)
+  data_requirements: One text column of DNA sequences (A/C/G/T; U auto-converted).
+  assumptions_to_check: Standard genetic code; forward strand only; unambiguous bases.
+  alternatives_when_assumptions_fail: sequence-composition for exploratory QC; external
+    gene finders (GLIMMER/AUGUSTUS) for spliced genes.
+  python_library_and_function: pure python genetic-code table + ORF scan
+  outputs: 3-frame translations, ORF table (frame/start/end/length/peptide), longest
+    flag.
+  common_mistakes: Treating a chance ORF as a gene; ignoring reverse strand.
+  priority: P2
+  pack:
+  - life-science
+  - bioinformatics
+  sources:
+  - https://en.wikipedia.org/wiki/Open_reading_frame
+- id: sequence-alignment
+  name: Pairwise Sequence Alignment
+  plain_english_question: How similar are my two sequences (global or local alignment)?
+  levels:
+  - BS
+  - MPhil
+  disciplines:
+  - biology
+  - biotechnology
+  - bioinformatics
+  - life-sciences
+  design: descriptive (pairwise)
+  data_requirements: Two text columns of equal-alphabet sequences (DNA/RNA/protein).
+  assumptions_to_check: Alphabet consistency; U/T equivalence; no headers.
+  alternatives_when_assumptions_fail: BLAST / web NCBI for homology search; MSA tools
+    for many sequences.
+  python_library_and_function: pure python Needleman-Wunsch / Smith-Waterman DP
+  outputs: Score, identity %, aligned strings + markers, local coordinates.
+  common_mistakes: Reading a high score as homology; ignoring e-values.
+  priority: P2
+  pack:
+  - life-science
+  - bioinformatics
+  sources:
+  - https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm
+  - https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm
+- id: hardy-weinberg
+  name: Hardy-Weinberg Equilibrium Test
+  plain_english_question: Are my genotype counts at this locus consistent with random
+    mating (Hardy-Weinberg)?
+  levels:
+  - BS
+  - MPhil
+  disciplines:
+  - biology
+  - biotechnology
+  - agriculture
+  - animal-science
+  - public-health
+  design: goodness-of-fit (biallelic)
+  data_requirements: Per-marker counts of AA/Aa/aa genotypes.
+  assumptions_to_check: Expected cell counts >= 5; biallelic locus; random mating.
+  alternatives_when_assumptions_fail: Fisher's exact test for small counts; multiple
+    testing correction for many markers.
+  python_library_and_function: scipy.stats.chisquare (df=1)
+  outputs: Observed vs expected counts, allele frequencies, chi2/p, verdict.
+  common_mistakes: Concluding equilibrium from a non-significant small-sample test;
+    ignoring multiple testing across markers.
+  priority: P2
+  pack:
+  - life-science
+  - agri-animal
+  - bioinformatics
+  sources:
+  - https://en.wikipedia.org/wiki/Hardy%E2%80%93Weinberg_principle

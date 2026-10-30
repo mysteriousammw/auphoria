@@ -1,0 +1,69 @@
+id: hardy-weinberg
+name: Hardy-Weinberg Equilibrium Test
+maturity: experimental
+levels:
+  - beginner
+  - intermediate
+disciplines:
+  - biology
+  - biotechnology
+  - life-sciences
+  - bioinformatics
+  - agriculture
+  - animal-science
+  - public-health
+description: >-
+  Tests whether observed genotype counts at a biallelic locus are
+  consistent with Hardy-Weinberg equilibrium (HWE): expected genotype
+  frequencies are computed from the observed allele frequencies and
+  compared with the observed counts via a chi-square goodness-of-fit test
+  (1 degree of freedom). Reports observed vs expected counts, allele
+  frequencies, the chi-square statistic and p-value, and a PASS/WARN
+  verdict. The classic first check in population genetics — deviation
+  hints at selection, inbreeding, or genotyping error.
+inputs:
+  - name: n_homo_ref
+    kind: numeric-column
+    required: true
+    description: Count of homozygous genotype AA (reference allele A).
+    constraints: non-negative integers
+  - name: n_het
+    kind: numeric-column
+    required: true
+    description: Count of heterozygous genotype Aa.
+    constraints: non-negative integers
+  - name: n_homo_alt
+    kind: numeric-column
+    required: true
+    description: Count of homozygous genotype aa (alternate allele a).
+    constraints: non-negative integers
+parameters:
+  - name: alpha
+    type: number
+    default: 0.05
+    min: 0.001
+    max: 0.5
+    description: Significance level for the chi-square test.
+outputs:
+  - observed vs expected genotype counts table (per marker/row)
+  - allele frequency table (p for A, q for a)
+  - chi-square test table (statistic, df, p-value)
+  - PASS/WARN/HWE verdict per row
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - Biallelic locus only (two alleles, three genotypes AA/Aa/aa).
+  - Counts are non-negative integers (rounded, with a warning if decimals appear).
+  - Expected counts are large enough for the chi-square approximation (expected >= 5 per cell in most cells; otherwise a warning is issued).
+  - Random mating, no selection/migration/mutation in the reference population.
+limitations:
+  - A non-significant test does NOT prove equilibrium — it only fails to reject it; small samples are underpowered.
+  - Deviation from HWE has many causes (inbreeding, population structure, genotyping error, selection); the test alone cannot say which.
+  - Testing many markers inflates the false-positive rate — apply a multiple-testing correction when a whole-genome table is tested row by row.
+reference: >-
+  Classic textbook example: counts AA=30, Aa=50, aa=20 -> n=100,
+  p=0.55, q=0.45; expected AA=30.25, Aa=49.5, aa=20.25; chi2 = 0.0027,
+  df=1, p ≈ 0.958 (hand-computed, cross-checked vs scipy.stats.chisquare).
+test_data:
+  - "HWE example above plus a strongly deviating marker (AA=40, Aa=20,
+     aa=40 -> p=q=0.5, expected 25/50/25, chi2 = 18.0, p = 2.2e-05)."

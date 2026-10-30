@@ -200,8 +200,20 @@ def _read_text_with_delimiter(
             )
         return df, (None if sep == "," else sep), header_warnings
 
-    # Try pandas' own sniffing for odd-but-consistent delimiters.
-    df = pd.read_csv(path, sep=None, engine="python")
+    # No standard delimiter (comma/tab/semicolon/pipe) appears anywhere in
+    # the sample: the file is genuinely a single column (e.g. a list of
+    # sequences or notes). pandas' own sniffer MUST NOT decide here — it
+    # happily picks a LETTER from the header ('sequence' -> 'e') as the
+    # delimiter and silently mangles one-column files. Read it as one column
+    # directly from the raw lines (blank lines already counted above).
+    non_blank = [ln for ln in all_lines if ln.strip()]
+    if not non_blank:
+        raise DataError("The file appears to be empty.")
+    header = non_blank[0].strip().strip('"').strip("'")
+    values = [ln.strip() for ln in non_blank[1:]]
+    if not header:
+        header = "value"
+    df = pd.DataFrame({header: values})
     return df, None, header_warnings
 
 

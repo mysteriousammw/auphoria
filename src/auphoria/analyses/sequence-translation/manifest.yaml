@@ -1,0 +1,56 @@
+id: sequence-translation
+name: DNA Translation and ORF Finding
+maturity: experimental
+levels:
+  - beginner
+  - intermediate
+disciplines:
+  - biology
+  - biotechnology
+  - life-sciences
+  - bioinformatics
+  - agriculture
+  - animal-science
+description: >-
+  Translates DNA sequences into protein using the standard genetic code and
+  finds open reading frames (ORFs): contiguous stretches from a start codon
+  (ATG) to an in-frame stop codon. For each input sequence it reports the
+  forward-strand ORFs (frame, start, end, length, translated peptide) and
+  flags the longest one. Ideal for checking a cloned gene, verifying a
+  predicted CDS, or when a student has an unknown DNA stretch and needs the
+  protein it could encode.
+inputs:
+  - name: sequence
+    kind: categorical-column
+    required: true
+    description: One DNA sequence per row (letters A/C/G/T; N is refused for translation).
+    constraints: non-empty; A/C/G/T only (RNA U is auto-converted to T)
+parameters:
+  - name: min_orf_length
+    type: number
+    default: 30
+    min: 3
+    max: 100000
+    description: "Minimum translated length (in amino acids) for an ORF to be reported (default 30 aa = 90 nt)."
+outputs:
+  - ORF table per sequence (frame, start, stop, length aa, peptide, longest flag)
+  - translation table (frame 1..3 forward peptides for each sequence)
+  - summary counts (sequences, ORFs found, longest ORF per row highlighted)
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - Sequences are coding-strand DNA; only the forward strand is translated.
+  - Start codon is ATG only (standard genetic code table 1).
+  - Stop codons are TAA, TAG, TGA.
+  - Ambiguous bases (N) cause a refusal for this analysis — use sequence-composition for exploratory QC first.
+limitations:
+  - ORF finding on raw sequence is heuristic — real gene annotation needs splicing, frame-aware evidence, and homology.
+  - Only the standard (table 1) genetic code; mitochondrial/alternate codes are not covered.
+  - Reverse-strand ORFs are not scanned (a strand parameter is future work).
+  - A long ORF is NOT proof the region is a real gene.
+reference: >-
+  Hand-computed: 'ATGGCTTAATAA' -> ORF start 1, stop after 'GCT', peptide M-A;
+  'ATGGCCATGTTTTAA' -> single ORF M-A-M-F, all three frames hand-checked.
+test_data:
+  - "Deterministic sequences in tests/test_sequence_translation.py with
+     hand-checked frames/ORFs/peptides."

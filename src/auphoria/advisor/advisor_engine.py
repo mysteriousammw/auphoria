@@ -154,6 +154,8 @@ def _rule_matches(rule: Rule, profile: DataProfile, roles: dict[str, str] | None
         return False, "small"
     if "min_numeric" in needs and _count_kind(profile, "numeric") < int(needs["min_numeric"]):
         return False, "not_fit"
+    if "max_numeric" in needs and _count_kind(profile, "numeric") > int(needs["max_numeric"]):
+        return False, "not_fit"
     if "min_categorical" in needs and _count_kind(profile, "categorical") < int(needs["min_categorical"]):
         return False, "not_fit"
     if "groups" in needs:

@@ -119,9 +119,11 @@ RECOMMEND_CASES = [
     ("compare-paired-unique-subject", "compare", paired_wide, None,
      ["ttest-paired", "summary", "describe"]),
 
-    # compare — categorical x categorical -> chi-square
+    # compare — categorical x categorical -> chi-square; two text columns
+    # without a numeric column is also the sequence-alignment shape (the
+    # analysis itself refuses non-sequence letters with a clear hint).
     ("compare-2cat", "compare", two_categorical, None,
-     ["chi-square", "summary", "describe"]),
+     ["sequence-alignment", "chi-square", "summary", "describe"]),
 
     # relate — two numeric -> correlation (+ rank alternative, agreement)
     ("relate-2numeric", "relate", two_numeric, None,
@@ -157,7 +159,7 @@ RECOMMEND_CASES = [
 
     # two categorical columns with a numeric-ish target: chi-square preferred
     ("compare-binary-outcome", "compare", binary_outcome, None,
-     ["chi-square", "summary", "describe"]),
+     ["sequence-alignment", "chi-square", "summary", "describe"]),
     ("relate-binary-outcome", "relate", binary_outcome, None,
      ["chi-square", "odds-and-risk", "summary", "describe"]),
 ]

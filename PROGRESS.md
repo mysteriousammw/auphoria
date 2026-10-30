@@ -5,6 +5,32 @@ what is next, and known problems.
 
 ---
 
+## Wave 3: five analyses built, verified, pushed (2026-10-30, final)
+
+- Built and locally verified the five Wave 3 analyses (`experimental-design`,
+  `hardy-weinberg`, `sequence-composition`, `sequence-translation`,
+  `sequence-alignment`): per-analysis tests green, ruff clean, docs + demo map
+  + 4 sample CSVs wired, advisor rules.yaml + catalogue + validation dashboard
+  current. Committed + pushed to main; CI confirmed.
+- Deliberate scope stop: dose-response, qPCR, enzyme kinetics, meta-analysis,
+  kappa, econ-eng robust/IV/curve-fit remain for a later credit-top-up — the
+  build budget ran out, so the existing 5 were finished and uploaded instead
+  of starting more.
+- Two pre-commit fixes this pass added robustness: `hardy-weinberg` carried the
+  discipline `health` (no P1 analysis covers it → broke
+  `test_p1_list_is_bounded_and_covers_all_disciplines`); changed to
+  `public-health` in catalogue + manifest + regenerated its docs page. The
+  mkdocs `nav` was missing 7 generated analysis pages (5 new + `sem` +
+  `differential-expression`) which the zero-WARNING docs test caught — added
+  them in alphabetical order.
+- Known problem (parked, cosmetic): `experimental-design` emits a runtime
+  "invalid value in sqrt" warning in the LSD/Tukey mean-separation when the
+  marginal error MS is negative/degenerate after missing-value exclusion —
+  yields NaN LSD correctly, no crash, tests pass. Safe to silence with a
+  `>0` guard on a later pass.
+
+---
+
 ## Post-crash re-verification + Wave 3 scope (2026-10-30, later)
 
 - The Mac panic-rebooted 4x overnight (watchdog timeout under memory/CPU

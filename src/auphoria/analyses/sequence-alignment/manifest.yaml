@@ -1,0 +1,73 @@
+id: sequence-alignment
+name: Pairwise Sequence Alignment
+maturity: experimental
+levels:
+  - intermediate
+  - advanced
+disciplines:
+  - biology
+  - biotechnology
+  - life-sciences
+  - bioinformatics
+  - agriculture
+  - animal-science
+description: >-
+  Aligns pairs of DNA, RNA or protein sequences from two text columns using
+  classic dynamic programming: Needleman-Wunsch (global alignment of the
+  whole sequences) and Smith-Waterman (local alignment of the best matching
+  region). Reports score, identity %, the aligned strings with match/mismatch
+  markers, and for local alignment the start/end of the matched region. This
+  is what a student needs to compare a cloned sequence against a reference
+  gene, or two homologues, without leaving the spreadsheet.
+inputs:
+  - name: sequence_a
+    kind: categorical-column
+    required: true
+    description: First sequence of each pair (letters A/C/G/T/U or amino-acid codes).
+    constraints: non-empty text
+  - name: sequence_b
+    kind: categorical-column
+    required: true
+    description: Second sequence of each pair (same alphabet as sequence_a).
+    constraints: non-empty text
+parameters:
+  - name: mode
+    type: text
+    default: global
+    choices: [global, local]
+    description: "global = Needleman-Wunsch (whole sequences); local = Smith-Waterman (best region)."
+  - name: match_score
+    type: number
+    default: 2
+    description: Score for a matching pair of letters.
+  - name: mismatch_penalty
+    type: number
+    default: -1
+    description: Score for a mismatching pair of letters.
+  - name: gap_penalty
+    type: number
+    default: -2
+    description: Score per inserted gap.
+outputs:
+  - alignment table per pair (score, identity %, aligned strings, markers)
+  - summary (mean/max score, mean identity)
+  - alignment visualisation figure for the first non-trivial pair
+  - methods.txt paragraph
+  - report.html
+assumptions:
+  - Sequences are compared as raw strings; case is ignored.
+  - DNA/RNA alphabets allow T/U equivalence (U is treated as T).
+  - Protein sequences (20-letter alphabet) are auto-detected; score matrices are simple match/mismatch (no BLOSUM/PAM).
+  - Identical lengths are not required — dynamic programming handles gaps.
+limitations:
+  - Simple match/mismatch scoring is a teaching-grade model; for real homology searches use BLAST with substitution matrices.
+  - Only pairwise alignment; multiple-sequence alignment and phylogenetic trees are separate tools.
+  - Long sequences (thousands of bases) are slow in pure python; keep pairs under a few hundred for interactive use.
+  - A high identity % does not prove functional equivalence.
+reference: >-
+  Hand-computed: 'GATTACA' vs 'GCATGCU' global alignment score checked by
+  hand-trace of the DP matrix; identity and alignment strings verified in
+  the test.
+test_data:
+  - "Deterministic pairs in tests/test_sequence_alignment.py with hand-traced
+     Needleman-Wunsch and Smith-Waterman matrices."

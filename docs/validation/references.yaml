@@ -246,3 +246,40 @@ analyses:
     values:
       CFI: {value: 0.99, tolerance: 0.05}
       RMSEA: {value: 0.03, tolerance: 0.03}
+  experimental-design:
+    source: "CRD/RCBD/Latin/factorial textbook fixtures in tests/test_experimental_design.py (anova-oneway-style SS identities)"
+    how_produced: "Hand-computed SS/F for each layout; cross-checked vs scipy f_oneway, studentized_range, levene, shapiro"
+    values:
+      CRD_F: {value: 54.0, tolerance: 0.01}
+      RCBD_treatment_F: {value: 216.0, tolerance: 0.01}
+      Latin_treatment_F: {value: 36.0, tolerance: 0.01}
+      Factorial_interaction_F: {value: 6.0, tolerance: 0.01}
+
+  sequence-composition:
+    source: "Hand-computed small sequences in tests/test_sequence_composition.py"
+    how_produced: "ATGCGC -> length 6, GC% = 100*4/6 = 66.67, counts A1 T1 G2 C2; AUGC -> RNA, GC 50%"
+    values:
+      GC_percent: {value: 66.67, tolerance: 0.01}
+      length: {value: 6, tolerance: 0}
+
+  sequence-translation:
+    source: "Hand-checked standard-code translations in tests/test_sequence_translation.py"
+    how_produced: "ATGGCT -> 'MA'; ATG GCT TAA -> ORF start 1 end 9 peptide 'MA*'; GGGATGGCTTAA -> ORF at base 4"
+    values:
+      orf_peptide: {value: "MA*", tolerance: 0}
+      orf_length_aa: {value: 3, tolerance: 0}
+
+  sequence-alignment:
+    source: "Hand-traced Needleman-Wunsch / Smith-Waterman in tests/test_sequence_alignment.py"
+    how_produced: "ACGT vs ACGT global score 8 (4 matches x 2); ACGT vs ACGA -> 5, identity 75%; local XXACGTYY vs WWACGTZZ -> best region ACGT score 8"
+    values:
+      global_score: {value: 8.0, tolerance: 0.01}
+      local_score: {value: 8.0, tolerance: 0.01}
+      mismatch_identity_percent: {value: 75.0, tolerance: 0.01}
+
+  hardy-weinberg:
+    source: "Classic HWE fixture in tests/test_hardy_weinberg.py"
+    how_produced: "AA=30,Aa=50,aa=20 -> p=0.55, E=30.25/49.5/20.25, chi2=0.0102, p=0.919; AA=40,Aa=20,aa=40 -> E=25/50/25, chi2=36, p=2e-9"
+    values:
+      equilibrium_chi2: {value: 0.0102, tolerance: 0.001}
+      deviation_chi2: {value: 36.0, tolerance: 0.01}

@@ -117,6 +117,13 @@ nav:
       - analyses/diagnostic-test.md
       - analyses/ml-classification-eval.md
       - analyses/ml-regression-eval.md
+      - analyses/differential-expression.md
+      - analyses/experimental-design.md
+      - analyses/hardy-weinberg.md
+      - analyses/sem.md
+      - analyses/sequence-alignment.md
+      - analyses/sequence-composition.md
+      - analyses/sequence-translation.md
   - Gallery: gallery.md
   - Troubleshooting: troubleshooting.md
   - FAQ: faq.md

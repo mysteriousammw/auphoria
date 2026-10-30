@@ -31,6 +31,10 @@ _DATASETS = {
     "time_series": "time_series.csv",
     "counts": "counts.csv",
     "sem_items": "sem_items.csv",
+    "field_trial": "field_trial.csv",
+    "sequences": "sequences.csv",
+    "alignment_pairs": "alignment_pairs.csv",
+    "genotypes": "genotypes.csv",
 }
 
 

@@ -547,6 +547,16 @@ def demo_command(
                                         "extra": {"period": "period"}}),
         "differential-expression": ("counts", {"group": "condition"}),
         "sem": ("sem_items", {}),
+        "experimental-design": ("field_trial", {"outcome": "yield",
+                                              "group": "treatment"}),
+        "sequence-composition": ("sequences", {"extra": {"sequence": "sequence"}}),
+        "sequence-translation": ("sequences", {"extra": {"sequence": "sequence"}}),
+        "sequence-alignment": ("alignment_pairs",
+                             {"extra": {"sequence_a": "sequence_a",
+                                        "sequence_b": "sequence_b"}}),
+        "hardy-weinberg": ("genotypes", {"outcome": "n_homo_ref",
+                                       "extra": {"n_het": "n_het",
+                                                 "n_homo_alt": "n_homo_alt"}}),
     }
     if analysis not in demos:
         _handle_error(AuphoriaError(
